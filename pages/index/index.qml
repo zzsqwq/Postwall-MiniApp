@@ -30,13 +30,21 @@
   </view>
 
   <block qq:for="{{imageList}}" qq:for-item="image">
-            <view class="upload-wrap__item">
-                      <image class="image-block"  src="{{image}}" data-src="{{image}}" bindtap="previewImage" mode="aspectFill" />
-             </view>
+    <view class="upload-wrap__item">
+      <image class="image-block"  src="{{image}}" data-src="{{image}}" bindtap="previewImage" mode="aspectFill" />
+    </view>
   </block>
 
-  <view class="upload-wrap__item upload-wrap__item_default" bindtap="chooseImage">
+  <view qq:if="{{imageList.length<9}}"class="upload-wrap__item upload-wrap__item_default" bindtap="chooseImage">
     <image class="image-block" src="../../images/icon-add@2x.png" mode="aspectFill" />
+  </view>
+
+  <view class="section">
+    <view class="section__title">联系方式</view>
+    <view class="contact-block">
+      <image class="contact-icon-class" src="../../images/pages/home/icon-qq.png" mode="aspectFill"></image>
+      <input class="contact-input_text" name="input" maxlength="11" placeholder="QQ"  />
+    </view>
   </view>
 
 

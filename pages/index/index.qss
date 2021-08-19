@@ -5,7 +5,7 @@ page {
   background-color: #F5F6FA !important;
 }
 .section {
-    color: #000000;
+    clear: both;
     margin: 10rpx auto 10rpx auto;
 }
 .section__title {
@@ -45,11 +45,35 @@ page {
 .image-block {
   display: inline-block;
   float: left;
-  width: 31vw;
-  height: 31vw;
+  width: 29vw;
+  height: 29vw;
+  margin: 5px 2% 5px 2%;
 }
 
 .btn-area {
   clear: both;
   dispaly: block;
+}
+
+.contact-block {
+  display: block;
+  blackground-color: #FFFFFF;
+  height: 40px;
+  width: 100%;
+  margin-left: 10px;
+}
+
+.contact-icon-class {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+}
+.contact-input_text {
+  display: inline-block;
+  height: 40px;
+  width: 100%;
+  color: #000000;
+  background-color: #FFFFFF;
+  margin: 0 0 0 10px;
+  font-size: 16px;
 }

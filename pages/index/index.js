@@ -5,14 +5,6 @@ const sizeType = [['compressed'], ['original'], ['compressed', 'original']]
 Page({
   data: {
     imageList: [],
-    sourceTypeIndex: 2,
-    sourceType: ['拍照', '相册', '拍照或相册'],
-
-    sizeTypeIndex: 2,
-    sizeType: ['压缩', '原图', '压缩或原图'],
-
-    countIndex: 8,
-    count: [1, 2, 3, 4, 5, 6, 7, 8, 9],
   },
   onLoad(options) {
     // Do some initialize when page load.
@@ -71,19 +63,23 @@ Page({
   },
   chooseImage() {
     const that = this
+    imageList = this.data.imageList
     qq.chooseImage({
       sourceType: ['album','camera'],
       sizeType: ['original','compressed'],
-      count: 9,
+      count: 9 - imageList.length,
       success(res) {
-        console.log(res)
+        console.log(res);
+        imageList = imageList.concat(res.tempFilePaths);
         that.setData({
-          imageList: res.tempFilePaths,
+          imageList: imageList
         })
       }
-    })
+    }
+    )
   },
   previewImage(e) {
+    console.log(this.data.imageList)
     const current = e.target.dataset.src
 
     qq.previewImage({
