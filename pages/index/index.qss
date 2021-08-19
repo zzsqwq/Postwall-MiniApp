@@ -1,0 +1,45 @@
+@import "../common/lib/qui.qss"
+@import "../common/index.qss"
+
+page {
+  background-color: #F5F6FA !important;
+}
+.section {
+    color: #000000;
+    margin: 10rpx auto 10rpx auto;
+}
+.section__title {
+  font-size: 14px;
+  margin: 10px 0 10px 3%;
+}
+.input_text {
+  display: block;
+  height: 50px;
+  background-color: #FFFFFF;
+  margin: 10px 0 10px 3%;
+  font-size: 16px;
+} 
+.logo-class {
+  width: 80px;
+  height: 80px;
+}
+.input-section {
+  background-color: #FFFFFF;
+  margin: 10rpx 0rpx 0rpx 0rpx;
+}
+.textarea_text {
+  display: inline-block;
+  padding: 10px 0px 0 3%;
+  min-height: 200rpx;
+  width: 97%;
+  background-color: #FFFFFF;
+  margin: 10rpx 0px 10rpx 0px;
+  font-size: 16px;
+}
+.textarea_block {
+  display: block;
+  background-color: #FFFFFF;
+  margin: 0 0 0 0;
+  height: 100px;
+}
+

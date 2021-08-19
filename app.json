@@ -1,0 +1,44 @@
+{
+  "pages": ["pages/index/index","pages/test/index","pages/logs/index"],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "自助贴贴墙",
+    "backgroundTextStyle": "black",
+    "enablePullDownRefresh": false,
+    "navigationBarBackgroundColor": "#F5F6FA",
+    "backgroundColor": "#FFFFFF"
+  },
+  "tabBar": {
+    "color": "#7F8389",  
+    "selectedColor": "#0097E6",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {
+        "pagePath": "pages/test/index",
+        "iconPath": "images/tabbar/icon-testing.png",
+        "selectedIconPath": "images/tabbar/icon-testing-selected.png",
+        "text" : "测试"
+      },
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "images/tabbar/icon-home.png",
+        "selectedIconPath": "images/tabbar/icon-home-selected.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/logs/index",
+        "iconPath": "images/tabbar/icon-log.png",
+        "selectedIconPath": "images/tabbar/icon-log-selected.png",
+        "text": "日志"
+      }
+    ]
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "connectSocket": 10000,
+    "uploadFile": 10000,
+    "downloadFile": 10000
+  },
+  "debug": true,
+  "groupIdList":["123456","34356576","457658769"]
+}
