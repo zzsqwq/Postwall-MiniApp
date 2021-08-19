@@ -42,15 +42,30 @@
   <view class="section">
     <view class="section__title">联系方式</view>
     <view class="contact-block">
-      <image class="contact-icon-class" src="../../images/pages/home/icon-qq.png" mode="aspectFill"></image>
-      <input class="contact-input_text" name="input" maxlength="11" placeholder="QQ"  />
+      <image class="contact-icon-class" src="../../images/pages/home/icon-qq-3.png" mode="aspectFill"></image>
+      <input class="contact-input_text"  name="input" maxlength="11" placeholder="QQ"  />
+    </view>
+  </view>
+
+  <view class="section-mid" >
+    <view class="contact-block">
+      <image class="contact-icon-class" src="../../images/pages/home/icon-wechat.png" mode="aspectFill"></image>
+      <input class="contact-input_text"  name="input" maxlength="20" placeholder="微信"  />
+    </view>
+  </view>
+
+  <view class="section-mid" >
+    <view class="contact-block">
+      <image class="contact-icon-phone-class"  src="../../images/pages/home/icon-phone.png" mode="aspectFill"></image>
+      <input class="contact-input_text" name="input"  placeholder="邮箱"  />
     </view>
   </view>
 
 
+
   <view class="btn-area">
-    <button form-type="submit">Submit</button>
-    <button form-type="reset">Reset</button>
+    <button type="primary" form-type="submit" style="margin: 0rpx auto 20rpx auto; width:90%">Submit</button>
+    <button form-type="reset" style="margin: 0rpx auto 20rpx auto; width:90%" >Reset</button>
   </view>
 </form>
 
