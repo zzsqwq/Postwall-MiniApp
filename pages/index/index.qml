@@ -27,6 +27,7 @@
 
   <view class="section">
     <view class="section__title">选择图片（点击图片可预览）</view>
+    <view class="image-number-class">{{imageList.length}}/9</view>
   </view>
 
   <block qq:for="{{imageList}}" qq:for-item="image">
