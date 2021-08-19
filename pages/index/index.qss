@@ -61,14 +61,26 @@ page {
   margin: 0 0 0 0;
   height: 100px;
 }
-.image-block {
+.image-combine {
   display: inline-block;
   float: left;
-  width: 29vw;
-  height: 29vw;
-  margin: 5px 2% 5px 2%;
+  width:219rpx;
+  height:219rpx;
+  margin: 5rpx 0rpx 5rpx 20rpx;
+  border: 2rpx solid #EBEDF5;
+}
+.image-block {
+  display: inline-block;
+  width: 219rpx;
+  height: 219rpx;
 }
 
+.delete-button {
+  position: absolute;
+  margin: 0 0 0 -38rpx;
+  width: 40rpx;
+  height: 40rpx;
+}
 .btn-area {
   margin: 30rpx 0 30rpx 0;
 }
