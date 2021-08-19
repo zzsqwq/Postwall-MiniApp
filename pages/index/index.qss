@@ -42,4 +42,14 @@ page {
   margin: 0 0 0 0;
   height: 100px;
 }
+.image-block {
+  display: inline-block;
+  float: left;
+  width: 31vw;
+  height: 31vw;
+}
 
+.btn-area {
+  clear: both;
+  dispaly: block;
+}

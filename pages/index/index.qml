@@ -27,7 +27,16 @@
 
   <view class="section">
     <view class="section__title">选择图片（点击图片可预览）</view>
-    <textarea class="textarea_text" auto-height placeholder="在这里输入具体内容" placeholder-class="input_text-placeholder"/>
+  </view>
+
+  <block qq:for="{{imageList}}" qq:for-item="image">
+            <view class="upload-wrap__item">
+                      <image class="image-block"  src="{{image}}" data-src="{{image}}" bindtap="previewImage" mode="aspectFill" />
+             </view>
+  </block>
+
+  <view class="upload-wrap__item upload-wrap__item_default" bindtap="chooseImage">
+    <image class="image-block" src="../../images/icon-add@2x.png" mode="aspectFill" />
   </view>
 
 
@@ -38,37 +47,3 @@
 </form>
 
  
- <view class="qui-cell-group">
-        <view class="qui-cell-group__bd">
-          <view class="qui-cell">
-            <view class="qui-cell__bd">
-              <text class="qui-cell__txt-label">点击可预览选好的图片</text>
-            </view>
-            <view class="qui-cell__ft">
-              <text class="qui-cell__txt-tips">{{imageList.length}}/9</text>
-            </view>
-          </view>
-
-          <view class="qui-cell">
-            <view class="qui-cell__bd">
-
-              <view class="upload-wrap">
-                <view class="upload-wrap__bd">
-                  <block qq:for="{{imageList}}" qq:for-item="image">
-                    <view class="upload-wrap__item">
-                      <image class="upload-wrap__img"  src="{{image}}" data-src="{{image}}" bindtap="previewImage" mode="aspectFill" />
-                    </view>
-                  </block>
-
-                  <view class="upload-wrap__item upload-wrap__item_default" bindtap="chooseImage">
-                    <image class="upload-wrap__img" src="../../../../image/icon-add@2x.png" mode="aspectFill" />
-                  </view>
-                </view>
-              </view>
-
-            </view>
-          </view>
-
-
-        </view>
-      </view>
