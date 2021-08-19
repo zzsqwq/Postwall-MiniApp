@@ -20,11 +20,6 @@ jobs:
     - name: Checkout 
       uses: actions/checkout@master
       
-    - name: ESLint checks
-      run: |
-        npm install
-        npm run eslint
-        
 
     - name: Build 
       uses: docker://qqminiapp/build:latest 
