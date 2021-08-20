@@ -76,6 +76,7 @@ Page({
       success(res) {
         console.log(res);
         imageList = imageList.concat(res.tempFilePaths);
+        console.log(res.tempFilePaths);
         that.setData({
           imageList: imageList
         })

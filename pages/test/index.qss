@@ -2,3 +2,21 @@
 page {
   background-color: #F5F6FA !important;
 }
+.page-preview {
+  display: block;
+  width: 400rpx;
+  margin: 20rpx 140rpx 0 auto;
+  font-size: 50rpx;
+  color: #8A8A8A;
+}
+
+.canvas {
+  width: 670rpx;
+  height: 800rpx;
+  margin: 50rpx auto 0 auto;
+  background-color: red;
+}
+.test-class {
+  width: 300rpx;
+  height: 300rpx;
+}

@@ -38,7 +38,7 @@
   </block>
 
   <view qq:if="{{imageList.length<9}}"class="upload-wrap__item upload-wrap__item_default" bindtap="chooseImage">
-    <image class="image-block" src="../../images/icon-add@2x.png" mode="aspectFill" />
+    <image class="image-combine" src="../../images/icon-add@2x.png" mode="aspectFill" />
   </view>
 
   <view class="section">

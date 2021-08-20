@@ -1,16 +1,46 @@
 // index.js
 Page({
   data: {
-    message : 'Hello MINA!',
-    array: [1,2,3,4,5],
-    view: "APP",
-    text: 'This is page data.'
+    tmp_path : "tmp"
   },
   onLoad(options) {
     // Do some initialize when page load.
   },
   onReady() {
     // Do something when page ready.
+    this.drawBall()
+  },
+  drawBall() {
+    const context = qq.createCanvasContext('submit-canvas');
+    const that = this;
+
+    context.arc(100, 100, 30, 0, 2 * Math.PI);
+    context.clip();
+    context.restore();
+    //绘制文字
+    context.setTextAlign('center')
+    context.setFillStyle('#fff')
+    context.fillText("测试看看", 100, 180)//用户昵称
+    context.setFontSize(16)
+    context.stroke()
+
+    context.draw()
+    qq.canvasToTempFilePath({
+      x: 0,
+      y: 0,
+      width: 670,
+      height: 800,
+      canvasId: 'submit-canvas',
+      success : function (res) {
+        console.log(res.tempFilePath);
+        that.setData({
+          tmp_path: res.tempFilePath
+        })
+        }
+    })
+  },
+  test() {
+    console.log(this.data.tmp_path)
   },
   onShow() {
     // Do something when page show.
@@ -19,6 +49,7 @@ Page({
     // Do something when page hide.
   },
   onUnload() {
+    clearInterval(this.interval)
     // Do something when page close.
   },
   onPullDownRefresh() {
@@ -45,14 +76,4 @@ Page({
     console.log(item.text)
   },
   // Event handler.
-  viewTap() {
-    this.setData({
-      text: 'Set some data for updating view.'
-    }, function () {
-      // this is setData callback
-    })
-  },
-  customData: {
-    hi: 'MINA'
-  }
 })

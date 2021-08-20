@@ -1,19 +1,8 @@
 <!-- index.qml -->
 
-<view>{{message}}</view>
-<view qq:for="{{array}}">{{item}}</view>
-<!-- if -->
-<view qq:if="{{view == 'MINA'}}">1</view>
-<view qq:if="{{view == 'APP'}}">2</view>
-<view qq:if="{{view == 'WEBVIEW'}}">3</view>
-
-<template name="staffName">
-    <view>
-        FirstName: {{firstName}},
-        LastName: {{lastName}}
-    </view>
-</template>
-
-<template is="staffName" data="{{...staffA}}"></template>
-<template is="staffName" data="{{...staffB}}"></template>
-<template is="staffName" data="{{...staffC}}"></template>
+<view class="page-preview"> 订单效果预览 </view>
+<canvas canvas-id="submit-canvas" class="canvas">
+    <view> 测试一下 </view>
+</canvas>
+<view bindtap="test">测试</view>
+<image class="test-class"  src="{{tmp_path}}" bindtap="previewImage" mode="aspectFill" />
