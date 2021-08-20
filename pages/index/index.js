@@ -66,7 +66,7 @@ Page({
   formReset() {
     console.log('form发生了reset事件')
   },
-  chooseImage() {
+  chooseImage:function () {
     const that = this
     imageList = this.data.imageList
     qq.chooseImage({
@@ -90,6 +90,15 @@ Page({
     qq.previewImage({
       current,
       urls: this.data.imageList
+    })
+  },
+  deleteImage(e) {
+    var imgs = this.data.imageList;
+    var index = e.target.dataset.index;
+    console.log(index);
+    imgs.splice(index,1);
+    this.setData( {
+      imageList : imgs
     })
   }
 })

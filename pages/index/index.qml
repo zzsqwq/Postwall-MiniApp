@@ -33,7 +33,7 @@
   <block qq:for="{{imageList}}" qq:for-item="image">
     <view class="image-combine">
       <image class="image-block"  src="{{image}}" bindtap="previewImage" mode="aspectFill" />
-      <image class="delete-button" src="../../images/pages/home/icon-delete.png" bindtap="deleteImage" mode="aspectFill" />
+      <image class="delete-button" data-index="{{index}}" src="../../images/pages/home/icon-delete.png" bindtap="deleteImage" mode="aspectFill" />
     </view>
   </block>
 

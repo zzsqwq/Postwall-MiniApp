@@ -77,9 +77,9 @@ page {
 
 .delete-button {
   position: absolute;
-  margin: 0 0 0 -38rpx;
-  width: 40rpx;
-  height: 40rpx;
+  margin: 0 0 0 -46rpx;
+  width: 46rpx;
+  height: 46rpx;
 }
 .btn-area {
   margin: 30rpx 0 30rpx 0;
