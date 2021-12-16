@@ -7,6 +7,7 @@ const sizeType = [['compressed'], ['original'], ['compressed', 'original']]
 Page({
   data: {
     imageList: [],
+    submitList: []
   },
   onLoad(options) {
     qq.cloud.init({
@@ -81,6 +82,59 @@ Page({
   formSubmit(e) {
     console.log('form发生了submit事件，携带数据为：', e.detail.value)
     submit_data = e.detail.value
+    submitList = this.data.submitList
+    var i = 0
+    var timestamp = Date.parse(new Date())
+    timestamp = timestamp / 1000
+      async function uploadfiles() {
+        // await qq.cloud.uploadFile( {
+        //   cloudPath : timestamp + '/' + i + imageList[i].slice(-4),
+        //   filePath : imageList[i]
+        // })
+        // .then(res => {
+        //   submitList.push(res.fileID)
+        //   if (i != imageList.length -1 ) {
+        //     i = i + 1
+        //     uploadfiles()
+        //   }
+        // })
+        // .catch(res => console.error(res))
+        for(let i=0;i<imageList.length;i++) {
+          await qq.cloud.uploadFile({
+            cloudPath : timestamp + '/' + i + imageList[i].slice(-4),
+            filePath : imageList[i]
+          })
+          .then( res => {submitList.push(res.fileID)})
+          .catch( res => {console.error(res)})
+        }
+    }
+
+    uploadfiles().then( res => {
+        console.log("submitList is :", submitList, submitList.length)
+        console.log("imageList is :", imageList, imageList.length)
+      }).catch(res => console.error(res))
+
+    // uploadfiles().then( res=> {
+    //   console.log("submitList is :", submitList, submitList.length)
+    //   console.log("imageList is :", imageList, imageList.length)
+    // }
+    // ).catch(res => console.error(res))
+    // for(let i=0;i<imageList.length;i++) {
+    //     qq.cloud.uploadFile({
+    //       cloudPath : timestamp + '/' + i + imageList[i].slice(-4),
+    //       filePath : imageList[i]
+    //     })
+    //     .then( res => {submitList.push(res.fileID)})
+    //     .catch( res => {console.error(res)})
+    // }
+    // while(submitList.length != imageList.length) {
+    //   console.log("submitlist length:",submitList.length)
+    //   tmp ++
+    //   if (tmp > 100) break;
+    // }
+    // this.setData( {
+    //   submitList : submitList
+    // })
     const db = qq.cloud.database()
     db.collection("postwall").add( {
       data: {
@@ -92,7 +146,7 @@ Page({
         post_contact_tel : submit_data.post_contact_tel,
         post_done : false,
         post_data : new Date(),
-        image_list : imageList
+        image_list : submitList
       }
     })
     .then(res => {console.log(res)})
@@ -121,34 +175,15 @@ Page({
       sourceType: ['album','camera'],
       sizeType: ['original','compressed'],
       count: 9 - imageList.length,
-      success: async res => {
+      success: res => {
         console.log(res)
         imageList = imageList.concat(res.tempFilePaths)
-        // console.log(res.tempFilePaths)
-        //image_list = imageList
-        console.log(res.tempFilePaths[0])
-        // qq.cloud.uploadFile( {
-        //   cloudPath: "1.png",
-
-        //   filePath: res.tempFilePaths[0],
-
-        //   success : res => {
-        //     console.log('photo upload success, resid is ',res.fileID),
-        //     image_list.push(res.fileID)
-        //     // that.setData( {
-        //     //   imageList : image_list
-        //     // })
-        //     //console.log("imagelist: ", image_list)
-        //   }
-        // }
-        // )
-        //console.log("imagelist: ",image_list)
+        console.log(res.tempFilePaths)
         that.setData({
-           imageList: image_list
+        imageList: imageList
         })
       }
-    }
-    )
+    })
   },
   previewImage(e) {
     console.log(this.data.imageList)

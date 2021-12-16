@@ -43,6 +43,12 @@
 			"currentL": -1,
 			"list": []
 		},
+		"plugin": {
+			"list": []
+		},
+		"gamePlugin": {
+			"list": []
+		},
 		"miniprogram": {
 			"current": -1,
 			"list": []
