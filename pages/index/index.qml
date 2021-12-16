@@ -10,19 +10,19 @@
   <view class="section">
     <view class="section__title">投稿类型</view>
     <view class="input-section">
-    <input class="input_text" name="post-type" maxlength="4" placeholder="不超过 4 个字（如表白、提问等）"  />
+    <input class="input_text" name="post_type" maxlength="4" placeholder="不超过 4 个字（如表白、提问等）"  />
     </view>
   </view>
   <view class="section">
     <view class="section__title">投稿标题</view>
     <view class="input-section">
-    <input class="input_text" name="post-title" maxlength="8" placeholder="不超过 8 个字" />
+    <input class="input_text" name="post_title" maxlength="8" placeholder="不超过 8 个字" />
     </view>
   </view>
 
   <view class="section">
     <view class="section__title">内容文本</view>
-    <textarea class="textarea_text" name="post-text" auto-height placeholder="在这里输入具体内容" placeholder-class="input_text-placeholder"/>
+    <textarea class="textarea_text" name="post_text" auto-height placeholder="在这里输入具体内容" placeholder-class="input_text-placeholder"/>
   </view>
 
   <view class="section">
@@ -45,21 +45,21 @@
     <view class="section__title">联系方式</view>
     <view class="contact-block">
       <image class="contact-icon-class" src="../../images/pages/home/icon-qq-3.png" mode="aspectFill"></image>
-      <input class="contact-input_text"  name="post-contact-qq" maxlength="11" placeholder="QQ"  />
+      <input class="contact-input_text"  name="post_contact_qq" maxlength="11" placeholder="QQ"  />
     </view>
   </view>
 
   <view class="section-mid" >
     <view class="contact-block">
       <image class="contact-icon-class" src="../../images/pages/home/icon-wechat.png" mode="aspectFill"></image>
-      <input class="contact-input_text"  name="post-contact-wechat" maxlength="20" placeholder="微信"  />
+      <input class="contact-input_text"  name="post_ontact_wechat" maxlength="20" placeholder="微信"  />
     </view>
   </view>
 
   <view class="section-mid" >
     <view class="contact-block">
       <image class="contact-icon-phone-class"  src="../../images/pages/home/icon-phone.png" mode="aspectFill"></image>
-      <input class="contact-input_text" name="post-contact-email"  placeholder="联系电话"  />
+      <input class="contact-input_text" name="post_contact_tel" maxlength="11" placeholder="联系电话"  />
     </view>
   </view>
 
