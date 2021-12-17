@@ -64,6 +64,7 @@ Page({
         console.log('form发生了submit事件，携带数据为：', e.detail.value)
         submit_data = e.detail.value
         submitList = this.data.submitList
+        imageList = this.data.imageList
         var i = 0
         var timestamp = Date.parse(new Date())
         timestamp = timestamp / 1000
