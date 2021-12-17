@@ -1,5 +1,9 @@
 {
-  "pages": ["pages/index/index","pages/test/index","pages/logs/index"],
+  "pages": [
+    "pages/index/index",
+    "pages/test/index",
+    "pages/logs/index"
+  ],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "自助贴贴墙",
@@ -9,7 +13,7 @@
     "backgroundColor": "#FFFFFF"
   },
   "tabBar": {
-    "color": "#7F8389",  
+    "color": "#7F8389",
     "selectedColor": "#0097E6",
     "backgroundColor": "#FFFFFF",
     "list": [
@@ -17,7 +21,7 @@
         "pagePath": "pages/test/index",
         "iconPath": "images/tabbar/icon-testing.png",
         "selectedIconPath": "images/tabbar/icon-testing-selected.png",
-        "text" : "测试"
+        "text": "测试"
       },
       {
         "pagePath": "pages/index/index",
@@ -40,5 +44,9 @@
     "downloadFile": 10000
   },
   "debug": true,
-  "groupIdList":["123456","34356576","457658769"]
+  "groupIdList": [
+    "123456",
+    "34356576",
+    "457658769"
+  ]
 }

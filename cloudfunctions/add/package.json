@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-  "qq-server-sdk": "latest"
+    "qq-server-sdk": "latest"
   }
 }

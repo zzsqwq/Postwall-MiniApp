@@ -1,17 +1,16 @@
-App ( {
-    onLaunch() {
+App({
+        onLaunch() {
 
-    },
-    onShow() {
+        },
+        onShow() {
 
-    },
-    onHide() {
+        },
+        onHide() {
 
-    },
-    onError(msg) {
-        console.log(msg)
-    },
-    globalData : "I am global data",
-}
-
+        },
+        onError(msg) {
+            console.log(msg)
+        },
+        globalData: "I am global data",
+    }
 )

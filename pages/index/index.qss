@@ -1,122 +1,135 @@
-@import "../common/lib/qui.qss"
-@import "../common/index.qss"
+@import "../common/lib/qui.qss";
+@import "../common/index.qss";
 
 page {
-  background-color: #F5F6FA !important;;
+    background-color: #F5F6FA !important;
 }
 
 .section {
     clear: both;
-    blackground-color: #FFFFFF;
+    /*background-color: #FFFFFF;*/
     width: 100%;
     height: auto;
     margin: 0rpx auto 0rpx auto;
 }
+
 .section-mid {
     clear: both;
-    blackground-color: #FFFFFF;
+    /*background-color: #FFFFFF;*/
     width: 100%;
     height: auto;
     margin: 0rpx auto 0rpx auto;
 }
+
 .section__title {
-  font-size: 14px;
-  display: inline-block;
-  margin: 10rpx 0 10rpx 3%;
+    font-size: 14px;
+    display: inline-block;
+    margin: 10rpx 0 10rpx 3%;
 }
+
 .image-number-class {
-  float: right;
-  margin: 12rpx 36rpx 0 0rpx;
-  font-size: 26rpx;
-  color: #8F8F8F;
-  display: inilne-block;
+    float: right;
+    margin: 12rpx 36rpx 0 0rpx;
+    font-size: 26rpx;
+    color: #8F8F8F;
+    display: inilne-block;
 }
+
 .input_text {
-  display: block;
-  height: 100rpx;
-  background-color: #FFFFFF;
-  margin: 10rpx 0 10rpx 3%;
-  font-size: 16px;
-} 
+    display: block;
+    height: 100rpx;
+    background-color: #FFFFFF;
+    margin: 10rpx 0 10rpx 3%;
+    font-size: 16px;
+}
+
 .logo-class {
-  width: 80px;
-  height: 80px;
+    width: 80px;
+    height: 80px;
 }
+
 .input-section {
-  background-color: #FFFFFF;
-  margin: 10rpx 0rpx 0rpx 0rpx;
+    background-color: #FFFFFF;
+    margin: 10rpx 0rpx 0rpx 0rpx;
 }
+
 .textarea_text {
-  display: inline-block;
-  padding: 24rpx 0rpx 20rpx 3%;
-  min-height: 270rpx;
-  width: 97%;
-  background-color: #FFFFFF;
-  margin: 10rpx 0px 10rpx 0px;
-  font-size: 16px;
+    display: inline-block;
+    padding: 24rpx 0rpx 20rpx 3%;
+    min-height: 270rpx;
+    width: 97%;
+    background-color: #FFFFFF;
+    margin: 10rpx 0px 10rpx 0px;
+    font-size: 16px;
 }
+
 .textarea_block {
-  display: block;
-  background-color: #FFFFFF;
-  margin: 0 0 0 0;
-  height: 100px;
+    display: block;
+    background-color: #FFFFFF;
+    margin: 0 0 0 0;
+    height: 100px;
 }
+
 .image-combine {
-  display: inline-block;
-  float: left;
-  width:219rpx;
-  height:219rpx;
-  margin: 5rpx 0rpx 5rpx 20rpx;
-  border: 2rpx solid #EBEDF5;
+    display: inline-block;
+    float: left;
+    width: 219rpx;
+    height: 219rpx;
+    margin: 5rpx 0rpx 5rpx 20rpx;
+    border: 2rpx solid #EBEDF5;
 }
+
 .image-block {
-  display: inline-block;
-  width: 219rpx;
-  height: 219rpx;
+    display: inline-block;
+    width: 219rpx;
+    height: 219rpx;
 }
 
 .delete-button {
-  position: absolute;
-  margin: 0 0 0 -46rpx;
-  width: 46rpx;
-  height: 46rpx;
+    position: absolute;
+    margin: 0 0 0 -46rpx;
+    width: 46rpx;
+    height: 46rpx;
 }
+
 .btn-area {
-  margin: 30rpx 0 30rpx 0;
+    margin: 30rpx 0 30rpx 0;
 }
 
 button {
-  background-color:#EBEDF5; 
+    background-color: #EBEDF5;
 }
 
 .contact-block {
-  display: inline-block;
-  color: #000000;
-  background-color: #FFFFFF;
-  height: 80rpx;
-  width: 100%;
-  margin: 10rpx 0rpx 10rpx 0rpx;
+    display: inline-block;
+    color: #000000;
+    background-color: #FFFFFF;
+    height: 80rpx;
+    width: 100%;
+    margin: 10rpx 0rpx 10rpx 0rpx;
 }
 
 .contact-icon-class {
-  display: inline-block;
-  margin: 0rpx 60rpx 8rpx 50rpx;
-  width: 70rpx;
-  height: 70rpx;
+    display: inline-block;
+    margin: 0rpx 60rpx 8rpx 50rpx;
+    width: 70rpx;
+    height: 70rpx;
 }
+
 .contact-icon-phone-class {
-  display: inline-block;
-  margin: 0px 64rpx 14rpx 56rpx;
-  width: 60rpx;
-  height: 60rpx;
+    display: inline-block;
+    margin: 0rpx 64rpx 14rpx 56rpx;
+    width: 60rpx;
+    height: 60rpx;
 }
+
 .contact-input_text {
-  display: inline-block;
-  width: auto;
-  color: #000000;
-  height: 80rpx;
-  line-height: 80rpx;
-  background-color: #FFFFFF;
-  margin: 0 0 5rpx 10rpx;
-  font-size: 32rpx;
+    display: inline-block;
+    width: auto;
+    color: #000000;
+    height: 80rpx;
+    line-height: 80rpx;
+    background-color: #FFFFFF;
+    margin: 0 0 5rpx 10rpx;
+    font-size: 32rpx;
 }
