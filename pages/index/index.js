@@ -12,21 +12,6 @@ Page({
             env: 'postwall-4gy7eykl559a475a',
             traceUser: true
         })
-
-        const db = qq.cloud.database();
-
-        db.collection('postwall').where(
-            {
-                post_contact_qq: "2459958352"
-            }
-        ).get({
-            success: function (res) {
-                console.log(res)
-            },
-            // fail: function(res) {
-            //   console.log("failed! res:",res)
-            // }
-        })
         // Do some initialize when page load.
     },
     onReady() {
@@ -107,6 +92,7 @@ Page({
                 const db = qq.cloud.database()
                 db.collection("postwall").add({
                     data: {
+                        post_time: timestamp,
                         post_type: submit_data.post_type,
                         post_title: submit_data.post_title,
                         post_text: submit_data.post_text,
