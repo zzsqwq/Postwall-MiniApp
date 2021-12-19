@@ -5,23 +5,23 @@
     <navigator url="https://www.baidu.com" class="index-navigator">投稿指南及注意事项</navigator>
 </view>
 
-<form bind:submit="formSubmit" bindreset="formReset">
+<form bind:submit="formSubmit" bindreset="formReset" id="total-form">
     <view class="section">
         <view class="section__title">投稿类型</view>
         <view class="input-section">
-            <input class="input_text" name="post_type" maxlength="4" placeholder="不超过 4 个字（如表白、提问等）"/>
+            <input value="{{post_type_value}}" class="input_text" name="post_type" maxlength="4" placeholder="不超过 4 个字（如表白、提问等）"/>
         </view>
     </view>
     <view class="section">
         <view class="section__title">投稿标题</view>
         <view class="input-section">
-            <input class="input_text" name="post_title" maxlength="8" placeholder="不超过 8 个字"/>
+            <input value="{{post_title_value}}" class="input_text" name="post_title" maxlength="8" placeholder="不超过 8 个字"/>
         </view>
     </view>
 
     <view class="section">
         <view class="section__title">内容文本</view>
-        <textarea class="textarea_text" name="post_text" auto-height placeholder="在这里输入具体内容"
+        <textarea value="{{post_text_value}}" class="textarea_text" name="post_text" auto-height placeholder="在这里输入具体内容"
                   placeholder-class="input_text-placeholder"/>
     </view>
 
@@ -46,14 +46,14 @@
         <view class="section__title">联系方式</view>
         <view class="contact-block">
             <image class="contact-icon-class" src="../../images/pages/home/icon-qq-3.png" mode="aspectFill"></image>
-            <input class="contact-input_text" name="post_contact_qq" maxlength="11" placeholder="QQ"/>
+            <input value="{{contact_qq_value}}" class="contact-input_text" name="post_contact_qq" maxlength="11" placeholder="QQ"/>
         </view>
     </view>
 
     <view class="section-mid">
         <view class="contact-block">
             <image class="contact-icon-class" src="../../images/pages/home/icon-wechat.png" mode="aspectFill"></image>
-            <input class="contact-input_text" name="post_ontact_wechat" maxlength="20" placeholder="微信"/>
+            <input value="{{contact_wechat_value}}"  class="contact-input_text" name="post_contact_wechat" maxlength="20" placeholder="微信"/>
         </view>
     </view>
 
@@ -61,7 +61,7 @@
         <view class="contact-block">
             <image class="contact-icon-phone-class" src="../../images/pages/home/icon-phone.png"
                    mode="aspectFill"></image>
-            <input class="contact-input_text" name="post_contact_tel" maxlength="11" placeholder="联系电话"/>
+            <input value="{{contact_tel_value}}" class="contact-input_text" name="post_contact_tel" maxlength="11" placeholder="联系电话"/>
         </view>
     </view>
 

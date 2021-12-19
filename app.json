@@ -8,7 +8,7 @@
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "自助贴贴墙",
     "backgroundTextStyle": "black",
-    "enablePullDownRefresh": false,
+    "enablePullDownRefresh": true,
     "navigationBarBackgroundColor": "#F5F6FA",
     "backgroundColor": "#FFFFFF"
   },

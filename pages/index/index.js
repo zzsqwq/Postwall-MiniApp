@@ -5,7 +5,13 @@ const sizeType = [['compressed'], ['original'], ['compressed', 'original']]
 Page({
     data: {
         imageList: [],
-        submitList: []
+        submitList: [],
+        post_type_value : "",
+        post_title_value : "",
+        post_text_value : "",
+        contact_qq_value : "",
+        contact_wechat_value : "",
+        contact_tel_value : ""
     },
     onLoad(options) {
         qq.cloud.init({
@@ -28,6 +34,34 @@ Page({
     },
     onPullDownRefresh() {
         // Do something when pull down.
+        console.log('form发生了fresh reset事件')
+
+        const ImageList = this.data.imageList
+        const submitList = this.data.submitList
+        
+        ImageList.splice(0,ImageList.length)
+        submitList.splice(0,submitList.length)
+
+        this.setData({
+            post_type_value : "",
+            post_title_value : "",
+            post_text_value : "",
+            contact_qq_value : "",
+            contact_wechat_value : "",
+            contact_tel_value : "",
+            imageList : ImageList,
+            submitList : submitList
+        })
+        
+        qq.stopPullDownRefresh({
+            success : res => {
+                qq.showToast({
+                    title: '页面已刷新',
+                    icon: 'success',
+                    duration: 1000
+                })
+            }
+        })
     },
     onReachBottom() {
         // Do something when page reach bottom.
@@ -61,6 +95,7 @@ Page({
         hi: 'MINA'
     },
     formSubmit(e) {
+        console.log(this.data.post_type_value)
         console.log('form发生了submit事件，携带数据为：', e.detail.value)
         submit_data = e.detail.value
         submitList = this.data.submitList
@@ -123,6 +158,16 @@ Page({
     },
     formReset() {
         console.log('form发生了reset事件')
+        const ImageList = this.data.imageList
+        const submitList = this.data.submitList
+
+        ImageList.splice(0,ImageList.length)
+        submitList.splice(0,submitList.length)
+
+        this.setData({
+            imageList : ImageList,
+            submitList : submitList
+        })
         // qq.showToast(
         //   {
         //     title: '清空成功',
@@ -168,4 +213,3 @@ Page({
         })
     }
 })
-
