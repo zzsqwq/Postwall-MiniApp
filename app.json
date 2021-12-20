@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/test/index",
+    "pages/logs/logs",
     "pages/admin/admin"
   ],
   "window": {
@@ -30,7 +30,7 @@
         "text":"审核与发布"
       },
       {
-        "pagePath": "pages/test/index",
+        "pagePath": "pages/logs/logs",
         "iconPath": "images/tabbar/icon-log.png",
         "selectedIconPath": "images/tabbar/icon-log-selected.png",
         "text": "相关与反馈"

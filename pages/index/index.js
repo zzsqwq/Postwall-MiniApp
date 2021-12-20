@@ -27,7 +27,7 @@ Page({
                 "text":"审核与发布"
             },
             {
-                "pagePath": "/pages/logs/index",
+                "pagePath": "/pages/logs/logs",
                 "iconPath": "/images/tabbar/icon-log.png",
                 "selectedIconPath": "/images/tabbar/icon-log-selected.png",
                 "text": "相关与反馈"
@@ -74,7 +74,7 @@ Page({
             traceUser: true
         })
 
-        this.checkAdmin();
+        //this.checkAdmin();
 
         // Do some initialize when page load.
     },
