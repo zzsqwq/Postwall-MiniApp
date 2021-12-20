@@ -253,11 +253,10 @@ Page({
     },
     previewImage(e) {
         console.log(this.data.imageList)
-        const current = e.target.dataset.src
+        const current = e.target.dataset.index
 
         qq.previewImage({
-            current,
-            urls: this.data.imageList
+            urls: [this.data.imageList[current]]
         })
     },
 
