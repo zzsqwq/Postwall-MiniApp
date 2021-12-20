@@ -2,7 +2,7 @@
   "pages": [
     "pages/index/index",
     "pages/test/index",
-    "pages/logs/index"
+    "pages/admin/admin"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -16,24 +16,24 @@
     "color": "#7F8389",
     "selectedColor": "#0097E6",
     "backgroundColor": "#FFFFFF",
-    "list": [
-      {
-        "pagePath": "pages/test/index",
-        "iconPath": "images/tabbar/icon-testing.png",
-        "selectedIconPath": "images/tabbar/icon-testing-selected.png",
-        "text": "测试"
-      },
+    "list":  [
       {
         "pagePath": "pages/index/index",
         "iconPath": "images/tabbar/icon-home.png",
         "selectedIconPath": "images/tabbar/icon-home-selected.png",
-        "text": "首页"
+        "text": "提交订单"
       },
       {
-        "pagePath": "pages/logs/index",
+        "pagePath": "pages/admin/admin",
+        "iconPath": "images/tabbar/icon-admin.png",
+        "selectedIconPath": "images/tabbar/icon-admin-selected.png",
+        "text":"审核与发布"
+      },
+      {
+        "pagePath": "pages/test/index",
         "iconPath": "images/tabbar/icon-log.png",
         "selectedIconPath": "images/tabbar/icon-log-selected.png",
-        "text": "日志"
+        "text": "相关与反馈"
       }
     ]
   },
@@ -48,5 +48,7 @@
     "123456",
     "34356576",
     "457658769"
-  ]
+  ],
+  "usingComponents": {
+  }
 }

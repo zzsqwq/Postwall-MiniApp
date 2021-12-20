@@ -1,0 +1,83 @@
+@import "../admin-common/lib/qui.qss";
+@import "../admin-common/index.qss";
+
+page {
+    background-color: #F5F6FA !important;
+}
+
+.userinfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.userinfo-avatar {
+    width: 128rpx;
+    height: 128rpx;
+    margin: 10rpx;
+    border-radius: 50%;
+}
+
+.userinfo-nickname {
+    color: #aaa;
+    margin: 25rpx auto 25rpx auto;
+}
+
+.default-nickname {
+    color: #aaa;
+}
+
+.usermotto {
+    margin-top: 200px;
+}
+
+.logo-class {
+    width: 260rpx;
+    height: 260rpx;
+}
+
+.text-class {
+    font-size: 50rpx;
+}
+
+.test-class {
+    position: absolute;
+    margin: 0 0 0 -46rpx;
+    display: inline-block;
+    width: 50rpx;
+    height: 50rpx;
+}
+
+.canvas-class {
+    display: block;
+}
+
+.result-photo-class {
+    display: inline-block;
+    margin: 0 auto;
+    width: 70%;
+    background-color: lightgray;
+    max-width: 600rpx;
+    height: 650rpx;
+}
+
+.image-block {
+    display: block;
+    width: 100%;
+}
+
+.imgList{
+    width:100%;
+    height: 650rpx;
+}
+.imgList  .img{
+    /*max-width: 700rpx;*/
+    max-width: 600rpx;
+    height: 650rpx;
+}
+
+.test-img {
+    height: 650rpx;
+    width:650rpx;
+    display:block;
+}

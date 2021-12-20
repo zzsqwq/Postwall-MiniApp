@@ -11,13 +11,71 @@ Page({
         post_text_value : "",
         contact_qq_value : "",
         contact_wechat_value : "",
-        contact_tel_value : ""
+        contact_tel_value : "",
+        adminer_list : [],
+        admin_barlist : [
+            {
+                "pagePath": "/pages/index/index",
+                "iconPath": "/images/tabbar/icon-home.png",
+                "selectedIconPath": "/images/tabbar/icon-home-selected.png",
+                "text": "提交订单"
+            },
+            {
+                "pagePath": "/pages/admin/admin",
+                "iconPath": "/images/tabbar/icon-admin.png",
+                "selectedIconPath": "/images/tabbar/icon-admin-selected.png",
+                "text":"审核与发布"
+            },
+            {
+                "pagePath": "/pages/logs/index",
+                "iconPath": "/images/tabbar/icon-log.png",
+                "selectedIconPath": "/images/tabbar/icon-log-selected.png",
+                "text": "相关与反馈"
+            }
+        ]
+    },
+    setAdminBar() {
+        console.log(typeof this.getTabBar === 'function')
+        if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+            console.log("function!")
+            this.getTabBar().setData({
+                list : this.data.admin_barlist,
+            })
+            console.log(this.getTabBar().data)
+        }
+    },
+    checkAdmin() {
+        const db = qq.cloud.database();
+        const that = this
+        db.collection("adminList").get().then( res => {
+            let adminList = res.data;
+            console.log("adminList",adminList)
+            qq.cloud.callFunction({
+                name : 'getOpenid',
+                data: {
+                    a : 1 // 此处填入了某种方式获取得到的 Buffer 数据，可以是 request 下来的，可以是读文件读出来的等等
+                },
+            }).then( res => {
+                now_openid = res.result.openid;
+                console.log(now_openid)
+                for(var i=0;i<adminList.length;i++) {
+                    if(now_openid == adminList[i].open_id) {
+                        that.setAdminBar();
+                        break;
+                    }
+                }
+            })
+
+        })
     },
     onLoad(options) {
         qq.cloud.init({
             env: 'postwall-4gy7eykl559a475a',
             traceUser: true
         })
+
+        this.checkAdmin();
+
         // Do some initialize when page load.
     },
     onReady() {

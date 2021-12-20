@@ -1,4 +1,7 @@
 App({
+        data : {
+            is_admin : false,
+        },
         onLaunch() {
 
         },
