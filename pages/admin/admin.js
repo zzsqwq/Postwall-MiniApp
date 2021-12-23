@@ -60,18 +60,30 @@ Page({
                                 let imageList = that.data.datalist[i].image_list
                                 var imgPath = qq.env.USER_DATA_PATH + '/index' + '/' + that.data.datalist[i]._id + '.png';
                                 var fs = qq.getFileSystemManager();
+                                let counter = 1;
                                 fs.writeFileSync(imgPath, res.data, "base64");
                                 imageList.unshift(imgPath)
                                 that.setData({
                                     base64str : userImageBase64
                                 })
                                 that.data.readyPictures[i*10] = imgPath;
+                                qq.showLoading({
+                                    title : "正在渲染订单图片"
+                                })
                                 for(let j=1;j<that.data.datalist[i].image_list.length;j++) {
                                     qq.cloud.downloadFile({
                                         fileID: that.data.datalist[i].image_list[j]
                                     }).then(res => {
                                         // console.log("test tempfile", res.tempFilePath)
                                         that.data.readyPictures[i*10+j] = res.tempFilePath;
+                                        if(j == that.data.datalist[i].image_list.length - 1) {
+                                            qq.hideLoading();
+                                            qq.showToast( {
+                                                title: '加载结束',
+                                                icon: 'success',
+                                                duration: 300
+                                            })
+                                        }
                                     }).catch(res => {
                                         console.error("download file error!",res)
                                     })
@@ -80,13 +92,7 @@ Page({
                         })
                     }
                 }
-            ).then(res => {
-            qq.showToast({
-                title: '加载完成',
-                icon: 'success',
-                duration: 1000
-            })
-        })
+            )
     },
     //事件处理函数
     // bindViewTap: function () {
