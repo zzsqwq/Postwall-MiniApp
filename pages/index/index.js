@@ -148,6 +148,35 @@ Page({
         submit_data = e.detail.value
         submitList = this.data.submitList
         imageList = this.data.imageList
+        if(!submit_data.post_type || !submit_data.post_title || !submit_data.post_text) {
+            let content = "您的"
+            console.log("type:",submit_data.post_type)
+            console.log("title:",submit_data.post_title)
+            console.log("text:",submit_data.post_text)
+            if(!submit_data.post_type) {
+                content = content + "投稿类型" + "、"
+            }
+            if(!submit_data.post_title) {
+                content = content + "投稿标题" + "、"
+            }
+            if(!submit_data.post_text) {
+                content = content + "投稿内容" + "、"
+            }
+            content = content.slice(0,-1) + "未填写"
+            qq.showModal({
+                title: '投稿内容不全!',
+                content: content,
+                showCancel : false,
+                success(res) {
+                    if (res.confirm) {
+                        console.log('用户点击确定')
+                    } else if (res.cancel) {
+                        console.log('用户点击取消')
+                    }
+                }
+            })
+            return ;
+        }
         var i = 0
         var timestamp = Date.parse(new Date())
         timestamp = timestamp / 1000

@@ -6,20 +6,20 @@
 
 <form bind:submit="formSubmit" bindreset="formReset" id="total-form">
     <view class="section">
-        <view class="section__title">投稿类型</view>
+        <view class="section__title">投稿类型*</view>
         <view class="input-section">
             <input value="{{post_type_value}}" class="input_text" name="post_type" maxlength="4" placeholder="不超过 4 个字（如表白、提问等）"/>
         </view>
     </view>
     <view class="section">
-        <view class="section__title">投稿标题</view>
+        <view class="section__title">投稿标题*</view>
         <view class="input-section">
             <input value="{{post_title_value}}" class="input_text" name="post_title" maxlength="8" placeholder="不超过 8 个字"/>
         </view>
     </view>
 
     <view class="section">
-        <view class="section__title">内容文本</view>
+        <view class="section__title">内容文本*</view>
         <textarea value="{{post_text_value}}" class="textarea_text" name="post_text" auto-height placeholder="在这里输入具体内容"
                   placeholder-class="input_text-placeholder"/>
     </view>
