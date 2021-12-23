@@ -96,13 +96,13 @@ Page({
     // },
     onLoad: function () {
         // init chooseornot
-        a = this.data.chooseornot
-        for(var i=0;i<10;i++) {
-            var b = []
+        let a = this.data.chooseornot
+        for(let i=0;i<10;i++) {
+            let b = [];
             for(var j=0;j<10;j++) {
                 b[j] = false
             }
-            a[i] = b
+            a[i] = b;
         }
         this.setData({
             chooseornot : a
@@ -160,6 +160,23 @@ Page({
     onPullDownRefresh(options) {
         console.log("test refresh")
         this.loadDataBase()
+        this.setData({
+            readytosend : new Array(100).fill(false),
+            rowscount : new Array(10).fill(0),
+        })
+
+        a = this.data.chooseornot
+        for(var i=0;i<10;i++) {
+            var b = []
+            for(var j=0;j<10;j++) {
+                b[j] = false
+            }
+            a[i] = b
+        }
+        this.setData({
+            chooseornot : a
+        })
+
         qq.stopPullDownRefresh({
             success: res => {
                 qq.showToast({
@@ -227,7 +244,7 @@ Page({
         }else {
             this.data.readytosend[index*10+id] = false;
         }
-        console.log(this.data.readytosend)
+        //console.log(this.data.readytosend)
         this.setData({
             chooseornot : this_data
         })
@@ -250,10 +267,17 @@ Page({
         }
         for(var i=0;i<10;i++) {
             console.log(this.data.rowscount[i])
-            if(this.data.rowscount[i]!=0) {
+            if(this.data.rowscount[i] != 0) {
                 next_index = now_index + this.data.rowscount[i] - 1;
-                post_detail += "P" + now_index + "-" + next_index + ":[" + this.data.datalist[i].post_type + "]" + this.data.datalist[i].post_title + "\n"
-                now_index = next_index + 1
+                if(this.data.rowscount[i] != 1) {
+                    post_detail += "P" + now_index + "-" + next_index + ":[" + this.data.datalist[i].post_type + "]" + this.data.datalist[i].post_title + "\n";
+                    now_index = next_index + 1;
+                }
+                else
+                {
+                    post_detail += "P" + now_index +  ":[" + this.data.datalist[i].post_type + "]" + this.data.datalist[i].post_title + "\n";
+                    now_index = next_index + 1;
+                }
             }
         }
         console.log(medias)
@@ -262,6 +286,23 @@ Page({
             path: 'pages/index/index',
             text: post_detail,
             media: medias
+        })
+
+        this.setData({
+            readytosend : new Array(100).fill(false),
+            rowscount : new Array(10).fill(0),
+        })
+
+        a = this.data.chooseornot
+        for(var i=0;i<10;i++) {
+            var b = []
+            for(var j=0;j<10;j++) {
+                b[j] = false
+            }
+            a[i] = b
+        }
+        this.setData({
+            chooseornot : a
         })
     },
 
