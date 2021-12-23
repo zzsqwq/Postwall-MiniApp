@@ -28,12 +28,6 @@
         "iconPath": "images/tabbar/icon-admin.png",
         "selectedIconPath": "images/tabbar/icon-admin-selected.png",
         "text":"审核与发布"
-      },
-      {
-        "pagePath": "pages/logs/logs",
-        "iconPath": "images/tabbar/icon-log.png",
-        "selectedIconPath": "images/tabbar/icon-log-selected.png",
-        "text": "相关与反馈"
       }
     ]
   },
