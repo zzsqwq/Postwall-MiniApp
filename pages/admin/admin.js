@@ -378,9 +378,10 @@ Page({
      */
     handleDeleteProduct: function ({ currentTarget: { dataset: { id } } }) {
         let productList = this.data.datalist
-        let productIndex = productList.findIndex(item => item.id === id)
+        // let productIndex = productList.findIndex(item => item.id === id)
+        let productIndex = id;
         console.log(productList,productIndex)
-
+        console.log(id)
         const db = qq.cloud.database();
         console.log(productList[productIndex]._id)
         db.collection("postwall").doc(productList[productIndex]._id).update({

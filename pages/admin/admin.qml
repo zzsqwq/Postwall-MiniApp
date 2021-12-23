@@ -19,7 +19,10 @@
     </view>
     <view class="index-hd">
         <view class="list-wrap">
-            <block qq:for="{{datalist}}" qq:for-index="idx" qq:key="{{item._id}}">
+            <block qq:if="{{datalist.length == 0}}">
+            <view> 还没有任何订单已投递！</view>
+            </block>
+            <block qq:else qq:for="{{datalist}}" qq:for-index="idx" qq:key="{{item._id}}">
                 <view class="list-wrap__group {{item.open ? 'list-wrap__group_expand' : 'list-wrap__group_collapse'}}">
                     <movable-area class="move-area-class">
                     <movable-view out-of-bounds="true" direction="horizontal" x="{{item.xmove}}"
@@ -37,7 +40,7 @@
                     </view>
                     </movable-view>
                     </movable-area>
-                    <view class="delete-btn" data-id="{{item.id}}" bindtap="handleDeleteProduct">删除</view>
+                    <view class="delete-btn" data-id="{{idx}}" bindtap="handleDeleteProduct">删除</view>
                     <view class="list-wrap__group-bd">
                         <!--                        <block class="image-block" qq:for="{{item.image_list}}" qq:for-item="image">-->
                         <!--                            <image class="result-photo-class" src="{{image}}" mode="aspectFill"></image>-->
