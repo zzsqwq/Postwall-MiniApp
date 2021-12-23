@@ -6,9 +6,9 @@ Page({
     data: {
         motto: 'Hello World',
         userInfo: {},
+        is_admin : "",
         hasUserInfo: false,
         canIUse: qq.canIUse('button.open-type.getUserInfo'),
-        pictureNums : 0,
         tmp_img: "",
         convert_img : [],
         datalist: [],
@@ -16,29 +16,22 @@ Page({
         readytosend : new Array(100).fill(false),
         readyPictures : new Array(100).fill(" "),
         rowscount : new Array(10).fill(0),
-        // chooseornot : [
-        //     [false,false,false,false,false,false,false,false,false,false],
-        //     [false,false,false,false,false,false,false,false,false,false],
-        //     [false,false,false,false,false,false,false,false,false,false],
-        //     [false,false,false,false,false,false,false,false,false,false],
-        //     [false,false,false,false,false,false,false,false,false,false],
-        //     [false,false,false,false,false,false,false,false,false,false],
-        //     [false,false,false,false,false,false,false,false,false,false],
-        //     [false,false,false,false,false,false,false,false,false,false],
-        //     [false,false,false,false,false,false,false,false,false,false]
-        // ]
         chooseornot : []
     },
     loadDataBase : function () {
         const db = qq.cloud.database();
+        let function_name = this.data.is_admin == true ? "adminGetdb" : "Getdb";
         let getDatabase = async () => {
-            return await db.collection('postwall').where({
-                post_done: false
-            }).get().then(res => {
+            return await qq.cloud.callFunction( {
+                name : function_name,
+                data : {
+                    user_openid : app.data.user_openid
+                }
+            }).then(res => {
                 this.setData({
-                    datalist: res.data.slice(0, 9)
+                    datalist: res.result.data.slice(0, 9)
                 })
-                console.log("datalist:", this.data.datalist)
+                // console.log("datalist:", this.data.datalist)
                 tmp_list = this.data.datalist
                 for (var i = 0; i < this.data.datalist.length; i++) {
                     tmp_list[i].open = false
@@ -52,7 +45,7 @@ Page({
             .then(async res => {
                     const that = this
                     const str = this.data.base64str
-                    console.log("test datalist:", this.data.datalist.length)
+                    // console.log("test datalist:", this.data.datalist.length)
                     for (let i = 0; i < this.data.datalist.length; i++) {
                         await qq.request({
                             url: "https://www.zzsqwq.cn:5000/image",
@@ -77,7 +70,7 @@ Page({
                                     qq.cloud.downloadFile({
                                         fileID: that.data.datalist[i].image_list[j]
                                     }).then(res => {
-                                        console.log("test tempfile", res.tempFilePath)
+                                        // console.log("test tempfile", res.tempFilePath)
                                         that.data.readyPictures[i*10+j] = res.tempFilePath;
                                     }).catch(res => {
                                         console.error("download file error!",res)
@@ -115,10 +108,12 @@ Page({
             chooseornot : a
         })
 
-        console.log(this.data.chooseornot)
         qq.cloud.init({
             env: 'postwall-4gy7eykl559a475a',
             traceUser: true
+        })
+        this.setData({
+            is_admin : app.data.is_admin
         })
         this.loadDataBase()
         //     .then( res => {
@@ -176,7 +171,6 @@ Page({
         })
     },
     onReady(options) {
-        console.log("test pictureNums:", this.data.pictureNums)
     },
     getUserInfo: function (e) {
         console.log(e)
@@ -205,7 +199,6 @@ Page({
     },
     kindToggle(e) {
         //console.log(e.currentTarget)
-        //console.log("test pictureNums:", this.data.pictureNums)
         //this.convertAllCanvas()
         const id = e.currentTarget.id
         const list = this.data.datalist
@@ -294,11 +287,14 @@ Page({
      */
     setXmove: function (productIndex, xmove) {
         let productList = this.data.datalist
+        console.log(typeof productList)
+        console.log(productList)
+        console.log(xmove, "and ",productIndex)
         productList[productIndex].xmove = xmove
-
         this.setData({
             datalist: productList
         })
+        console.log(this.data.datalist)
     },
 
     /**
@@ -342,15 +338,29 @@ Page({
     handleDeleteProduct: function ({ currentTarget: { dataset: { id } } }) {
         let productList = this.data.datalist
         let productIndex = productList.findIndex(item => item.id === id)
+        console.log(productList,productIndex)
 
-        productList.splice(productIndex, 1)
-
-        this.setData({
-            datalist : productList
-        })
-        if (productList[productIndex]) {
-            this.setXmove(productIndex, 0)
-        }
+        const db = qq.cloud.database();
+        console.log(productList[productIndex]._id)
+        db.collection("postwall").doc(productList[productIndex]._id).update({
+            data : {
+                post_done : true
+            }
+        }).then(res => {
+            console.log(res);
+            qq.showToast({
+                title: '删除成功',
+                icon: 'success',
+                duration: 500
+            })
+            productList.splice(productIndex, 1)
+            this.setData({
+                datalist : productList
+            })
+            if (productList[productIndex]) {
+                this.setXmove(productIndex, 0)
+            }
+            })
     },
 
     /**

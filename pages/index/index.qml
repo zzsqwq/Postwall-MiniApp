@@ -1,7 +1,6 @@
 <view class="index-hd">
     <image class="logo-class" src="../../images/syzx.png" mode="aspectFill"></image>
     <view class="index-desc">这里是胶州实验中学自助贴贴墙</view>
-    <br></br>
     <navigator url="https://www.baidu.com" class="index-navigator">投稿指南及注意事项</navigator>
 </view>
 

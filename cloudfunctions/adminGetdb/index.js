@@ -10,15 +10,13 @@ exports.main = async (event, context) => {
   const {
     OPENID,
     APPID,
-    UNIONID,
     ENV
-  } = await cloud.getQQContext()
+  } = cloud.getQQContext()
 
-  return {
-    event,
-    openid : OPENID,
-    appid : APPID,
-    unionid : UNIONID,
-    env : cloud.DYNAMIC_CURRENT_ENV
-  }
+  const db = cloud.database();
+
+  return await db.collection("postwall").where({
+    post_done : false
+  }).get()
+  
 }

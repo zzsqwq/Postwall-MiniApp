@@ -45,6 +45,7 @@ navigator {
 
 .list-wrap__group {
     background-color: #FFF;
+    position: relative;
 }
 
 .list-wrap__group_expand {
@@ -72,8 +73,7 @@ navigator {
 .list-wrap__group-hd {
     position: relative;
     z-index: 1;
-
-    padding: 34rpx 32rpx;
+    padding: 20rpx 32rpx 32rpx;
 }
 
 .list-wrap__group-hd::after {
@@ -92,7 +92,7 @@ navigator {
     display: block;
     position: relative;
     z-index: 1;
-    line-height: 1.3;
+    line-height: 1;
     padding-left: 34rpx;
     font-size: 34rpx;
     color: #03081A;

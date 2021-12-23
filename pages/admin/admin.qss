@@ -81,3 +81,30 @@ page {
     width:650rpx;
     display:block;
 }
+
+.move-view-class {
+    height: 90rpx;
+    width: 100vw;
+    z-index : 999;
+    background-color: #FFFFFF;
+}
+.move-area-class {
+    height: 90rpx;
+    width: calc(100vw - 120rpx);
+}
+
+.delete-btn {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 120rpx;
+    height: 80rpx;
+    font-family: PingFangSC-Regular;
+    font-size: 24rpx;
+    color: #FFFFFF;
+    line-height: 80rpx;
+    z-index: 1;
+    background: #E66671;
+    text-align: center;
+}

@@ -21,12 +21,23 @@
         <view class="list-wrap">
             <block qq:for="{{datalist}}" qq:for-index="idx" qq:key="{{item._id}}">
                 <view class="list-wrap__group {{item.open ? 'list-wrap__group_expand' : 'list-wrap__group_collapse'}}">
+                    <movable-area class="move-area-class">
+                    <movable-view out-of-bounds="true" direction="horizontal" x="{{item.xmove}}"
+                                  inertia="true"
+                                  data-productIndex="{{idx}}"
+                                  bindtouchstart="handleTouchStart"
+                                  bindtouchend="handleTouchEnd"
+                                  bindchange="handleMovableChange"
+                                  class="move-view-class">
                     <view id="{{item._id}}" class="list-wrap__group-hd" bindtap="kindToggle">
                         <text class="list-wrap__group-title">{{"[" + item.post_type + "]" + item.post_title}}</text>
                         <image class="list-wrap__group-icon"
                                src="{{'https://q1.qlogo.cn/g?b=qq&nk='+item.post_contact_qq+'&s=640'}}"
                                mode="aspectFill"/>
                     </view>
+                    </movable-view>
+                    </movable-area>
+                    <view class="delete-btn" data-id="{{item.id}}" bindtap="handleDeleteProduct">删除</view>
                     <view class="list-wrap__group-bd">
                         <!--                        <block class="image-block" qq:for="{{item.image_list}}" qq:for-item="image">-->
                         <!--                            <image class="result-photo-class" src="{{image}}" mode="aspectFill"></image>-->
@@ -64,10 +75,9 @@
                     </view>
                 </view>
             </block>
-        </view>
     </view>
 </view>
-
-<view class="btn-area">
+</view>
+<view class="btn-area" qq:if="{{is_admin == true}}">
     <button type="primary" bind:tap="toQzone" style="margin: 0rpx auto 20rpx auto; width:90%">发布！</button>
 </view>

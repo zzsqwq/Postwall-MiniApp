@@ -2,9 +2,11 @@
 const sourceType = [['camera'], ['album'], ['camera', 'album']]
 const sizeType = [['compressed'], ['original'], ['compressed', 'original']]
 
+const app = getApp()
 Page({
     data: {
         imageList: [],
+        is_admin : "",
         submitList: [],
         post_type_value : "",
         post_title_value : "",
@@ -50,29 +52,17 @@ Page({
         db.collection("adminList").get().then( res => {
             let adminList = res.data;
             console.log("adminList",adminList)
-            qq.cloud.callFunction({
-                name : 'getOpenid',
-                data: {
-                    a : 1 // 此处填入了某种方式获取得到的 Buffer 数据，可以是 request 下来的，可以是读文件读出来的等等
-                },
-            }).then( res => {
-                now_openid = res.result.openid;
-                console.log(now_openid)
-                for(var i=0;i<adminList.length;i++) {
-                    if(now_openid == adminList[i].open_id) {
-                        that.setAdminBar();
-                        break;
-                    }
-                }
-            })
-
         })
     },
     onLoad(options) {
         qq.cloud.init({
             env: 'postwall-4gy7eykl559a475a',
             traceUser: true
+        });
+        this.setData({
+            is_admin : app.data.is_admin
         })
+        //this.getUserOpenid();
 
         //this.checkAdmin();
 
@@ -193,8 +183,9 @@ Page({
                         post_contact_qq: submit_data.post_contact_qq,
                         post_contact_wechat: submit_data.post_contact_wechat,
                         post_contact_tel: submit_data.post_contact_tel,
+                        post_user_openid : app.data.user_openid,
                         post_done: false,
-                        post_data: new Date(),
+                        post_date: new Date(),
                         image_list: submitList
                     }
                 })
