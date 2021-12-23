@@ -387,26 +387,49 @@ Page({
         console.log(id)
         const db = qq.cloud.database();
         console.log(productList[productIndex]._id)
-        db.collection("postwall").doc(productList[productIndex]._id).update({
-            data : {
-                post_done : true,
-                post_user_done: true
-            }
-        }).then(res => {
-            console.log(res);
-            qq.showToast({
-                title: '删除成功',
-                icon: 'success',
-                duration: 500
+        if(this.data.is_admin == true) {
+            db.collection("postwall").doc(productList[productIndex]._id).update({
+                data : {
+                    post_done : true
+                }
+            }).then(res => {
+                console.log(res);
+                qq.showToast({
+                    title: '删除成功',
+                    icon: 'success',
+                    duration: 500
+                })
+                productList.splice(productIndex, 1)
+                this.setData({
+                    datalist : productList
+                })
+                if (productList[productIndex]) {
+                    this.setXmove(productIndex, 0)
+                }
             })
-            productList.splice(productIndex, 1)
-            this.setData({
-                datalist : productList
+        }
+        else {
+            db.collection("postwall").doc(productList[productIndex]._id).update({
+                data : {
+                    post_done : true,
+                    post_user_done: true
+                }
+            }).then(res => {
+                console.log(res);
+                qq.showToast({
+                    title: '删除成功',
+                    icon: 'success',
+                    duration: 500
+                })
+                productList.splice(productIndex, 1)
+                this.setData({
+                    datalist : productList
+                })
+                if (productList[productIndex]) {
+                    this.setXmove(productIndex, 0)
+                }
             })
-            if (productList[productIndex]) {
-                this.setXmove(productIndex, 0)
-            }
-            })
+        }
     },
 
     /**
