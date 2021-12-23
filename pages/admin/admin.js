@@ -46,6 +46,11 @@ Page({
                     const that = this
                     const str = this.data.base64str
                     // console.log("test datalist:", this.data.datalist.length)
+
+                    let total_length = 0;
+                    for (let i=0;i < this.data.datalist.length;i++) {
+                        total_length += this.data.datalist[i].image_list.length -1;
+                    }
                     for (let i = 0; i < this.data.datalist.length; i++) {
                         await qq.request({
                             url: "https://www.zzsqwq.cn:5000/image",
@@ -60,7 +65,7 @@ Page({
                                 let imageList = that.data.datalist[i].image_list
                                 var imgPath = qq.env.USER_DATA_PATH + '/index' + '/' + that.data.datalist[i]._id + '.png';
                                 var fs = qq.getFileSystemManager();
-                                let counter = 1;
+                                let j_counter = 1;
                                 fs.writeFileSync(imgPath, res.data, "base64");
                                 imageList.unshift(imgPath)
                                 that.setData({
@@ -76,7 +81,10 @@ Page({
                                     }).then(res => {
                                         // console.log("test tempfile", res.tempFilePath)
                                         that.data.readyPictures[i*10+j] = res.tempFilePath;
-                                        if(j == that.data.datalist[i].image_list.length - 1) {
+                                        // console.log("i:",i,"and",that.data.datalist.length-1)
+                                        // console.log("j:",j,"and",that.data.datalist[i].image_list.length-1)
+                                        j_counter = j_counter + 1;
+                                        if(j_counter == total_length) {
                                             qq.hideLoading();
                                             qq.showToast( {
                                                 title: '加载结束',
@@ -84,6 +92,14 @@ Page({
                                                 duration: 300
                                             })
                                         }
+                                        // if(i==that.data.datalist.length-1 && j==that.data.datalist[i].image_list.length -1) {
+                                        //     qq.hideLoading();
+                                        //     qq.showToast( {
+                                        //         title: '加载结束',
+                                        //         icon: 'success',
+                                        //         duration: 300
+                                        //     })
+                                        // }
                                     }).catch(res => {
                                         console.error("download file error!",res)
                                     })
