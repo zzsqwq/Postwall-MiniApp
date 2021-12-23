@@ -29,7 +29,7 @@ Page({
                 }
             }).then(res => {
                 this.setData({
-                    datalist: res.result.data.slice(0, 9)
+                    datalist: res.result.data.slice(0, 9).reverse()
                 })
                 // console.log("datalist:", this.data.datalist)
                 tmp_list = this.data.datalist
@@ -235,18 +235,22 @@ Page({
         const index = parseInt(e.currentTarget.dataset.item)
         const id = parseInt(e.currentTarget.id)
         this_data = this.data.chooseornot
+        let row_counter = this.data.rowscount
         console.log("index", index)
         console.log("id", id)
         console.log("index+id", index*10+id)
         this_data[index][id] = !this_data[index][id]
         if(this_data[index][id] == true) {
             this.data.readytosend[index*10+id] = true;
+            row_counter[index]++;
         }else {
             this.data.readytosend[index*10+id] = false;
+            row_counter[index]--;
         }
         //console.log(this.data.readytosend)
         this.setData({
-            chooseornot : this_data
+            chooseornot : this_data,
+            rowscount : row_counter
         })
     },
     toQzone() {
@@ -261,7 +265,6 @@ Page({
                     path : this.data.readyPictures[i]
                 })
                 index = parseInt(i/10)
-                this.data.rowscount[index]++;
                 console.log(index,this.data.rowscount[index])
             }
         }
@@ -386,7 +389,8 @@ Page({
         console.log(productList[productIndex]._id)
         db.collection("postwall").doc(productList[productIndex]._id).update({
             data : {
-                post_done : true
+                post_done : true,
+                post_user_done: true
             }
         }).then(res => {
             console.log(res);

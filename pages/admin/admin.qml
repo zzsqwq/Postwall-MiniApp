@@ -15,6 +15,7 @@
                 <text class="userinfo-nickname">{{userInfo.nickName}}</text>
             </block>
         </view>
+        <view class="index-desc">图片加载有一定延迟，左滑可选择删除订单~</view>
         <navigator url="https://www.baidu.com" class="index-navigator">审核指南及墙机守则，请务必严格遵守！</navigator>
     </view>
     <view class="index-hd">
@@ -33,10 +34,14 @@
                                   bindchange="handleMovableChange"
                                   class="move-view-class">
                     <view id="{{item._id}}" class="list-wrap__group-hd" bindtap="kindToggle">
-                        <text class="list-wrap__group-title">{{"[" + item.post_type + "]" + item.post_title}}</text>
-                        <image class="list-wrap__group-icon"
-                               src="{{'https://q1.qlogo.cn/g?b=qq&nk='+item.post_contact_qq+'&s=640'}}"
-                               mode="aspectFill"/>
+                        <text class="list-wrap__group-title">{{"[" + item.post_type + "]" + item.post_title }}</text>
+                        <text qq:if="{{is_admin == true}}" class="choose-notify">{{ "已选择" + "[" + rowscount[idx] + "/" + item.image_list.length + "]" }}</text>
+
+                        <text qq:if="{{is_admin == false && item.post_done == true}}" class="done-notify">订单已发布</text>
+                        <text qq:if="{{is_admin == false && item.post_done == false}}" class="donenot-notify">订单未发布</text>
+<!--                        <image class="list-wrap__group-icon"-->
+<!--                               src="{{'https://q1.qlogo.cn/g?b=qq&nk='+item.post_contact_qq+'&s=640'}}"-->
+<!--                               mode="aspectFill"/>-->
                     </view>
                     </movable-view>
                     </movable-area>
@@ -56,8 +61,8 @@
                                 <block qq:for="{{item.image_list}}" qq:for-item="image" qq:for-index="index" >
                                     <swiper-item>
                                         <image src='{{image}}'  bind:tap="previewImg" data-index='{{index}}' data-id="{{idx}}" class="img" mode="aspectFit"></image>
-                                        <image data-item="{{idx}}" id="{{index}}" bind:tap="selectImg" qq:if="{{chooseornot[idx][index]}}" class="test-class" src="../../images/pages/index/selected.png"></image>
-                                        <image data-item="{{idx}}" id="{{index}}" bind:tap="selectImg" qq:if="{{!chooseornot[idx][index]}}" class="test-class" src="../../images/pages/index/Unselected.png"></image>
+                                        <image data-item="{{idx}}" id="{{index}}" bind:tap="selectImg" qq:if="{{is_admin == true && chooseornot[idx][index]}}" class="test-class" src="../../images/pages/index/selected.png"></image>
+                                        <image data-item="{{idx}}" id="{{index}}" bind:tap="selectImg" qq:if="{{is_admin == true && !chooseornot[idx][index] }}" class="test-class" src="../../images/pages/index/Unselected.png"></image>
                                     </swiper-item>
                                 </block>
                             </swiper>

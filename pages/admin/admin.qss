@@ -108,3 +108,33 @@ page {
     background: #E66671;
     text-align: center;
 }
+
+.choose-notify {
+    position : absolute;
+    z-index: 1;
+    line-height: 1;
+    right : 20rpx;
+    top : 20rpx;
+    font-size: 34rpx;
+    color: #808080;
+}
+
+.done-notify {
+    position : absolute;
+    z-index: 1;
+    line-height: 1;
+    right : 20rpx;
+    top : 20rpx;
+    font-size: 34rpx;
+    color: green;
+}
+
+.donenot-notify {
+    position : absolute;
+    z-index: 1;
+    line-height: 1;
+    right : 20rpx;
+    top : 20rpx;
+    font-size: 34rpx;
+    color: crimson;
+}

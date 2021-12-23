@@ -7,6 +7,8 @@ Page({
     data: {
         imageList: [],
         is_admin : "",
+        type_array : ["提问","吐槽","表白","寻物","寻人"],
+        type_index : 0,
         submitList: [],
         post_type_value : "",
         post_title_value : "",
@@ -52,6 +54,12 @@ Page({
         db.collection("adminList").get().then( res => {
             let adminList = res.data;
             console.log("adminList",adminList)
+        })
+    },
+    bindPickerChange(e) {
+        console.log('picker发送选择改变，携带值为', e.detail.value)
+        this.setData({
+            type_index: e.detail.value
         })
     },
     onLoad(options) {
@@ -145,15 +153,16 @@ Page({
     formSubmit(e) {
         console.log(this.data.post_type_value)
         console.log('form发生了submit事件，携带数据为：', e.detail.value)
-        submit_data = e.detail.value
-        submitList = this.data.submitList
-        imageList = this.data.imageList
-        if(!submit_data.post_type || !submit_data.post_title || !submit_data.post_text) {
+        let submit_data = e.detail.value
+        let submit_type = this.data.type_array[submit_data.post_type]
+        let submitList = this.data.submitList
+        let imageList = this.data.imageList
+        if(!submit_type || !submit_data.post_title || !submit_data.post_text) {
             let content = "您的"
-            console.log("type:",submit_data.post_type)
+            console.log("type:",submit_type)
             console.log("title:",submit_data.post_title)
             console.log("text:",submit_data.post_text)
-            if(!submit_data.post_type) {
+            if(!submit_type) {
                 content = content + "投稿类型" + "、"
             }
             if(!submit_data.post_title) {
@@ -182,37 +191,46 @@ Page({
         timestamp = timestamp / 1000
 
         async function uploadfiles() {
+            let upload_num = 1;
+            qq.showLoading({
+                title : "订单正在投递~"
+            })
             for (let i = 0; i < imageList.length; i++) {
                 await qq.cloud.uploadFile({
                     cloudPath: timestamp + '/' + i + imageList[i].slice(-4),
                     filePath: imageList[i]
-                })
-                    .then(res => {
-                        submitList.push(res.fileID)
-                    })
-                    .catch(res => {
+                }).then(res => {
+                    console.log(res.fileID)
+                    submitList.push(res.fileID)
+                }).catch(res => {
                         console.error(res)
                     })
+                // await uploadtask.onProgressUpdate( (res) => {
+                //     console.log('上传进度', res.progress)
+                //
+                //     qq.showLoading({
+                //         title: '正在上传数据，请勿退出'
+                //     })
+                //
+                // } )
+
             }
         }
 
         uploadfiles()
             .then(res => {
-                console.log("submitList is :", submitList, submitList.length)
-                console.log("imageList is :", imageList, imageList.length)
-            })
-            .then(res => {
                 const db = qq.cloud.database()
                 db.collection("postwall").add({
                     data: {
                         post_time: timestamp,
-                        post_type: submit_data.post_type,
+                        post_type: submit_type,
                         post_title: submit_data.post_title,
                         post_text: submit_data.post_text,
                         post_contact_qq: submit_data.post_contact_qq,
                         post_contact_wechat: submit_data.post_contact_wechat,
                         post_contact_tel: submit_data.post_contact_tel,
                         post_user_openid : app.data.user_openid,
+                        post_user_done : false,
                         post_done: false,
                         post_date: new Date(),
                         image_list: submitList
@@ -226,6 +244,7 @@ Page({
                     })
             })
             .then(res => {
+                qq.hideLoading();
                 qq.showToast({
                     title: '提交成功',
                     icon: 'success',

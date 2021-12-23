@@ -20,7 +20,8 @@
 }
 
 .index-desc {
-    margin-top: 40rpx;
+    margin-top: 10rpx;
+    margin-bottom: 10rpx;
     color: #878B99;
     line-height: 1.5;
     font-size: 28rpx;
@@ -93,7 +94,7 @@ navigator {
     position: relative;
     z-index: 1;
     line-height: 1;
-    padding-left: 34rpx;
+    padding-left: 0rpx;
     font-size: 34rpx;
     color: #03081A;
 }

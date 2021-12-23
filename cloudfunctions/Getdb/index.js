@@ -10,7 +10,7 @@ exports.main = async (event, context) => {
   const db = cloud.database();
 
   return await db.collection("postwall").where({
-    post_done : false,
+    post_user_done : false,
     post_user_openid : event.user_openid
   }).get()
 }

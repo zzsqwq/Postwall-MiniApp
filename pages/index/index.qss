@@ -40,7 +40,7 @@ page {
     height: 100rpx;
     background-color: #FFFFFF;
     margin: 10rpx 0 10rpx 3%;
-    font-size: 16px;
+    font-size: 36rpx;
 }
 
 .logo-class {
@@ -60,7 +60,7 @@ page {
     width: 97%;
     background-color: #FFFFFF;
     margin: 10rpx 0px 10rpx 0px;
-    font-size: 16px;
+    font-size: 36rpx;
 }
 
 .textarea_block {
@@ -132,4 +132,14 @@ button {
     background-color: #FFFFFF;
     margin: 0 0 5rpx 10rpx;
     font-size: 32rpx;
+}
+
+.picker-class {
+    height : 100rpx;
+    width : 100vw;
+    font-size: 36rpx;
+    background-color: #FFFFFF;
+    line-height : 100rpx;
+    padding-left : 24rpx;
+    color : #808080;
 }

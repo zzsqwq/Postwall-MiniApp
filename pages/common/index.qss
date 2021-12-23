@@ -16,10 +16,11 @@
 .index-logo {
     width: 88rpx;
     height: 88rpx;
+    margin-bottom: 20rpx;
 }
 
 .index-desc {
-    margin-top: 40rpx;
+    margin-top: 20rpx;
     color: #878B99;
     line-height: 1.5;
     font-size: 28rpx;
@@ -32,6 +33,7 @@ navigator {
 }
 
 .index-navigator {
+    margin-top: 20rpx;
     display: inline-block;
     font-size: 28rpx;
     color: #4D94FF;

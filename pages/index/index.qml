@@ -1,15 +1,21 @@
 <view class="index-hd">
     <image class="logo-class" src="../../images/syzx.png" mode="aspectFill"></image>
     <view class="index-desc">这里是胶州实验中学自助贴贴墙</view>
+    <view class="index-desc">下拉即可清空已填内容，带*项为必填</view>
     <navigator url="https://www.baidu.com" class="index-navigator">投稿指南及注意事项</navigator>
 </view>
 
 <form bind:submit="formSubmit" bindreset="formReset" id="total-form">
     <view class="section">
         <view class="section__title">投稿类型*</view>
-        <view class="input-section">
-            <input value="{{post_type_value}}" class="input_text" name="post_type" maxlength="4" placeholder="不超过 4 个字（如表白、提问等）"/>
+<!--        <view class="input-section">-->
+<!--            <input value="{{post_type_value}}" class="input_text" name="post_type" maxlength="4" placeholder="不超过 4 个字（如表白、提问等）"/>-->
+<!--        </view>-->
+        <picker bindchange="bindPickerChange" value="{{type_index}}" range="{{type_array}}" name="post_type">
+        <view class="picker-class">
+            当前类型：{{type_array[type_index]}}
         </view>
+        </picker>
     </view>
     <view class="section">
         <view class="section__title">投稿标题*</view>
@@ -42,7 +48,7 @@
     </view>
 
     <view class="section">
-        <view class="section__title">联系方式</view>
+        <view class="section__title">联系方式（非必填）</view>
         <view class="contact-block">
             <image class="contact-icon-class" src="../../images/pages/home/icon-qq-3.png" mode="aspectFill"></image>
             <input value="{{contact_qq_value}}" class="contact-input_text" name="post_contact_qq" maxlength="11" placeholder="QQ"/>
