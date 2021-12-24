@@ -46,7 +46,6 @@ Page({
                     const that = this
                     const str = this.data.base64str
                     // console.log("test datalist:", this.data.datalist.length)
-
                     let total_length = 0;
                     for (let i=0;i < this.data.datalist.length;i++) {
                         total_length += this.data.datalist[i].image_list.length -1;
@@ -72,10 +71,6 @@ Page({
                                     base64str : userImageBase64
                                 })
                                 that.data.readyPictures[i*10] = imgPath;
-                                qq.showLoading({
-                                    title : "正在渲染订单图片",
-                                    mask : true
-                                })
                                 for(let j=1;j<that.data.datalist[i].image_list.length;j++) {
                                     qq.cloud.downloadFile({
                                         fileID: that.data.datalist[i].image_list[j]
@@ -86,7 +81,6 @@ Page({
                                         // console.log("j:",j,"and",that.data.datalist[i].image_list.length-1)
                                         j_counter = j_counter + 1;
                                         if(j_counter == total_length) {
-                                            qq.hideLoading();
                                             qq.showToast( {
                                                 title: '加载结束',
                                                 icon: 'success',
