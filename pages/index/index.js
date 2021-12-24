@@ -63,6 +63,9 @@ Page({
         })
     },
     onLoad(options) {
+        qq.showShareMenu({
+        showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
+        })
         qq.cloud.init({
             env: 'postwall-4gy7eykl559a475a',
             traceUser: true

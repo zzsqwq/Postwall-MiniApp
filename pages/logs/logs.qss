@@ -7,3 +7,30 @@
 .log-item {
     margin: 10rpx;
 }
+
+.feedback-logo {
+    width : 300rpx;
+    height: 300rpx;
+    border-radius: 150rpx;
+    margin-top: 200rpx;
+}
+.feedback-notify {
+    font-size : 50rpx;
+    color: steelblue;
+    margin-top: 80rpx;
+}
+.copyright-class {
+    margin-top: 40rpx;
+    margin-bottom: 30rpx;
+    font-size : 30rpx;
+    color: dimgrey;
+}
+.button-class {
+    margin-top: 10rpx;
+    color: black;
+}
+.opensource {
+    margin-top: 40rpx;
+    font-size:30rpx;
+    color: lightslategray;
+}

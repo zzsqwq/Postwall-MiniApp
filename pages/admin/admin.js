@@ -73,7 +73,8 @@ Page({
                                 })
                                 that.data.readyPictures[i*10] = imgPath;
                                 qq.showLoading({
-                                    title : "正在渲染订单图片"
+                                    title : "正在渲染订单图片",
+                                    mask : true
                                 })
                                 for(let j=1;j<that.data.datalist[i].image_list.length;j++) {
                                     qq.cloud.downloadFile({
@@ -117,6 +118,9 @@ Page({
     //     })
     // },
     onLoad: function () {
+        qq.showShareMenu({
+        showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
+        })
         // init chooseornot
         let a = this.data.chooseornot
         for(let i=0;i<10;i++) {
