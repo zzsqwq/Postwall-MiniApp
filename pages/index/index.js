@@ -56,6 +56,19 @@ Page({
             console.log("adminList",adminList)
         })
     },
+    getTypeArray() {
+      qq.cloud.callFunction( {
+          name : "getTypeArray",
+          data : {
+
+          }
+      }).then( res => {
+          console.log(res)
+          this.setData( {
+              type_array : res.result.data[0].typelist
+          })
+      })
+    },
     bindPickerChange(e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
@@ -70,6 +83,7 @@ Page({
             env: 'postwall-4gy7eykl559a475a',
             traceUser: true
         });
+        this.getTypeArray();
         this.setData({
             is_admin : app.data.is_admin
         })
