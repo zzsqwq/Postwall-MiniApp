@@ -32,8 +32,9 @@ page {
 }
 
 .logo-class {
-    width: 260rpx;
-    height: 260rpx;
+    width: 230rpx;
+    height: 230rpx;
+    border-radius: 200rpx;
 }
 
 .text-class {

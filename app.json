@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/logs/logs",
-    "pages/admin/admin"
+    "pages/admin/admin",
+    "pages/privacy/privacy"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -27,7 +28,7 @@
         "pagePath": "pages/admin/admin",
         "iconPath": "images/tabbar/icon-admin.png",
         "selectedIconPath": "images/tabbar/icon-admin-selected.png",
-        "text":"审核与发布"
+        "text":"查看订单"
       },
       {
         "pagePath": "pages/logs/logs",

@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "审核与发布",
+  "navigationBarTitleText": "查看订单",
   "usingComponents": {
     "slide-delete": "../../components/slide-delete/index"
   }

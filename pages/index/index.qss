@@ -44,8 +44,9 @@ page {
 }
 
 .logo-class {
-    width: 80px;
-    height: 80px;
+    width: 230rpx;
+    height: 230rpx;
+    border-radius: 120rpx;
 }
 
 .input-section {
@@ -142,4 +143,25 @@ button {
     line-height : 100rpx;
     padding-left : 24rpx;
     color : #808080;
+}
+
+.privacy-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10rpx 0;
+    box-sizing: border-box;
+}
+
+.privacy-container .privacy-1 {
+    font-size: 30rpx;
+    color: lightslategray;
+}
+
+.privacy-navigator {
+    margin-top: 26rpx;
+    font-size: 30rpx;
+    color: #4D94FF;
 }

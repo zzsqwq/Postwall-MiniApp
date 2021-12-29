@@ -2,19 +2,20 @@
     <!-- <canvas class = "canvas-class" style="width: 300px; height: 200px;" canvas-id="firstCanvas"></canvas>
         <image style="width: 300px; height: 200px" src="{{tmp_img}}" mode="aspectFill"></image> -->
     <view class="index-hd">
-        <view class="userinfo">
-            <block qq:if="{{!hasUserInfo && canIUse}}">
-                <image class="userinfo-avatar" src="../../images/pages/index/default-avatar.png"
-                       mode="aspectFill"></image>
-                <button class="default-nickname" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击获取头像昵称
-                </button>
-            </block>
-            <block qq:else>
-                <image bind:tap="previewAvatar" class="userinfo-avatar" src="{{userInfo.avatarUrl}}"
-                       mode="aspectFill"></image>
-                <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-            </block>
-        </view>
+<!--        <view class="userinfo">-->
+<!--            <block qq:if="{{!hasUserInfo && canIUse}}">-->
+<!--                <image class="userinfo-avatar" src="../../images/pages/index/default-avatar.png"-->
+<!--                       mode="aspectFill"></image>-->
+<!--                <button class="default-nickname" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击获取头像昵称-->
+<!--                </button>-->
+<!--            </block>-->
+<!--            <block qq:else>-->
+<!--                <image bind:tap="previewAvatar" class="userinfo-avatar" src="{{userInfo.avatarUrl}}"-->
+<!--                       mode="aspectFill"></image>-->
+<!--                <text class="userinfo-nickname">{{userInfo.nickName}}</text>-->
+<!--            </block>-->
+<!--        </view>-->
+        <image class="logo-class" src="../../images/ttq.jpg" mode="aspectFill"></image>
         <view class="index-desc">图片加载有一定延迟，左滑可选择删除订单~</view>
         <navigator url="https://www.baidu.com" class="index-navigator">审核指南及墙机守则，请务必严格遵守！</navigator>
     </view>
@@ -88,4 +89,10 @@
 </view>
 <view class="btn-area" qq:if="{{is_admin == true}}">
     <button type="primary" bind:tap="toQzone" style="margin: 0rpx auto 20rpx auto; width:90%">发布！</button>
+</view>
+
+<view class="privacy-container">
+    <view class="privacy-1">使用此小程序即代表您同意以下</view>
+
+    <navigator url="/pages/privacy/privacy" class="privacy-navigator"> 《隐私说明》</navigator>
 </view>

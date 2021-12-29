@@ -1,8 +1,8 @@
 <view class="index-hd">
-    <image class="logo-class" src="../../images/syzx.png" mode="aspectFill"></image>
-    <view class="index-desc">这里是胶州实验中学自助贴贴墙</view>
+    <image class="logo-class" src="../../images/ttq.jpg" mode="aspectFill"></image>
+    <view class="index-desc">这里是自助贴贴墙</view>
     <view class="index-desc">下拉即可清空已填内容，带*项为必填</view>
-    <navigator url="https://www.baidu.com" class="index-navigator">投稿指南及注意事项</navigator>
+    <navigator url="/pages/privacy/privacy" class="index-navigator">隐私协议说明</navigator>
 </view>
 
 <form bind:submit="formSubmit" bindreset="formReset" id="total-form">
@@ -77,4 +77,9 @@
     </view>
 </form>
 
+<view class="privacy-container">
+    <view class="privacy-1">使用此小程序即代表您同意以下</view>
+
+    <navigator url="/pages/privacy/privacy" class="privacy-navigator"> 《隐私说明》</navigator>
+</view>
  
