@@ -22,13 +22,23 @@ App({
                     let adminList = res.data
                     console.log(adminList)
                     for(var i=0;i<adminList.length;i++) {
-                        if(adminList[i].open_id == this.data.user_openid) {
+                        if(adminList[i].open_id === this.data.user_openid) {
                             this.data.is_admin = true
                             break;
                         }
                     }
                 }).then( res => {
-                    console.log(this.data.is_admin)
+                    console.log("is_admin is : ",this.data.is_admin)
+
+                    // 由于 db query 是网络请求，可能会在 Page.onLoad 之后才返回
+                    // 所以此处加入 callback 以防止这种情况
+                    if(this.userAdminReadyCallback) {
+                        this.userAdminReadyCallback()
+                    }
+
+                    if(this.userOpenidReadyCallback) {
+                        this.userOpenidReadyCallback()
+                    }
                 })
                 // for(var i=0;i<adminList.length;i++) {
                 //     if(now_openid == adminList[i].open_id) {

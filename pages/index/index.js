@@ -210,7 +210,8 @@ Page({
         async function uploadfiles() {
             let upload_num = 1;
             qq.showLoading({
-                title : "订单正在投递~"
+                title : "订单投递中，请稍作等待",
+                mask : true
             })
             for (let i = 0; i < imageList.length; i++) {
                 await qq.cloud.uploadFile({
