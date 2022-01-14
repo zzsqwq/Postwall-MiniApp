@@ -18,6 +18,9 @@ Page({
         rowscount : new Array(10).fill(0),
         chooseornot : []
     },
+    onShareAppMessage() {
+        // return custom share data when user share.
+    },
     loadDataBase : function () {
         const db = qq.cloud.database();
         let function_name = this.data.is_admin == true ? "adminGetdb" : "Getdb";
@@ -115,6 +118,7 @@ Page({
         qq.showShareMenu({
         showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
         })
+
         // init chooseornot
         let a = this.data.chooseornot
         for(let i=0;i<10;i++) {

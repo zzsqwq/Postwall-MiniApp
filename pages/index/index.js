@@ -254,6 +254,7 @@ Page({
                     }
                 })
                     .then(res => {
+                        submitList.length = 0;
                         console.log(res)
                     })
                     .catch(res => {

@@ -15,6 +15,9 @@ Page({
             })
         })
     },
+    onShareAppMessage() {
+        // return custom share data when user share.
+    },
     onPullDownRefresh() {
         qq.stopPullDownRefresh({
             success : res => {
