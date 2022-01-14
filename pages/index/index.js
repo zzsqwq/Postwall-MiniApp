@@ -115,6 +115,8 @@ Page({
         ImageList.splice(0,ImageList.length)
         submitList.splice(0,submitList.length)
 
+        this.getTypeArray();
+
         this.setData({
             post_type_value : "",
             post_title_value : "",

@@ -143,11 +143,15 @@ Page({
         })
 
         app.userAdminReadyCallback = () => {
-            this.data.is_admin = app.data.is_admin
+            this.setData( {
+                is_admin : app.data.is_admin
+            })
         }
 
         app.userOpenidReadyCallback = () => {
-            this.data.user_openid = app.data.user_openid
+            this.setData({
+                user_openid : app.data.user_openid
+            })
         }
 
         this.loadDataBase()
@@ -168,6 +172,13 @@ Page({
 
     },
     onPullDownRefresh(options) {
+
+        app.getUserOpenid()
+
+        this.setData({
+            is_admin : app.data.is_admin
+        })
+
         console.log("test refresh")
         this.loadDataBase()
         this.setData({

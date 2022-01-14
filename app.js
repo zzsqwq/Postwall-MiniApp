@@ -4,6 +4,7 @@ App({
             user_openid : ""
         },
         async getUserOpenid() {
+            console.log("get userid")
             await qq.cloud.callFunction({
                 name : 'getOpenid',
                 data: {
@@ -19,15 +20,18 @@ App({
 
                 const db = qq.cloud.database();
                 db.collection("adminList").get().then( res => {
-                    let adminList = res.data
-                    console.log(adminList)
-                    for(var i=0;i<adminList.length;i++) {
-                        if(adminList[i].open_id === this.data.user_openid) {
-                            this.data.is_admin = true
-                            break;
+                        let adminList = res.data
+                        let i = 0
+                        console.log(adminList)
+                        this.data.is_admin = false
+                        for (i = 0; i < adminList.length; i++) {
+                            if (adminList[i].open_id === this.data.user_openid) {
+                                this.data.is_admin = true
+                                break;
+                            }
                         }
                     }
-                }).then( res => {
+                ).then( res => {
                     console.log("is_admin is : ",this.data.is_admin)
 
                     // 由于 db query 是网络请求，可能会在 Page.onLoad 之后才返回
