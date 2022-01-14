@@ -9,6 +9,7 @@ Page({
         is_admin : "",
         type_array : ["提问","吐槽","表白","寻物","寻人"],
         type_index : 0,
+        submit_delay : 0,
         submitList: [],
         post_type_value : "",
         post_title_value : "",
@@ -170,6 +171,26 @@ Page({
         hi: 'MINA'
     },
     formSubmit(e) {
+        let submit_begin = Date.parse(new Date()) / 1000
+
+        // 小于 20s
+        let duar = Math.abs(this.data.submit_delay - submit_begin);
+        let time_content = "请等待 " + (20 - duar) + "s 后才可继续提交"
+        if(this.data.submit_delay !== 0 && duar < 20) {
+            qq.showModal({
+                title: '您的提交频率过快',
+                content: time_content,
+                showCancel : false,
+                success(res) {
+                    if (res.confirm) {
+                        console.log('用户点击确定')
+                    } else if (res.cancel) {
+                        console.log('用户点击取消')
+                    }
+                }
+            })
+            return ;
+        }
         console.log(this.data.post_type_value)
         console.log('form发生了submit事件，携带数据为：', e.detail.value)
         let submit_data = e.detail.value
@@ -273,6 +294,11 @@ Page({
                 })
             })
             .catch(res => console.error(res))
+        let submit_end = Date.parse(new Date())
+        this.setData({
+            submit_delay : submit_end / 1000
+        })
+
     },
     formReset() {
         console.log('form发生了reset事件')
