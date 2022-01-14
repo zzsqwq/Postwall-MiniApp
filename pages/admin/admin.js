@@ -23,7 +23,7 @@ Page({
     },
     loadDataBase : function () {
         const db = qq.cloud.database();
-        let function_name = this.data.is_admin == true ? "adminGetdb" : "Getdb";
+        let function_name = this.data.is_admin === true ? "adminGetdb" : "Getdb";
         let getDatabase = async () => {
             return await qq.cloud.callFunction( {
                 name : function_name,
@@ -137,7 +137,7 @@ Page({
             traceUser: true
         })
         this.setData({
-            is_admin : app.data.is_admin
+            is_admin : false
         })
         this.loadDataBase()
         //     .then( res => {
@@ -411,7 +411,7 @@ Page({
         console.log(id)
         const db = qq.cloud.database();
         console.log(productList[productIndex]._id)
-        if(this.data.is_admin == true) {
+        if((this.data.is_admin === true) && (productList[productIndex].post_user_openid !== app.data.user_openid)) {
             db.collection("postwall").doc(productList[productIndex]._id).update({
                 data : {
                     post_done : true
