@@ -21,6 +21,9 @@
     </view>
     <view class="index-hd">
         <view class="list-wrap">
+            <block>
+
+            </block>
             <block qq:if="{{datalist.length == 0}}">
             <view> 还没有任何订单已投递！</view>
             </block>
@@ -46,6 +49,7 @@
                     </view>
                     </movable-view>
                     </movable-area>
+                    <view class="delete-btn" data-id="{{idx}}" bindtap="handleDeleteProduct">审核未通过</view>
                     <view class="delete-btn" data-id="{{idx}}" bindtap="handleDeleteProduct">删除</view>
                     <view class="list-wrap__group-bd">
                         <!--                        <block class="image-block" qq:for="{{item.image_list}}" qq:for-item="image">-->

@@ -101,8 +101,8 @@ page {
     right: 0;
     width: 120rpx;
     height: 80rpx;
-    font-family: PingFangSC-Regular;
-    font-size: 24rpx;
+    /*font-family: PingFangSC-Regular;*/
+    font-size: 28rpx;
     color: #FFFFFF;
     line-height: 80rpx;
     z-index: 1;
