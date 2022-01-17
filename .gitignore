@@ -10,3 +10,19 @@ yarn-error.lock
 
 # idea
 .idea/
+
+# font 
+/font
+*.ttf
+*.ttc
+*.tof
+
+# ssl
+/ssl
+
+# cache
+__pycache__/
+
+# cloudfunctions
+
+cloudfunctions/
