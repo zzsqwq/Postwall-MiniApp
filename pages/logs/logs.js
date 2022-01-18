@@ -21,7 +21,11 @@ Page({
     onPullDownRefresh() {
         qq.stopPullDownRefresh({
             success : res => {
-                console.log(res)
+                qq.showToast({
+                    title: '页面已刷新',
+                    icon: 'success',
+                    duration: 1000
+                })
             }
         })
     }
