@@ -226,26 +226,52 @@ Page({
             })
             return ;
         }
-        var i = 0
+        let upload_array = []
         var timestamp = Date.parse(new Date())
         timestamp = timestamp / 1000
+        qq.showLoading({
+            title : "订单投递中，请稍作等待",
+            mask : true
+        })
+        // for (let i = 0; i < imageList.length; i++) {
+        //     let x = qq.cloud.uploadFile({
+        //         cloudPath: timestamp + '/' + i + imageList[i].slice(-4),
+        //         filePath: imageList[i]
+        //     })
+        //     upload_array.push(x)
+        // }
+        // console.log("array",upload_array)
+        // let i = 0
+        Promise.all( imageList.map( item => {
+            return qq.cloud.uploadFile({
+                cloudPath: timestamp + '/' + Math.random() + item.slice(-4),
+                filePath: item
+            }).then( res => {
+                console.log(res.fileID)
+                submitList.push(res.fileID)
+            }).catch(
+                res => {
+                    console.error("upload error")
+                }
+            )
+        })
+        ).then( res => {
+            console.log("upload result",res)
+        })
 
-        async function uploadfiles() {
-            let upload_num = 1;
-            qq.showLoading({
-                title : "订单投递中，请稍作等待",
-                mask : true
-            })
-            for (let i = 0; i < imageList.length; i++) {
-                await qq.cloud.uploadFile({
-                    cloudPath: timestamp + '/' + i + imageList[i].slice(-4),
-                    filePath: imageList[i]
-                }).then(res => {
-                    console.log(res.fileID)
-                    submitList.push(res.fileID)
-                }).catch(res => {
-                        console.error(res)
-                    })
+        // async function uploadfiles() {
+        //
+        //     for (let i = 0; i < imageList.length; i++) {
+        //         qq.cloud.uploadFile({
+        //             cloudPath: timestamp + '/' + i + imageList[i].slice(-4),
+        //             filePath: imageList[i]
+        //         }).then(res => {
+        //             console.log(res.fileID)
+        //             upload_num = upload_num + 1
+        //             submitList.push(res.fileID)
+        //         }).catch(res => {
+        //                 console.error(res)
+        //             })
                 // await uploadtask.onProgressUpdate( (res) => {
                 //     console.log('上传进度', res.progress)
                 //
@@ -255,49 +281,52 @@ Page({
                 //
                 // } )
 
-            }
-        }
+        //     }
+        // }
 
-        uploadfiles()
-            .then(res => {
-                const db = qq.cloud.database()
-                db.collection("postwall").add({
-                    data: {
-                        post_time: timestamp,
-                        post_type: submit_type,
-                        post_title: submit_data.post_title,
-                        post_text: submit_data.post_text,
-                        post_contact_qq: submit_data.post_contact_qq,
-                        post_contact_wechat: submit_data.post_contact_wechat,
-                        post_contact_tel: submit_data.post_contact_tel,
-                        post_user_openid : app.data.user_openid,
-                        post_user_done : false,
-                        post_done: false,
-                        post_date: new Date(),
-                        image_list: submitList
-                    }
-                })
-                    .then(res => {
-                        submitList.length = 0;
-                        console.log(res)
-                    })
-                    .catch(res => {
-                        console.error(res)
-                    })
-            })
-            .then(res => {
-                qq.hideLoading();
-                qq.showToast({
-                    title: '提交成功',
-                    icon: 'success',
-                    duration: 1000
-                })
-            })
-            .catch(res => console.error(res))
-        let submit_end = Date.parse(new Date())
-        this.setData({
-            submit_delay : submit_end / 1000
-        })
+        // uploadfiles()
+        //     .then(res => {
+        //         const db = qq.cloud.database()
+        //         while(upload_num !== imageList.length) {
+        //             console.log("why!",upload_num)
+        //         }
+        //         db.collection("postwall").add({
+        //             data: {
+        //                 post_time: timestamp,
+        //                 post_type: submit_type,
+        //                 post_title: submit_data.post_title,
+        //                 post_text: submit_data.post_text,
+        //                 post_contact_qq: submit_data.post_contact_qq,
+        //                 post_contact_wechat: submit_data.post_contact_wechat,
+        //                 post_contact_tel: submit_data.post_contact_tel,
+        //                 post_user_openid : app.data.user_openid,
+        //                 post_user_done : false,
+        //                 post_done: false,
+        //                 post_date: new Date(),
+        //                 image_list: submitList
+        //             }
+        //         })
+        //             .then(res => {
+        //                 submitList.length = 0;
+        //                 console.log(res)
+        //             })
+        //             .catch(res => {
+        //                 console.error(res)
+        //             })
+        //     })
+        //     .then(res => {
+        //         qq.hideLoading();
+        //         qq.showToast({
+        //             title: '提交成功',
+        //             icon: 'success',
+        //             duration: 1000
+        //         })
+        //     })
+        //     .catch(res => console.error(res))
+        // let submit_end = Date.parse(new Date())
+        // this.setData({
+        //     submit_delay : submit_end / 1000
+        // })
 
     },
     formReset() {

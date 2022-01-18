@@ -94,6 +94,21 @@ page {
     width: calc(100vw - 120rpx);
 }
 
+.feed-btn {
+    position: absolute;
+    top: 20rpx;
+    bottom: 0;
+    right: 20rpx;
+    width: 120rpx;
+    height: 80rpx;
+    /*font-family: PingFangSC-Regular;*/
+    font-size: 28rpx;
+    color: #FFFFFF;
+    line-height: 80rpx;
+    z-index: 1;
+    background: #E66671;
+    text-align: center;
+}
 .delete-btn {
     position: absolute;
     top: 0;
