@@ -26,8 +26,8 @@
 
     <view class="section">
         <view class="section__title">内容文本*</view>
-        <textarea value="{{post_text_value}}" class="textarea_text" name="post_text" auto-height placeholder="在这里输入具体内容"
-                  placeholder-class="input_text-placeholder"/>
+        <textarea value="{{post_text_value}}" class="textarea_text" name="post_text" auto-height  placeholder="在这里输入具体内容"
+                  placeholder-class="input_text-placeholder" maxlength="-1"/>
     </view>
 
     <view class="section">

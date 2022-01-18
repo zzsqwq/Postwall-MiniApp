@@ -92,9 +92,10 @@ navigator {
 .list-wrap__group-title {
     display: block;
     position: relative;
+    /*text-align: left;*/
+    /*padding-left: 50rpx;*/
     z-index: 1;
     line-height: 1;
-    padding-left: 0rpx;
     font-size: 34rpx;
     color: #03081A;
 }
@@ -103,12 +104,12 @@ navigator {
     content: "";
     display: block;
     position: absolute;
+    transform: translateY(-50%);
     top: 50%;
     left: 0;
     z-index: 8;
     width: 18rpx;
     height: 18rpx;
-    transform: translateY(-50%);
     background-size: cover;
 }
 

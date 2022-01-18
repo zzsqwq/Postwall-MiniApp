@@ -226,16 +226,16 @@ Page({
             })
             return ;
         }
-        var i = 0
         var timestamp = Date.parse(new Date())
         timestamp = timestamp / 1000
 
         async function uploadfiles() {
-            let upload_num = 1;
+
             qq.showLoading({
                 title : "订单投递中，请稍作等待",
                 mask : true
             })
+
             for (let i = 0; i < imageList.length; i++) {
                 await qq.cloud.uploadFile({
                     cloudPath: timestamp + '/' + i + imageList[i].slice(-4),
@@ -261,6 +261,7 @@ Page({
         uploadfiles()
             .then(res => {
                 const db = qq.cloud.database()
+
                 db.collection("postwall").add({
                     data: {
                         post_time: timestamp,

@@ -47,67 +47,118 @@ Page({
         }
         getDatabase()
             .then(async res => {
-                    const that = this
-                    const str = this.data.base64str
-                    // console.log("test datalist:", this.data.datalist.length)
-                    let total_length = 0;
-                    for (let i=0;i < this.data.datalist.length;i++) {
-                        total_length += this.data.datalist[i].image_list.length -1;
-                    }
-                    for (let i = 0; i < this.data.datalist.length; i++) {
-                        await qq.request({
-                            url: "https://www.zzsqwq.cn:5000/image",
-                            method : "POST",
-                            data: this.data.datalist[i],
-                            header: {
-                                'content-type': 'application/json' // 默认值
-                            },
-                            success(res) {
-                                let userImageBase64 = 'data:image/png;base64,' + res.data
-                                userImageBase64 = userImageBase64.replace(/[\r\n]/g, '')
-                                let imageList = that.data.datalist[i].image_list
-                                var imgPath = qq.env.USER_DATA_PATH + '/index' + '/' + that.data.datalist[i]._id + '.png';
-                                var fs = qq.getFileSystemManager();
-                                let j_counter = 1;
-                                fs.writeFileSync(imgPath, res.data, "base64");
-                                imageList.unshift(imgPath)
-                                that.setData({
-                                    base64str : userImageBase64
+                const that = this
+                const str = this.data.base64str
+                // console.log("test datalist:", this.data.datalist.length)
+                let total_length = 0;
+                for (let i = 0; i < this.data.datalist.length; i++) {
+                    total_length += this.data.datalist[i].image_list.length - 1;
+                }
+                for (let i = 0; i < this.data.datalist.length; i++) {
+                        // await qq.cloud.callFunction({
+                        qq.cloud.callFunction({
+                            name: "drawPostwall",
+                            data: this.data.datalist[i]
+                        }).then(res => {
+                            // console.log("python function return res",res.result)
+                            let userImageBase64 = 'data:image/png;base64,' + res.result.replace(/[\"]/g,'')
+                            // console.log("base64", userImageBase64)
+                            userImageBase64 = userImageBase64.replace(/[\r\n\"]/g, '')
+                            let imageList = that.data.datalist[i].image_list
+                            var imgPath = qq.env.USER_DATA_PATH + '/index' + '/' + that.data.datalist[i]._id + '.png';
+                            var fs = qq.getFileSystemManager();
+                            let j_counter = 1;
+                            fs.writeFileSync(imgPath, res.result, "base64");
+                            imageList.unshift(imgPath)
+                            that.setData({
+                                base64str: userImageBase64
+                            })
+                            that.data.readyPictures[i * 10] = imgPath;
+                            for (let j = 1; j < that.data.datalist[i].image_list.length; j++) {
+                                qq.cloud.downloadFile({
+                                    fileID: that.data.datalist[i].image_list[j]
+                                }).then(res => {
+                                    // console.log("test tempfile", res.tempFilePath)
+                                    that.data.readyPictures[i * 10 + j] = res.tempFilePath;
+                                    // console.log("i:",i,"and",that.data.datalist.length-1)
+                                    // console.log("j:",j,"and",that.data.datalist[i].image_list.length-1)
+                                    j_counter = j_counter + 1;
+                                    if (j_counter == total_length) {
+                                        qq.showToast({
+                                            title: '加载结束',
+                                            icon: 'success',
+                                            duration: 300
+                                        })
+                                    }
+                                    // if(i==that.data.datalist.length-1 && j==that.data.datalist[i].image_list.length -1) {
+                                    //     qq.hideLoading();
+                                    //     qq.showToast( {
+                                    //         title: '加载结束',
+                                    //         icon: 'success',
+                                    //         duration: 300
+                                    //     })
+                                    // }
+                                }).catch(res => {
+                                    console.error("download file error!", res)
                                 })
-                                that.data.readyPictures[i*10] = imgPath;
-                                for(let j=1;j<that.data.datalist[i].image_list.length;j++) {
-                                    qq.cloud.downloadFile({
-                                        fileID: that.data.datalist[i].image_list[j]
-                                    }).then(res => {
-                                        // console.log("test tempfile", res.tempFilePath)
-                                        that.data.readyPictures[i*10+j] = res.tempFilePath;
-                                        // console.log("i:",i,"and",that.data.datalist.length-1)
-                                        // console.log("j:",j,"and",that.data.datalist[i].image_list.length-1)
-                                        j_counter = j_counter + 1;
-                                        if(j_counter == total_length) {
-                                            qq.showToast( {
-                                                title: '加载结束',
-                                                icon: 'success',
-                                                duration: 300
-                                            })
-                                        }
-                                        // if(i==that.data.datalist.length-1 && j==that.data.datalist[i].image_list.length -1) {
-                                        //     qq.hideLoading();
-                                        //     qq.showToast( {
-                                        //         title: '加载结束',
-                                        //         icon: 'success',
-                                        //         duration: 300
-                                        //     })
-                                        // }
-                                    }).catch(res => {
-                                        console.error("download file error!",res)
-                                    })
-                                }
                             }
                         })
                     }
-                }
-            )
+                            })
+            //         await qq.request({
+            //             url: "https://www.zzsqwq.cn:5000/image",
+            //             method: "POST",
+            //             data: this.data.datalist[i],
+            //             header: {
+            //                 'content-type': 'application/json' // 默认值
+            //             },
+            //             success(res) {
+            //                 let userImageBase64 = 'data:image/png;base64,' + res.data
+            //                 console.log("base 64 str",userImageBase64)
+            //                 userImageBase64 = userImageBase64.replace(/[\r\n]/g, '')
+            //                 let imageList = that.data.datalist[i].image_list
+            //                 var imgPath = qq.env.USER_DATA_PATH + '/index' + '/' + that.data.datalist[i]._id + '.png';
+            //                 var fs = qq.getFileSystemManager();
+            //                 let j_counter = 1;
+            //                 fs.writeFileSync(imgPath, res.data, "base64");
+            //                 imageList.unshift(imgPath)
+            //                 that.setData({
+            //                     base64str: userImageBase64
+            //                 })
+            //                 that.data.readyPictures[i * 10] = imgPath;
+            //                 for (let j = 1; j < that.data.datalist[i].image_list.length; j++) {
+            //                     qq.cloud.downloadFile({
+            //                         fileID: that.data.datalist[i].image_list[j]
+            //                     }).then(res => {
+            //                         // console.log("test tempfile", res.tempFilePath)
+            //                         that.data.readyPictures[i * 10 + j] = res.tempFilePath;
+            //                         // console.log("i:",i,"and",that.data.datalist.length-1)
+            //                         // console.log("j:",j,"and",that.data.datalist[i].image_list.length-1)
+            //                         j_counter = j_counter + 1;
+            //                         if (j_counter == total_length) {
+            //                             qq.showToast({
+            //                                 title: '加载结束',
+            //                                 icon: 'success',
+            //                                 duration: 300
+            //                             })
+            //                         }
+            //                         // if(i==that.data.datalist.length-1 && j==that.data.datalist[i].image_list.length -1) {
+            //                         //     qq.hideLoading();
+            //                         //     qq.showToast( {
+            //                         //         title: '加载结束',
+            //                         //         icon: 'success',
+            //                         //         duration: 300
+            //                         //     })
+            //                         // }
+            //                     }).catch(res => {
+            //                         console.error("download file error!", res)
+            //                     })
+            //                 }
+            //             }
+            //         })
+            //     }
+            // })
+
     },
     //事件处理函数
     // bindViewTap: function () {
@@ -116,6 +167,17 @@ Page({
     //     })
     // },
     onLoad: function () {
+
+        // qq.cloud.callFunction( {
+        //     name: "drawPostwall",
+        //     data: {
+        //         a: 1,
+        //         b: 2
+        //     }
+        // }).then( res => {
+        //     console.log("python function return res",res)
+        // })
+
         qq.showShareMenu({
         showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
         })
