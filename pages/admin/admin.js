@@ -65,7 +65,7 @@ Page({
                             // console.log("base64", userImageBase64)
                             userImageBase64 = userImageBase64.replace(/[\r\n\"]/g, '')
                             let imageList = that.data.datalist[i].image_list
-                            var imgPath = qq.env.USER_DATA_PATH + '/index' + '/' + that.data.datalist[i]._id + '.png';
+                            var imgPath = qq.env.USER_DATA_PATH  + '/' + that.data.datalist[i]._id + '.png';
                             var fs = qq.getFileSystemManager();
                             let j_counter = 1;
                             fs.writeFileSync(imgPath, res.result, "base64");
