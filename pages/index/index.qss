@@ -57,7 +57,7 @@ page {
 .textarea_text {
     display: block;
     /*padding: 24rpx 0rpx 20rpx 24rpx;*/
-    padding: 14rpx 0rpx 10rpx 18rpx;
+    padding: 14rpx 0rpx 10rpx 24rpx;
     min-height: 200rpx;
     width : calc(100vw - 18rpx);
     /*width : calc(100vw - 24rpx);*/
