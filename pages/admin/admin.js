@@ -237,6 +237,10 @@ Page({
     },
     onShow: function() {
         const db = qq.cloud.database();
+        qq.hideTabBarRedDot({
+            index : 1
+            }
+        )
         let function_name = this.data.is_admin === true ? "adminGetdb" : "Getdb";
         let if_delta = false;
         let getDatabase = async () => {

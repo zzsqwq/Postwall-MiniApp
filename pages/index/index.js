@@ -223,113 +223,130 @@ Page({
         console.log(this.data.post_type_value)
         console.log('form发生了submit事件，携带数据为：', e.detail.value)
 
-
-        let submit_data = e.detail.value
-        let submit_type = this.data.type_array[submit_data.post_type]
-        let submitList = this.data.submitList
-        let imageList = this.data.imageList
-        if(!submit_type || !submit_data.post_title || !submit_data.post_text) {
-            let content = "您的"
-            console.log("type:",submit_type)
-            console.log("title:",submit_data.post_title)
-            console.log("text:",submit_data.post_text)
-            if(!submit_type) {
-                content = content + "投稿类型" + "、"
-            }
-            if(!submit_data.post_title) {
-                content = content + "投稿标题" + "、"
-            }
-            if(!submit_data.post_text) {
-                content = content + "投稿内容" + "、"
-            }
-            content = content.slice(0,-1) + "未填写"
-            qq.showModal({
-                title: '投稿内容不全!',
-                content: content,
-                showCancel : false,
-                success(res) {
-                    if (res.confirm) {
-                        console.log('用户点击确定')
-                    } else if (res.cancel) {
-                        console.log('用户点击取消')
+        qq.showModal({
+            title : "投稿确认提示",
+            content : "请确认投稿内容中不包含暴力、谩骂、引战、色情、政治等信息。\n\n如内容涉及他/她人个人信息、肖像等请征得对方同意。\n\n可在查看订单页面删除已发订单。",
+            confirmText : "是",
+            confirmColor : "#00CAFC",
+            cancelText : "否",
+            cancelColor : "#FF0000",
+            success : (res) => {
+                if(res.confirm) {
+                    let submit_data = e.detail.value
+                    let submit_type = this.data.type_array[submit_data.post_type]
+                    let submitList = this.data.submitList
+                    let imageList = this.data.imageList
+                    if(!submit_type || !submit_data.post_title || !submit_data.post_text) {
+                        let content = "您的"
+                        console.log("type:",submit_type)
+                        console.log("title:",submit_data.post_title)
+                        console.log("text:",submit_data.post_text)
+                        if(!submit_type) {
+                            content = content + "投稿类型" + "、"
+                        }
+                        if(!submit_data.post_title) {
+                            content = content + "投稿标题" + "、"
+                        }
+                        if(!submit_data.post_text) {
+                            content = content + "投稿内容" + "、"
+                        }
+                        content = content.slice(0,-1) + "未填写"
+                        qq.showModal({
+                            title: '投稿内容不全!',
+                            content: content,
+                            showCancel : false,
+                            success(res) {
+                                if (res.confirm) {
+                                    console.log('用户点击确定')
+                                } else if (res.cancel) {
+                                    console.log('用户点击取消')
+                                }
+                            }
+                        })
+                        return ;
                     }
+                    let timestamp = Date.parse(new Date())
+                    timestamp = timestamp / 1000
+
+                    async function uploadfiles() {
+
+                        qq.showLoading({
+                            title : "订单投递中，请稍作等待",
+                            mask : true
+                        })
+
+                        for (let i = 0; i < imageList.length; i++) {
+                            await qq.cloud.uploadFile({
+                                cloudPath: timestamp + '/' + i + imageList[i].slice(-4),
+                                filePath: imageList[i]
+                            }).then(res => {
+                                console.log(res.fileID)
+                                submitList.push(res.fileID)
+                            }).catch(res => {
+                                console.error(res)
+                            })
+                            // await uploadtask.onProgressUpdate( (res) => {
+                            //     console.log('上传进度', res.progress)
+                            //
+                            //     qq.showLoading({
+                            //         title: '正在上传数据，请勿退出'
+                            //     })
+                            //
+                            // } )
+
+                        }
+                    }
+
+                    uploadfiles()
+                        .then(res => {
+                            const db = qq.cloud.database()
+
+                            db.collection("postwall").add({
+                                data: {
+                                    post_time: timestamp,
+                                    post_type: submit_type,
+                                    post_title: submit_data.post_title,
+                                    post_text: submit_data.post_text,
+                                    post_contact_qq: submit_data.post_contact_qq,
+                                    post_contact_wechat: submit_data.post_contact_wechat,
+                                    post_contact_tel: submit_data.post_contact_tel,
+                                    post_user_openid : app.data.user_openid,
+                                    post_user_done : false,
+                                    post_done: false,
+                                    post_date: new Date(),
+                                    image_list: submitList
+                                }
+                            })
+                                .then(res => {
+                                    submitList.length = 0;
+                                    console.log(res)
+                                })
+                                .catch(res => {
+                                    console.error(res)
+                                })
+                        })
+                        .then(res => {
+                            qq.hideLoading();
+                            qq.showToast({
+                                title: '提交成功',
+                                icon: 'success',
+                                duration: 1000
+                            })
+                            qq.showTabBarRedDot( {
+                                index : 1,
+                            })
+                        })
+                        .catch(res => console.error(res))
+                    let submit_end = Date.parse(new Date())
+                    this.setData({
+                        submit_delay : submit_end / 1000
+                    })
                 }
-            })
-            return ;
-        }
-        var timestamp = Date.parse(new Date())
-        timestamp = timestamp / 1000
-
-        async function uploadfiles() {
-
-            qq.showLoading({
-                title : "订单投递中，请稍作等待",
-                mask : true
-            })
-
-            for (let i = 0; i < imageList.length; i++) {
-                await qq.cloud.uploadFile({
-                    cloudPath: timestamp + '/' + i + imageList[i].slice(-4),
-                    filePath: imageList[i]
-                }).then(res => {
-                    console.log(res.fileID)
-                    submitList.push(res.fileID)
-                }).catch(res => {
-                        console.error(res)
-                    })
-                // await uploadtask.onProgressUpdate( (res) => {
-                //     console.log('上传进度', res.progress)
-                //
-                //     qq.showLoading({
-                //         title: '正在上传数据，请勿退出'
-                //     })
-                //
-                // } )
 
             }
-        }
-
-        uploadfiles()
-            .then(res => {
-                const db = qq.cloud.database()
-
-                db.collection("postwall").add({
-                    data: {
-                        post_time: timestamp,
-                        post_type: submit_type,
-                        post_title: submit_data.post_title,
-                        post_text: submit_data.post_text,
-                        post_contact_qq: submit_data.post_contact_qq,
-                        post_contact_wechat: submit_data.post_contact_wechat,
-                        post_contact_tel: submit_data.post_contact_tel,
-                        post_user_openid : app.data.user_openid,
-                        post_user_done : false,
-                        post_done: false,
-                        post_date: new Date(),
-                        image_list: submitList
-                    }
-                })
-                    .then(res => {
-                        submitList.length = 0;
-                        console.log(res)
-                    })
-                    .catch(res => {
-                        console.error(res)
-                    })
-            })
-            .then(res => {
-                qq.hideLoading();
-                qq.showToast({
-                    title: '提交成功',
-                    icon: 'success',
-                    duration: 1000
-                })
-            })
-            .catch(res => console.error(res))
-        let submit_end = Date.parse(new Date())
-        this.setData({
-            submit_delay : submit_end / 1000
         })
+
+
 
     },
     formReset() {

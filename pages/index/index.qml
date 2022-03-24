@@ -17,17 +17,20 @@
         </picker>
         </view>
     </view>
+
     <view class="section">
         <view class="section__title">投稿标题*</view>
         <view class="input-section">
-            <input value="{{post_title_value}}" class="input_text" name="post_title" maxlength="8" placeholder="不超过 8 个字"/>
+            <input value="{{post_title_value}}" class="input_text" name="post_title" maxlength="10" placeholder="不超过 8 个字"/>
         </view>
     </view>
 
     <view class="section">
         <view class="section__title">内容文本*</view>
-        <textarea value="{{post_text_value}}" class="textarea_text" name="post_text" auto-height  placeholder="在这里输入具体内容"
-                  placeholder-class="input_text-placeholder" maxlength="-1"/>
+        <view class="input-section">
+            <textarea value="{{post_text_value}}" class="textarea_text" name="post_text" auto-height  placeholder="在这里输入具体内容"
+                        maxlength="-1"/>
+        </view>
     </view>
 
     <view class="section">

@@ -19,7 +19,7 @@
         <view class="index-desc" style="color:red;">图片加载有一定延迟，左滑可选择删除订单~</view>
         <navigator url="https://www.baidu.com" class="index-navigator">审核指南及墙机守则，请务必严格遵守！</navigator>
     </view>
-    <view class="index-hd">
+    <view class="index-hd" style="padding: 64rpx 0rpx;">
         <view class="list-wrap">
             <block>
 
