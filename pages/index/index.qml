@@ -11,11 +11,11 @@
 <!--        <view class="input-section">-->
 <!--            <input value="{{post_type_value}}" class="input_text" name="post_type" maxlength="4" placeholder="不超过 4 个字（如表白、提问等）"/>-->
 <!--        </view>-->
+        <view class="input-section" >
         <picker bindchange="bindPickerChange" value="{{type_index}}" range="{{type_array}}" name="post_type">
-        <view class="picker-class">
-            当前类型：{{type_array[type_index]}}
-        </view>
+                <view class="picker-class">当前类型：{{type_array[type_index]}}</view>
         </picker>
+        </view>
     </view>
     <view class="section">
         <view class="section__title">投稿标题*</view>

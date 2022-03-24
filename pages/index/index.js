@@ -88,6 +88,32 @@ Page({
         this.setData({
             is_admin : app.data.is_admin
         })
+
+        let fs = qq.getFileSystemManager();
+
+        fs.readdir({
+            dirPath : `${qq.env.USER_DATA_PATH}`,
+            success : (res) => {
+                console.log(res)
+                res.files.forEach((val) => {
+                    // console.log(val)
+                    if(val.substr(val.length-3) === 'png') {
+                        console.log(val)
+                        fs.unlink({
+                            filePath : qq.env.USER_DATA_PATH + '/' + val,
+                            success : (res) => {
+                                console.log("removed ", val)
+                            },
+                            fail : (res) => {
+                                console.error(res)
+                            }
+
+                        })
+                    }
+                })
+            }
+        })
+
         //this.getUserOpenid();
 
         //this.checkAdmin();
@@ -173,6 +199,8 @@ Page({
     formSubmit(e) {
         let submit_begin = Date.parse(new Date()) / 1000
 
+        console.log("submit event!")
+
         // 小于 20s
         let duar = Math.abs(this.data.submit_delay - submit_begin);
         let time_content = "请等待 " + (20 - duar) + "s 后才可继续提交"
@@ -191,8 +219,11 @@ Page({
             })
             return ;
         }
+
         console.log(this.data.post_type_value)
         console.log('form发生了submit事件，携带数据为：', e.detail.value)
+
+
         let submit_data = e.detail.value
         let submit_type = this.data.type_array[submit_data.post_type]
         let submitList = this.data.submitList

@@ -36,8 +36,8 @@ Page({
                     datalist: res.result.data.slice(0, 9).reverse()
                 })
                 // console.log("datalist:", this.data.datalist)
-                tmp_list = this.data.datalist
-                for (var i = 0; i < this.data.datalist.length; i++) {
+                let tmp_list = this.data.datalist
+                for (let i = 0; i < this.data.datalist.length; i++) {
                     tmp_list[i].open = false
                 }
                 this.setData({
@@ -60,7 +60,8 @@ Page({
                             name: "drawPostwall",
                             data: this.data.datalist[i]
                         }).then(res => {
-                            // console.log("python function return res",res.result)
+
+                            //console.log("python function return res",res.result)
                             let userImageBase64 = 'data:image/png;base64,' + res.result.replace(/[\"]/g,'')
                             // console.log("base64", userImageBase64)
                             userImageBase64 = userImageBase64.replace(/[\r\n\"]/g, '')
@@ -166,7 +167,7 @@ Page({
     //         url: '../logs/logs'
     //     })
     // },
-    onLoad: function () {
+    onShow: function () {
 
         // qq.cloud.callFunction( {
         //     name: "drawPostwall",
@@ -337,12 +338,12 @@ Page({
         })
     },
     toQzone() {
-        medias = []
-        now_index = 1
-        next_index = 0
-        post_detail = ""
-        for(var i=0;i<100;i++) {
-            if(this.data.readytosend[i] == true) {
+        let medias = []
+        let now_index = 1
+        let next_index = 0
+        let post_detail = ""
+        for(let i=0;i<100;i++) {
+            if(this.data.readytosend[i] === true) {
                 medias.push({
                     type : 'photo',
                     path : this.data.readyPictures[i]
@@ -351,11 +352,11 @@ Page({
                 console.log(index,this.data.rowscount[index])
             }
         }
-        for(var i=0;i<10;i++) {
+        for(let i=0;i<10;i++) {
             console.log(this.data.rowscount[i])
-            if(this.data.rowscount[i] != 0) {
+            if(this.data.rowscount[i] !== 0) {
                 next_index = now_index + this.data.rowscount[i] - 1;
-                if(this.data.rowscount[i] != 1) {
+                if(this.data.rowscount[i] !== 1) {
                     post_detail += "P" + now_index + "-" + next_index + ":[" + this.data.datalist[i].post_type + "]" + this.data.datalist[i].post_title + "\n";
                     now_index = next_index + 1;
                 }
@@ -414,9 +415,9 @@ Page({
      */
     setXmove: function (productIndex, xmove) {
         let productList = this.data.datalist
-        console.log(typeof productList)
-        console.log(productList)
-        console.log(xmove, "and ",productIndex)
+        // console.log(typeof productList)
+        // console.log(productList)
+        // console.log(xmove, "and ",productIndex)
         productList[productIndex].xmove = xmove
         this.setData({
             datalist: productList
@@ -466,10 +467,7 @@ Page({
         let productList = this.data.datalist
         // let productIndex = productList.findIndex(item => item.id === id)
         let productIndex = id;
-        console.log(productList,productIndex)
-        console.log(id)
         const db = qq.cloud.database();
-        console.log(productList[productIndex]._id)
         if((this.data.is_admin === true) && (productList[productIndex].post_user_openid !== app.data.user_openid)) {
             db.collection("postwall").doc(productList[productIndex]._id).update({
                 data : {

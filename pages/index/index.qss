@@ -137,11 +137,11 @@ button {
 
 .picker-class {
     height : 100rpx;
-    width : 100vw;
+    width : calc(100vw - 24rpx);
     font-size: 36rpx;
     background-color: #FFFFFF;
+    margin-left: 24rpx;
     line-height : 100rpx;
-    padding-left : 24rpx;
     color : #808080;
 }
 
