@@ -528,6 +528,9 @@ Page({
                     post_user_done: true
                 }
             }).then(res => {
+                if (productList[productIndex]) {
+                    this.setXmove(productIndex, 0)
+                }
                 console.log(res);
                 qq.showToast({
                     title: '删除成功',
@@ -538,9 +541,6 @@ Page({
                 this.setData({
                     datalist : productList
                 })
-                if (productList[productIndex]) {
-                    this.setXmove(productIndex, 0)
-                }
             })
         }
     },

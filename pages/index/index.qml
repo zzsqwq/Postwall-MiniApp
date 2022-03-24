@@ -21,14 +21,14 @@
     <view class="section">
         <view class="section__title">投稿标题*</view>
         <view class="input-section">
-            <input value="{{post_title_value}}" class="input_text" name="post_title" maxlength="10" placeholder="不超过 8 个字"/>
+            <input value="{{post_title_value}}" bindinput="input_title_blur" class="input_text" name="post_title" maxlength="10" placeholder="不超过 8 个字"/>
         </view>
     </view>
 
     <view class="section">
         <view class="section__title">内容文本*</view>
         <view class="input-section">
-            <textarea value="{{post_text_value}}" class="textarea_text" name="post_text" auto-height  placeholder="在这里输入具体内容"
+            <textarea value="{{post_text_value}}" bindinput="input_text_blur" class="textarea_text" name="post_text" auto-height  placeholder="在这里输入具体内容"
                         maxlength="-1"/>
         </view>
     </view>
@@ -54,14 +54,14 @@
         <view class="section__title">联系方式（非必填）</view>
         <view class="contact-block">
             <image class="contact-icon-class" src="../../images/pages/home/icon-qq-3.png" mode="aspectFill"></image>
-            <input value="{{contact_qq_value}}" class="contact-input_text" name="post_contact_qq" maxlength="11" placeholder="QQ"/>
+            <input value="{{contact_qq_value}}" bindinput="contact_qq_blur" class="contact-input_text" name="post_contact_qq" maxlength="11" placeholder="QQ"/>
         </view>
     </view>
 
     <view class="section-mid">
         <view class="contact-block">
             <image class="contact-icon-class" src="../../images/pages/home/icon-wechat.png" mode="aspectFill"></image>
-            <input value="{{contact_wechat_value}}"  class="contact-input_text" name="post_contact_wechat" maxlength="20" placeholder="微信"/>
+            <input value="{{contact_wechat_value}}"  bindinput="contact_wechat_blur" class="contact-input_text" name="post_contact_wechat" maxlength="20" placeholder="微信"/>
         </view>
     </view>
 
@@ -69,13 +69,13 @@
         <view class="contact-block">
             <image class="contact-icon-phone-class" src="../../images/pages/home/icon-phone.png"
                    mode="aspectFill"></image>
-            <input value="{{contact_tel_value}}" class="contact-input_text" name="post_contact_tel" maxlength="11" placeholder="联系电话"/>
+            <input value="{{contact_tel_value}}" bindinput="contact_tel_blur" class="contact-input_text" name="post_contact_tel" maxlength="11" placeholder="联系电话"/>
         </view>
     </view>
 
 
     <view class="btn-area">
-        <button type="primary" form-type="submit" style="margin: 0rpx auto 20rpx auto; width:90%">提交</button>
+        <button type="primary" bind:tap="bind_submit"  style="margin: 0rpx auto 20rpx auto; width:90%">提交</button>
         <button form-type="reset" style="margin: 0rpx auto 50rpx auto; width:90%">清空已填内容</button>
     </view>
 </form>
