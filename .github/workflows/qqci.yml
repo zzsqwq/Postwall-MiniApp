@@ -24,7 +24,7 @@ jobs:
       - name: Build
         uses: docker://qqminiapp/build:latest
         env:
-          PLUGIN_VERSION: 1.0.6
+          PLUGIN_VERSION: 1.0.7
           PLUGIN_DESC: CI自动构建上传
           PLUGIN_APPTOKEN: ${{ secrets.APPTOKEN }}
           PLUGIN_BUILDUSER: ${{ github.actor }}
