@@ -2,54 +2,54 @@
     <!-- <canvas class = "canvas-class" style="width: 300px; height: 200px;" canvas-id="firstCanvas"></canvas>
         <image style="width: 300px; height: 200px" src="{{tmp_img}}" mode="aspectFill"></image> -->
     <view class="index-hd">
-<!--        <view class="userinfo">-->
-<!--            <block qq:if="{{!hasUserInfo && canIUse}}">-->
-<!--                <image class="userinfo-avatar" src="../../images/pages/index/default-avatar.png"-->
-<!--                       mode="aspectFill"></image>-->
-<!--                <button class="default-nickname" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击获取头像昵称-->
-<!--                </button>-->
-<!--            </block>-->
-<!--            <block qq:else>-->
-<!--                <image bind:tap="previewAvatar" class="userinfo-avatar" src="{{userInfo.avatarUrl}}"-->
-<!--                       mode="aspectFill"></image>-->
-<!--                <text class="userinfo-nickname">{{userInfo.nickName}}</text>-->
-<!--            </block>-->
-<!--        </view>-->
+        <!--        <view class="userinfo">-->
+        <!--            <block qq:if="{{!hasUserInfo && canIUse}}">-->
+        <!--                <image class="userinfo-avatar" src="../../images/pages/index/default-avatar.png"-->
+        <!--                       mode="aspectFill"></image>-->
+        <!--                <button class="default-nickname" open-type="getUserInfo" bindgetuserinfo="getUserInfo">点击获取头像昵称-->
+        <!--                </button>-->
+        <!--            </block>-->
+        <!--            <block qq:else>-->
+        <!--                <image bind:tap="previewAvatar" class="userinfo-avatar" src="{{userInfo.avatarUrl}}"-->
+        <!--                       mode="aspectFill"></image>-->
+        <!--                <text class="userinfo-nickname">{{userInfo.nickName}}</text>-->
+        <!--            </block>-->
+        <!--        </view>-->
         <image class="logo-class" src="../../images/ttq.jpg" mode="aspectFill"></image>
         <view class="index-desc" style="color:red;">图片加载有一定延迟，左滑可选择删除订单~</view>
         <navigator url="https://www.baidu.com" class="index-navigator">审核指南及墙机守则，请务必严格遵守！</navigator>
     </view>
     <view class="index-hd" style="padding: 64rpx 0rpx;">
         <view class="list-wrap">
-            <block qq:if="{{datalist.length !== 0 && is_admin === true}}" >
-                <view style="margin: 0rpx 0rpx 40rpx 0rpx; color: red; "> 目前有 {{total_num}} 个订单尚未发布！</view>
+            <block>
+
             </block>
-            <block qq:if="{{datalist.length === 0}}">
-            <view> 还没有任何订单已投递！</view>
+            <block qq:if="{{datalist.length == 0}}">
+                <view> 还没有任何订单已投递！</view>
             </block>
             <block qq:else qq:for="{{datalist}}" qq:for-index="idx" qq:key="{{item._id}}">
                 <view class="list-wrap__group {{item.open ? 'list-wrap__group_expand' : 'list-wrap__group_collapse'}}">
                     <movable-area class="move-area-class">
-                    <movable-view out-of-bounds="true" direction="horizontal" x="{{item.xmove}}"
-                                  inertia="true"
-                                  data-productIndex="{{idx}}"
-                                  bindtouchstart="handleTouchStart"
-                                  bindtouchend="handleTouchEnd"
-                                  bindchange="handleMovableChange"
-                                  class="move-view-class">
-                    <view id="{{item._id}}" class="list-wrap__group-hd" bindtap="kindToggle">
-                        <text class="list-wrap__group-title">{{"[" + item.post_type + "]" + item.post_title }}</text>
-                        <text qq:if="{{is_admin === true}}" class="choose-notify">{{ "已选择" + "[" + rowscount[idx] + "/" + item.image_list.length + "]" }}</text>
+                        <movable-view out-of-bounds="true" direction="horizontal" x="{{item.xmove}}"
+                                      inertia="true"
+                                      data-productIndex="{{idx}}"
+                                      bindtouchstart="handleTouchStart"
+                                      bindtouchend="handleTouchEnd"
+                                      bindchange="handleMovableChange"
+                                      class="move-view-class">
+                            <view id="{{item._id}}" class="list-wrap__group-hd" bindtap="kindToggle">
+                                <text class="list-wrap__group-title">{{"[" + item.post_type + "]" + item.post_title }}</text>
+                                <text qq:if="{{is_admin == true}}" class="choose-notify">{{ "已选择" + "[" + rowscount[idx] + "/" + item.image_list.length + "]" }}</text>
 
-                        <text qq:if="{{is_admin === false && item.post_done == true}}" class="done-notify">订单已发布</text>
-                        <text qq:if="{{is_admin === false && item.post_done == false}}" class="donenot-notify">订单未发布</text>
-<!--                        <image class="list-wrap__group-icon"-->
-<!--                               src="{{'https://q1.qlogo.cn/g?b=qq&nk='+item.post_contact_qq+'&s=640'}}"-->
-<!--                               mode="aspectFill"/>-->
-                    </view>
-                    </movable-view>
+                                <text qq:if="{{is_admin == false && item.post_done == true}}" class="done-notify">订单已发布</text>
+                                <text qq:if="{{is_admin == false && item.post_done == false}}" class="donenot-notify">订单未发布</text>
+                                <!--                        <image class="list-wrap__group-icon"-->
+                                <!--                               src="{{'https://q1.qlogo.cn/g?b=qq&nk='+item.post_contact_qq+'&s=640'}}"-->
+                                <!--                               mode="aspectFill"/>-->
+                            </view>
+                        </movable-view>
                     </movable-area>
-                    <view class="delete-btn" data-id="{{idx}}" bindtap="handleDeleteProduct">删除</view>
+                    <view class="delete-btn" data-id="{{idx}}" bindtap="handleDeleteProduct">恢复</view>
                     <view class="list-wrap__group-bd">
                         <!--                        <block class="image-block" qq:for="{{item.image_list}}" qq:for-item="image">-->
                         <!--                            <image class="result-photo-class" src="{{image}}" mode="aspectFill"></image>-->
@@ -87,15 +87,19 @@
                     </view>
                 </view>
             </block>
+        </view>
     </view>
-</view>
 </view>
 <view class="btn-area" qq:if="{{is_admin == true}}">
     <button type="primary" bindtap="toQzone" style="margin: 0rpx auto 20rpx auto; width:90%">发布！</button>
 </view>
 <view class="btn-area" qq:if="{{is_admin == true}}">
-    <button type="default" bindtap="navigate_to_recent" style="margin: 0rpx auto 20rpx auto; width:90%">近期发布</button>
+    <button type="default" bindtap="next_page" style="margin: 0rpx auto 20rpx auto; width:90%">下一页</button>
 </view>
+<view class="btn-area" qq:if="{{is_admin == true}}">
+    <button type="default" bindtap="navigate_to_back" style="margin: 0rpx auto 20rpx auto; width:90%">返回上一级</button>
+</view>
+
 
 <view class="privacy-container">
     <view class="privacy-1">使用此小程序即代表您同意以下</view>

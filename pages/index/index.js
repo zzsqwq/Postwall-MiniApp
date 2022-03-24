@@ -536,6 +536,38 @@ Page({
         //   }
         // )
     },
+    bind_reset() {
+        console.log('form发生了reset事件')
+        const ImageList = this.data.imageList
+        const submitList = this.data.submitList
+
+        ImageList.splice(0,ImageList.length)
+        submitList.splice(0,submitList.length)
+
+        this.setData({
+            post_type_value : "提问",
+            post_type_blur_value : "提问",
+            post_title_value : "",
+            post_title_blur_value : "",
+            post_text_value : "",
+            post_text_blur_value : "",
+            contact_qq_value : "",
+            contact_qq_blur_value : "",
+            contact_wechat_value : "",
+            contact_wechat_blur_value : "",
+            contact_tel_value : "",
+            contact_tel_blur_value : "",
+            imageList : ImageList,
+            submitList : submitList
+        })
+
+        qq.showToast({
+            title: '数据已清空',
+            icon: 'success',
+            duration: 1000
+        })
+
+    },
     chooseImage: function () {
         const that = this
         imageList = this.data.imageList

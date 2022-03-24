@@ -14,10 +14,10 @@ Page({
         convert_img : [],
         datalist: [],
         total_data_list : [],
-        total_num : [],
         base64str : " ",
         readytosend : new Array(100).fill(false),
         readyPictures : new Array(100).fill(" "),
+        now_pages : 0,
         rowscount : new Array(10).fill(0),
         chooseornot : []
     },
@@ -31,13 +31,14 @@ Page({
             return await qq.cloud.callFunction( {
                 name : function_name,
                 data : {
-                    user_openid : app.data.user_openid
+                    user_openid : app.data.user_openid,
+                    reverse : true,
+                    skip_num : this.data.now_pages * 9
                 }
             }).then(res => {
                 this.setData({
                     total_data_list : res.result.data,
-                    total_num : res.result.data.length,
-                    datalist: res.result.data.slice(0, 9).reverse()
+                    datalist: res.result.data.slice(0, 9)
                 })
                 // console.log("datalist:", this.data.datalist)
                 let tmp_list = this.data.datalist
@@ -59,63 +60,57 @@ Page({
                     total_length += this.data.datalist[i].image_list.length - 1;
                 }
                 for (let i = 0; i < this.data.datalist.length; i++) {
-                        // await qq.cloud.callFunction({
-                        qq.cloud.callFunction({
-                            name: "drawPostwall",
-                            data: this.data.datalist[i]
-                        }).then(res => {
+                    // await qq.cloud.callFunction({
+                    qq.cloud.callFunction({
+                        name: "drawPostwall",
+                        data: this.data.datalist[i]
+                    }).then(res => {
 
-                            //console.log("python function return res",res.result)
-                            let userImageBase64 = 'data:image/png;base64,' + res.result.replace(/[\"]/g,'')
-                            // console.log("base64", userImageBase64)
-                            userImageBase64 = userImageBase64.replace(/[\r\n\"]/g, '')
-                            let imageList = that.data.datalist[i].image_list
-                            var imgPath = qq.env.USER_DATA_PATH  + '/' + that.data.datalist[i]._id + '.png';
-                            var fs = qq.getFileSystemManager();
-                            let j_counter = 1;
-                            fs.writeFileSync(imgPath, res.result, "base64");
-                            imageList.unshift(imgPath)
-                            that.setData({
-                                base64str: userImageBase64
-                            })
-                            that.data.readyPictures[i * 10] = imgPath;
-                            for (let j = 1; j < that.data.datalist[i].image_list.length; j++) {
-                                qq.cloud.downloadFile({
-                                    fileID: that.data.datalist[i].image_list[j]
-                                }).then(res => {
-                                    // console.log("test tempfile", res.tempFilePath)
-                                    that.data.readyPictures[i * 10 + j] = res.tempFilePath;
-                                    // console.log("i:",i,"and",that.data.datalist.length-1)
-                                    // console.log("j:",j,"and",that.data.datalist[i].image_list.length-1)
-                                    j_counter = j_counter + 1;
-                                    if (j_counter === total_length) {
-                                        qq.showToast({
-                                            title: '加载结束',
-                                            icon: 'success',
-                                            duration: 300
-                                        })
-                                    }
-                                    // if(i==that.data.datalist.length-1 && j==that.data.datalist[i].image_list.length -1) {
-                                    //     qq.hideLoading();
-                                    //     qq.showToast( {
-                                    //         title: '加载结束',
-                                    //         icon: 'success',
-                                    //         duration: 300
-                                    //     })
-                                    // }
-                                }).catch(res => {
-                                    console.error("download file error!", res)
-                                })
-                            }
+                        //console.log("python function return res",res.result)
+                        let userImageBase64 = 'data:image/png;base64,' + res.result.replace(/[\"]/g,'')
+                        // console.log("base64", userImageBase64)
+                        userImageBase64 = userImageBase64.replace(/[\r\n\"]/g, '')
+                        let imageList = that.data.datalist[i].image_list
+                        var imgPath = qq.env.USER_DATA_PATH  + '/' + that.data.datalist[i]._id + '.png';
+                        var fs = qq.getFileSystemManager();
+                        let j_counter = 1;
+                        fs.writeFileSync(imgPath, res.result, "base64");
+                        imageList.unshift(imgPath)
+                        that.setData({
+                            base64str: userImageBase64
                         })
-                    }
+                        that.data.readyPictures[i * 10] = imgPath;
+                        for (let j = 1; j < that.data.datalist[i].image_list.length; j++) {
+                            qq.cloud.downloadFile({
+                                fileID: that.data.datalist[i].image_list[j]
+                            }).then(res => {
+                                // console.log("test tempfile", res.tempFilePath)
+                                that.data.readyPictures[i * 10 + j] = res.tempFilePath;
+                                // console.log("i:",i,"and",that.data.datalist.length-1)
+                                // console.log("j:",j,"and",that.data.datalist[i].image_list.length-1)
+                                j_counter = j_counter + 1;
+                                if (j_counter === total_length) {
+                                    qq.showToast({
+                                        title: '加载结束',
+                                        icon: 'success',
+                                        duration: 300
+                                    })
+                                }
+                            }).catch(res => {
+                                console.error("download file error!", res)
                             })
+                        }
+                    })
+                }
+            })
+
     },
+
     onLoad: function () {
 
 
         qq.showShareMenu({
-        showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
+            showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
         })
 
         // init chooseornot
@@ -171,7 +166,7 @@ Page({
     onShow: function() {
         const db = qq.cloud.database();
         qq.hideTabBarRedDot({
-            index : 1
+                index : 1
             }
         )
         let function_name = this.data.is_admin === true ? "adminGetdb" : "Getdb";
@@ -180,7 +175,8 @@ Page({
             return await qq.cloud.callFunction( {
                 name : function_name,
                 data : {
-                    user_openid : app.data.user_openid
+                    user_openid : app.data.user_openid,
+                    reverse : true,
                 }
             }).then(res => {
                 // console.log("total_data_list is :",this.data.total_data_list)
@@ -192,7 +188,7 @@ Page({
         }
 
         getDatabase().then( res => {
-            console.log("if_delta is :",if_delta)
+                console.log("if_delta is :",if_delta)
                 if (if_delta) {
                     this.loadDataBase();
                 }
@@ -289,7 +285,7 @@ Page({
         console.log("id", id)
         console.log("index+id", index*10+id)
         this_data[index][id] = !this_data[index][id]
-        if(this_data[index][id] === true) {
+        if(this_data[index][id] == true) {
             this.data.readytosend[index*10+id] = true;
             row_counter[index]++;
         }else {
@@ -436,12 +432,12 @@ Page({
         if((this.data.is_admin === true) && (productList[productIndex].post_user_openid !== app.data.user_openid)) {
             db.collection("postwall").doc(productList[productIndex]._id).update({
                 data : {
-                    post_done : true
+                    post_done : false
                 }
             }).then(res => {
                 console.log(res);
                 qq.showToast({
-                    title: '删除成功',
+                    title: '恢复成功',
                     icon: 'success',
                     duration: 500
                 })
@@ -452,16 +448,13 @@ Page({
                 if (productList[productIndex]) {
                     this.setXmove(productIndex, 0)
                 }
-                this.setData({
-                    total_num : this.data.total_num - 1
-                })
             })
         }
         else {
             db.collection("postwall").doc(productList[productIndex]._id).update({
                 data : {
-                    post_done : true,
-                    post_user_done: true
+                    post_done : false,
+                    post_user_done: false
                 }
             }).then(res => {
                 if (productList[productIndex]) {
@@ -469,16 +462,13 @@ Page({
                 }
                 console.log(res);
                 qq.showToast({
-                    title: '删除成功',
+                    title: '恢复成功',
                     icon: 'success',
                     duration: 500
                 })
                 productList.splice(productIndex, 1)
                 this.setData({
                     datalist : productList
-                })
-                this.setData({
-                    total_num : this.data.total_num - 1
                 })
             })
         }
@@ -497,10 +487,18 @@ Page({
             slideProductList
         })
     },
-    navigate_to_recent() {
-        qq.navigateTo({
-            url : "/pages/recently/recently"
+    navigate_to_back() {
+        qq.navigateBack({
+            delta : 1
         })
+    },
+    next_page() {
+        console.log("now page is :",this.data.now_pages)
+        this.setData({
+            now_pages : this.data.now_pages + 1
+        })
+        this.loadDataBase()
+
     }
 
 })

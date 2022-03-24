@@ -75,8 +75,8 @@
 
 
     <view class="btn-area">
-        <button type="primary" bind:tap="bind_submit"  style="margin: 0rpx auto 20rpx auto; width:90%">提交</button>
-        <button form-type="reset" style="margin: 0rpx auto 50rpx auto; width:90%">清空已填内容</button>
+        <button type="primary" bindtap="bind_submit"  style="margin: 0rpx auto 20rpx auto; width:90%">提交</button>
+        <button bindtap="bind_reset" style="margin: 0rpx auto 50rpx auto; width:90%">清空已填内容</button>
     </view>
 </form>
 
