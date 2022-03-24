@@ -1,6 +1,6 @@
 <view class="index-hd">
     <image class="logo-class" src="../../images/ttq.jpg" mode="aspectFill"></image>
-    <view class="index-desc">这里是自助贴贴墙</view>
+    <view class="index-desc" style="color:red;">请勿点击白色输入区域滑动、请点击灰色区域滑动</view>
     <view class="index-desc">下拉即可清空已填内容，带*项为必填</view>
     <navigator url="/pages/privacy/privacy" class="index-navigator">隐私协议说明</navigator>
 </view>

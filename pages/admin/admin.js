@@ -13,6 +13,7 @@ Page({
         tmp_img: "",
         convert_img : [],
         datalist: [],
+        total_data_list : [],
         base64str : " ",
         readytosend : new Array(100).fill(false),
         readyPictures : new Array(100).fill(" "),
@@ -33,6 +34,7 @@ Page({
                 }
             }).then(res => {
                 this.setData({
+                    total_data_list : res.result.data,
                     datalist: res.result.data.slice(0, 9).reverse()
                 })
                 // console.log("datalist:", this.data.datalist)
@@ -84,7 +86,7 @@ Page({
                                     // console.log("i:",i,"and",that.data.datalist.length-1)
                                     // console.log("j:",j,"and",that.data.datalist[i].image_list.length-1)
                                     j_counter = j_counter + 1;
-                                    if (j_counter == total_length) {
+                                    if (j_counter === total_length) {
                                         qq.showToast({
                                             title: '加载结束',
                                             icon: 'success',
@@ -167,7 +169,7 @@ Page({
     //         url: '../logs/logs'
     //     })
     // },
-    onShow: function () {
+    onLoad: function () {
 
         // qq.cloud.callFunction( {
         //     name: "drawPostwall",
@@ -187,7 +189,7 @@ Page({
         let a = this.data.chooseornot
         for(let i=0;i<10;i++) {
             let b = [];
-            for(var j=0;j<10;j++) {
+            for(let j=0;j<10;j++) {
                 b[j] = false
             }
             a[i] = b;
@@ -217,7 +219,6 @@ Page({
             })
         }
 
-        this.loadDataBase()
         //     .then( res => {
         //     for(let i = 0; i < this.data.datalist.length; i++) {
         //         for(let j=1;j<this.data.datalist[i].image_list.length;j++) {
@@ -233,6 +234,33 @@ Page({
         //     }
         // })
 
+    },
+    onShow: function() {
+        const db = qq.cloud.database();
+        let function_name = this.data.is_admin === true ? "adminGetdb" : "Getdb";
+        let if_delta = false;
+        let getDatabase = async () => {
+            return await qq.cloud.callFunction( {
+                name : function_name,
+                data : {
+                    user_openid : app.data.user_openid
+                }
+            }).then(res => {
+                // console.log("total_data_list is :",this.data.total_data_list)
+                // console.log("res result length",res.result.data.length)
+                if(!this.data.total_data_list || res.result.data.length !== this.data.total_data_list.length) {
+                    if_delta = true;
+                }
+            })
+        }
+
+        getDatabase().then( res => {
+            console.log("if_delta is :",if_delta)
+                if (if_delta) {
+                    this.loadDataBase();
+                }
+            }
+        )
     },
     onPullDownRefresh(options) {
 
