@@ -119,6 +119,8 @@ Page({
         showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
         })
 
+        this.getRejectArray();
+
         // init chooseornot
         let a = this.data.chooseornot
         for(let i=0;i<10;i++) {
@@ -207,6 +209,8 @@ Page({
         this.setData({
             is_admin : app.data.is_admin
         })
+
+        this.getRejectArray();
 
         console.log("test refresh")
         this.loadDataBase()
@@ -615,6 +619,20 @@ Page({
         qq.navigateTo({
             url : "/pages/recently/recently"
         })
-    }
+    },
+
+    getRejectArray() {
+        qq.cloud.callFunction( {
+            name : "getTypeArray",
+            data : {
+                reject: true
+            }
+        }).then( res => {
+            console.log(res)
+            this.setData( {
+                reject_array : res.result.data[0].rejectlist
+            })
+        })
+    },
 
 })

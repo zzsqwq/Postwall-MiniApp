@@ -22,7 +22,7 @@
     <view class="index-hd" style="padding: 64rpx 0rpx;">
         <view class="list-wrap">
             <block qq:if="{{datalist.length !== 0 && is_admin === true}}" >
-                <view style="margin: 0rpx 0rpx 40rpx 0rpx; color: red; "> 目前有 {{total_num}} 个订单尚未发布！</view>
+                <view style="margin: 0rpx 0rpx 40rpx 0rpx; color: red; "> 目前有 {{total_num}} 个订单尚未发布</view>
             </block>
             <block qq:if="{{datalist.length === 0}}">
             <view> 还没有任何订单已投递！</view>
