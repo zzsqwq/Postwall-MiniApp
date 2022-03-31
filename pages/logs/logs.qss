@@ -30,7 +30,7 @@
     color: black;
 }
 .opensource {
-    margin-top: 40rpx;
+    margin-top: 20rpx;
     font-size:30rpx;
     color: lightslategray;
 }

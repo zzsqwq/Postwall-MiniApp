@@ -45,11 +45,9 @@
     "uploadFile": 10000,
     "downloadFile": 10000
   },
-  "debug": true,
+  "debug": false,
   "groupIdList": [
-    "123456",
-    "34356576",
-    "457658769"
+    "421976351"
   ],
   "usingComponents": {
   }

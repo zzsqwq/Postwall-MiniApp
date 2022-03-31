@@ -91,7 +91,7 @@ page {
 }
 .move-area-class {
     height: 90rpx;
-    width: calc(100vw - 120rpx);
+    width: calc(100vw - 240rpx);
 }
 
 .feed-btn {
@@ -145,7 +145,7 @@ page {
     color: green;
 }
 
-.donenot-notify {
+.reject-notify {
     position : absolute;
     z-index: 1;
     line-height: 1;
@@ -153,4 +153,14 @@ page {
     top : 20rpx;
     font-size: 34rpx;
     color: crimson;
+}
+
+.donenot-notify {
+    position : absolute;
+    z-index: 1;
+    line-height: 1;
+    right : 20rpx;
+    top : 20rpx;
+    font-size: 34rpx;
+    color: cornflowerblue;
 }

@@ -29,7 +29,7 @@
             </block>
             <block qq:else qq:for="{{datalist}}" qq:for-index="idx" qq:key="{{item._id}}">
                 <view class="list-wrap__group {{item.open ? 'list-wrap__group_expand' : 'list-wrap__group_collapse'}}">
-                    <movable-area class="move-area-class">
+                    <movable-area class="move-area-class" style="{{is_admin == true ? 'width: calc(100vw - 240rpx)' : 'width: calc(100vw - 120rpx)'}}">
                     <movable-view out-of-bounds="true" direction="horizontal" x="{{item.xmove}}"
                                   inertia="true"
                                   data-productIndex="{{idx}}"
@@ -37,19 +37,21 @@
                                   bindtouchend="handleTouchEnd"
                                   bindchange="handleMovableChange"
                                   class="move-view-class">
-                    <view id="{{item._id}}" class="list-wrap__group-hd" bindtap="kindToggle">
-                        <text class="list-wrap__group-title">{{"[" + item.post_type + "]" + item.post_title }}</text>
+                    <view id="{{item._id}}" class="list-wrap__group-hd" data-id="{{idx}}" bindtap="kindToggle">
+                        <text class="list-wrap__group-title" data-id="{{idx}}">{{"[" + item.post_type + "]" + item.post_title }}</text>
                         <text qq:if="{{is_admin === true}}" class="choose-notify">{{ "已选择" + "[" + rowscount[idx] + "/" + item.image_list.length + "]" }}</text>
 
-                        <text qq:if="{{is_admin === false && item.post_done == true}}" class="done-notify">订单已发布</text>
-                        <text qq:if="{{is_admin === false && item.post_done == false}}" class="donenot-notify">订单未发布</text>
+                        <text qq:if="{{is_admin === false && item.post_done == true && !item.post_reject}}" class="done-notify">订单已发布</text>
+                        <text qq:if="{{is_admin === false && item.post_done == false && !item.post_reject}}" class="donenot-notify">订单未发布</text>
+                        <text qq:if="{{is_admin == false && item.post_reject}}" class="reject-notify">订单已拒发</text>
 <!--                        <image class="list-wrap__group-icon"-->
 <!--                               src="{{'https://q1.qlogo.cn/g?b=qq&nk='+item.post_contact_qq+'&s=640'}}"-->
 <!--                               mode="aspectFill"/>-->
                     </view>
                     </movable-view>
                     </movable-area>
-                    <view class="delete-btn" data-id="{{idx}}" bindtap="handleDeleteProduct">删除</view>
+                    <view class="delete-btn " style="background: #00CAFC;" data-id="{{idx}}" bindtap="handleDeleteProduct">清除</view>
+                    <view qq:if="{{is_admin == true}}"  class="delete-btn" style="right: 120rpx;" data-id="{{idx}}" bindtap="handleRejectProduct">拒绝</view>
                     <view class="list-wrap__group-bd">
                         <!--                        <block class="image-block" qq:for="{{item.image_list}}" qq:for-item="image">-->
                         <!--                            <image class="result-photo-class" src="{{image}}" mode="aspectFill"></image>-->
@@ -98,6 +100,7 @@
 </view>
 
 <view class="privacy-container">
+    <view class="privacy-1" style="margin: 0rpx auto 20rpx auto;">当前版本 v1.0.9</view>
     <view class="privacy-1">使用此小程序即代表您同意以下</view>
 
     <navigator url="/pages/privacy/privacy" class="privacy-navigator"> 《隐私说明》</navigator>

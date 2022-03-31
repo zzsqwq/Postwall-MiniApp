@@ -76,11 +76,13 @@
 
     <view class="btn-area">
         <button type="primary" bindtap="bind_submit"  style="margin: 0rpx auto 20rpx auto; width:90%">提交</button>
-        <button bindtap="bind_reset" style="margin: 0rpx auto 50rpx auto; width:90%">清空已填内容</button>
+        <button bindtap="bind_reset" style="margin: 0rpx auto 20rpx auto; width:90%">清空已填内容</button>
+        <button type="default" open-type="openGroupProfile" group-id="421976351" style="width:90%; background:gary;">点击加群反馈问题</button>
     </view>
 </form>
 
 <view class="privacy-container">
+    <view class="privacy-1" style="margin: 0rpx auto 20rpx auto;">当前版本 v1.0.9</view>
     <view class="privacy-1">使用此小程序即代表您同意以下</view>
 
     <navigator url="/pages/privacy/privacy" class="privacy-navigator"> 《隐私说明》</navigator>

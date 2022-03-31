@@ -12,6 +12,7 @@ Page({
         canIUse: qq.canIUse('button.open-type.getUserInfo'),
         tmp_img: "",
         convert_img : [],
+        reject_array : ["政治", "色情", "侮辱他人", "暴力、辱骂他人", "未经允许使用他人照片", "重复"],
         datalist: [],
         total_data_list : [],
         total_num : [],
@@ -268,11 +269,57 @@ Page({
         //this.convertAllCanvas()
         const id = e.currentTarget.id
         const list = this.data.datalist
-        for (let i = 0, len = list.length; i < len; ++i) {
-            if (list[i]._id === id) {
-                list[i].open = !list[i].open
-            } else {
-                list[i].open = false
+
+        console.log(e)
+        if(list[e.target.dataset.id].post_reject && !list[e.target.dataset.id].notify_count ) {
+            list[e.target.dataset.id].notify_count = true
+            console.log("list !")
+            let reject_content = "您的订单由于涉及 " +  list[e.target.dataset.id].post_reject + " 等原因被拒绝发送，请修改后重新提交。\n\n您是否需要删除该订单？您也可以通过左滑删除订单。"
+            qq.showModal({
+                title: "订单已被拒发",
+                content: reject_content,
+                cancelText: "否",
+                confirmText: "是",
+                success: res => {
+                    if(res.confirm) {
+                        const db = qq.cloud.database();
+                        let productList = this.data.datalist
+                        // let productIndex = productList.findIndex(item => item.id === id)
+                        let productIndex = e.target.dataset.id;
+                        db.collection("postwall").doc(productList[productIndex]._id).update({
+                            data : {
+                                post_done : true,
+                                post_user_done: true
+                            }
+                        }).then(res => {
+                            if (productList[productIndex]) {
+                                this.setXmove(productIndex, 0)
+                            }
+                            console.log(res);
+                            qq.showToast({
+                                title: '删除成功',
+                                icon: 'success',
+                                duration: 500
+                            })
+                            productList.splice(productIndex, 1)
+                            this.setData({
+                                datalist : productList
+                            })
+                            this.setData({
+                                total_num : this.data.total_num - 1
+                            })
+                        })
+                    }
+                }
+            })
+        }
+        else {
+            for (let i = 0, len = list.length; i < len; ++i) {
+                if (list[i]._id === id) {
+                    list[i].open = !list[i].open
+                } else {
+                    list[i].open = false
+                }
             }
         }
         this.setData({
@@ -283,7 +330,7 @@ Page({
     selectImg(e) {
         const index = parseInt(e.currentTarget.dataset.item)
         const id = parseInt(e.currentTarget.id)
-        this_data = this.data.chooseornot
+        let this_data = this.data.chooseornot
         let row_counter = this.data.rowscount
         console.log("index", index)
         console.log("id", id)
@@ -363,7 +410,7 @@ Page({
      */
     showDeleteButton: function (e) {
         let productIndex = e.currentTarget.dataset.productindex
-        this.setXmove(productIndex, -65)
+        this.setXmove(productIndex, -130)
     },
 
     /**
@@ -387,7 +434,7 @@ Page({
         this.setData({
             datalist: productList
         })
-        console.log(this.data.datalist)
+        // console.log(this.data.datalist)
     },
 
     /**
@@ -395,7 +442,7 @@ Page({
      */
     handleMovableChange: function (e) {
         if (e.detail.source === 'friction') {
-            if (e.detail.x < -30) {
+            if (e.detail.x < -60) {
                 this.showDeleteButton(e)
             } else {
                 this.hideDeleteButton(e)
@@ -416,9 +463,9 @@ Page({
      * 处理touchend事件
      */
     handleTouchEnd(e) {
-        if(e.changedTouches[0].pageX < this.startX && e.changedTouches[0].pageX - this.startX <= -30) {
+        if(e.changedTouches[0].pageX < this.startX && e.changedTouches[0].pageX - this.startX <= -60) {
             this.showDeleteButton(e)
-        } else if(e.changedTouches[0].pageX > this.startX && e.changedTouches[0].pageX - this.startX < 30) {
+        } else if(e.changedTouches[0].pageX > this.startX && e.changedTouches[0].pageX - this.startX < 60) {
             this.showDeleteButton(e)
         } else {
             this.hideDeleteButton(e)
@@ -497,6 +544,73 @@ Page({
             slideProductList
         })
     },
+
+    handleRejectProduct : function ({ currentTarget: { dataset: { id } } }) {
+        let productList = this.data.datalist
+        // let productIndex = productList.findIndex(item => item.id === id)
+        let productIndex = id;
+
+        qq.showActionSheet({
+            itemList : this.data.reject_array,
+            success : res => {
+                console.log(res)
+                const db = qq.cloud.database();
+                if((this.data.is_admin === true) && (productList[productIndex].post_user_openid !== app.data.user_openid)) {
+                    db.collection("postwall").doc(productList[productIndex]._id).update({
+                        data : {
+                            post_done : true,
+                            post_reject : this.data.reject_array[res.tapIndex]
+                        }
+                    }).then(res => {
+                        console.log(res);
+                        qq.showToast({
+                            title: '拒发成功',
+                            icon: 'success',
+                            duration: 500
+                        })
+                        productList.splice(productIndex, 1)
+                        this.setData({
+                            datalist : productList
+                        })
+                        if (productList[productIndex]) {
+                            this.setXmove(productIndex, 0)
+                        }
+                        this.setData({
+                            total_num : this.data.total_num - 1
+                        })
+                    })
+                }
+                else {
+                    db.collection("postwall").doc(productList[productIndex]._id).update({
+                        data : {
+                            post_done : true,
+                            post_user_done: true
+                        }
+                    }).then(res => {
+                        if (productList[productIndex]) {
+                            this.setXmove(productIndex, 0)
+                        }
+                        console.log(res);
+                        qq.showToast({
+                            title: '拒发成功',
+                            icon: 'success',
+                            duration: 500
+                        })
+                        productList.splice(productIndex, 1)
+                        this.setData({
+                            datalist : productList
+                        })
+                        this.setData({
+                            total_num : this.data.total_num - 1
+                        })
+                    })
+                }
+            }
+        })
+
+
+    },
+
     navigate_to_recent() {
         qq.navigateTo({
             url : "/pages/recently/recently"
