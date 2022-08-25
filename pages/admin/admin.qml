@@ -93,6 +93,10 @@
 </view>
 </view>
 <view class="btn-area" qq:if="{{is_admin == true}}">
+    <button type="warn" bindtap="deleteAll" style="margin: 0rpx auto 20rpx 5%; width:43%; display: inline-block;">清除当页</button>
+    <button type="primary" bindtap="publishAll" style="margin: 0rpx auto 20rpx 4%; width:43%; display: inline-block;">发布当页</button>
+</view>
+<view class="btn-area" qq:if="{{is_admin == true}}">
     <button type="primary" bindtap="toQzone" style="margin: 0rpx auto 20rpx auto; width:90%">发布！</button>
 </view>
 <view class="btn-area" qq:if="{{is_admin == true}}">

@@ -14,5 +14,11 @@ exports.main = async (event, context) => {
   } = cloud.getQQContext()
 
   const db = cloud.database();
-  return await db.collection("typeList").get();
+  if(!event.reject) {
+      return await db.collection("typeList").get();
+  }
+  else {
+      return await db.collection("RejectList").get();
+  }
+  
 }

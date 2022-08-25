@@ -71,8 +71,8 @@ Page({
                             // console.log("base64", userImageBase64)
                             userImageBase64 = userImageBase64.replace(/[\r\n\"]/g, '')
                             let imageList = that.data.datalist[i].image_list
-                            var imgPath = qq.env.USER_DATA_PATH  + '/' + that.data.datalist[i]._id + '.png';
-                            var fs = qq.getFileSystemManager();
+                            let imgPath = qq.env.USER_DATA_PATH  + '/' + that.data.datalist[i]._id + '.png';
+                            let fs = qq.getFileSystemManager();
                             let j_counter = 1;
                             fs.writeFileSync(imgPath, res.result, "base64");
                             imageList.unshift(imgPath)
@@ -96,14 +96,6 @@ Page({
                                             duration: 300
                                         })
                                     }
-                                    // if(i==that.data.datalist.length-1 && j==that.data.datalist[i].image_list.length -1) {
-                                    //     qq.hideLoading();
-                                    //     qq.showToast( {
-                                    //         title: '加载结束',
-                                    //         icon: 'success',
-                                    //         duration: 300
-                                    //     })
-                                    // }
                                 }).catch(res => {
                                     console.error("download file error!", res)
                                 })
@@ -113,8 +105,6 @@ Page({
                             })
     },
     onLoad: function () {
-
-
         qq.showShareMenu({
         showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
         })
@@ -202,8 +192,7 @@ Page({
             }
         )
     },
-    onPullDownRefresh(options) {
-
+    Refresh() {
         app.getUserOpenid()
 
         this.setData({
@@ -240,6 +229,9 @@ Page({
                 })
             }
         })
+    },
+    onPullDownRefresh(options) {
+        this.Refresh();
     },
     onReady(options) {
     },
@@ -635,4 +627,28 @@ Page({
         })
     },
 
+    publishAll() {
+      for(let i=0;i<this.data.datalist.length;i++) {
+          let data_ = this.data.datalist[i];
+          for(let j=0;j<data_.image_list.length;j++) {
+              this.data.readytosend[i*10+j] = true;
+              this.data.rowscount[i]++;
+          }
+      }
+      this.toQzone();
+    },
+
+    deleteAll() {
+        for(let i=0;i<this.data.datalist.length;i++) {
+            let target = {
+                currentTarget : {
+                    dataset : {
+                        id : i
+                    }
+                }
+            }
+            this.handleDeleteProduct(target);
+        }
+        this.Refresh();
+    },
 })
