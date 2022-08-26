@@ -346,7 +346,6 @@ Page({
                 }
             }
         }
-        console.log(medias)
         qq.openQzonePublish({
             footnote: '自助贴贴墙',
             path: 'pages/index/index',
@@ -354,22 +353,13 @@ Page({
             media: medias
         })
 
+        a = new Array(10).fill(false).map( () => new Array(10).fill(false))
         this.setData({
             readytosend: new Array(100).fill(false),
             rowscount: new Array(10).fill(0),
-        })
-
-        a = this.data.chooseornot
-        for (let i = 0; i < 10; i++) {
-            let b = []
-            for (let j = 0; j < 10; j++) {
-                b[j] = false
-            }
-            a[i] = b
-        }
-        this.setData({
             chooseornot: a
         })
+        console.log(this.data.chooseornot)
     }
     ,
 
