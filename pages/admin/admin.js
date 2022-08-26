@@ -52,29 +52,44 @@ Page({
         }
         getDatabase()
             .then(async res => {
-                const that = this
-                const str = this.data.base64str
-                // console.log("test datalist:", this.data.datalist.length)
-                let total_length = 0;
-                for (let i = 0; i < this.data.datalist.length; i++) {
-                    total_length += this.data.datalist[i].image_list.length - 1;
-                }
-                for (let i = 0; i < this.data.datalist.length; i++) {
-                    let imageList = that.data.datalist[i].image_list
-                    for (let j = 0; j < imageList.length; j++) {
-                        qq.cloud.downloadFile({
-                            fileID: that.data.datalist[i].image_list[j]
-                        }).then(res => {
-                            // console.log("test tempfile", res.tempFilePath)
-                            that.data.readyPictures[i * 10 + j] = res.tempFilePath;
-                            // console.log("i:",i,"and",that.data.datalist.length-1)
-                            // console.log("j:",j,"and",that.data.datalist[i].image_list.length-1)
-                        }).catch(res => {
-                            console.error("download file error!", res)
-                        })
+                    const that = this
+                    const str = this.data.base64str
+                    // console.log("test datalist:", this.data.datalist.length)
+                    let total_length = 0;
+                    for (let i = 0; i < this.data.datalist.length; i++) {
+                        total_length += this.data.datalist[i].image_list.length - 1
                     }
+                    let tasks = []
+                    qq.showLoading({
+                        title: "正在加载订单",
+                        mask: true
+                    })
+                    for (let i = 0; i < this.data.datalist.length; i++) {
+                        let imageList = that.data.datalist[i].image_list
+                        for (let j = 0; j < imageList.length; j++) {
+                            let task = qq.cloud.downloadFile({
+                                fileID: that.data.datalist[i].image_list[j]
+                            }).then( res => {
+                                that.data.readyPictures[i*10+j] = res.tempFilePath;
+                            })
+                            tasks.push(task)
+                        }
+                    }
+                    Promise.all(tasks).then(responses => {
+                        for (let response of responses) {
+                            console.log(response)
+                        }
+                        qq.hideLoading();
+                        qq.showToast({
+                            title: '订单加载完毕',
+                            icon: 'success',
+                            duration: 1000
+                        })
+                    }).catch(error => {
+                        console.log("download error!")
+                    })
                 }
-            })
+            )
     },
     onLoad: function () {
         qq.showShareMenu({
@@ -117,7 +132,9 @@ Page({
             })
         }
 
-    },
+    }
+
+    ,
     onShow: function () {
         const db = qq.cloud.database();
         qq.hideTabBarRedDot({
@@ -148,7 +165,8 @@ Page({
                 }
             }
         )
-    },
+    }
+    ,
     Refresh() {
         app.getUserOpenid()
 
@@ -186,12 +204,15 @@ Page({
                 })
             }
         })
-    },
+    }
+    ,
     onPullDownRefresh(options) {
         this.Refresh();
-    },
+    }
+    ,
     onReady(options) {
-    },
+    }
+    ,
     getUserInfo: function (e) {
         console.log(e)
         app.globalData.userInfo = e.detail.userInfo
@@ -199,7 +220,8 @@ Page({
             userInfo: e.detail.userInfo,
             hasUserInfo: true
         })
-    },
+    }
+    ,
     previewAvatar(e) {
         const current = e.target.dataset.src
         userinfo = app.globalData.userInfo
@@ -208,7 +230,8 @@ Page({
             current: userinfo.avatarUrl,
             urls: [userinfo.avatarUrl]
         })
-    },
+    }
+    ,
     previewImg(e) {
         const img_id = e.target.dataset.id;
         const img_index = e.target.dataset.index;
@@ -216,7 +239,8 @@ Page({
         qq.previewImage({
             urls: [this.data.datalist[img_id].image_list[img_index]]
         })
-    },
+    }
+    ,
     kindToggle(e) {
         //console.log(e.currentTarget)
         //this.convertAllCanvas()
@@ -278,7 +302,8 @@ Page({
             datalist: list
         })
         // qq.reportAnalytics('click_view_programmatically', {})
-    },
+    }
+    ,
     selectImg(e) {
         const index = parseInt(e.currentTarget.dataset.item)
         const id = parseInt(e.currentTarget.id)
@@ -300,7 +325,8 @@ Page({
             chooseornot: this_data,
             rowscount: row_counter
         })
-    },
+    }
+    ,
     toQzone() {
         let medias = []
         let now_index = 1
@@ -312,7 +338,7 @@ Page({
                     type: 'photo',
                     path: this.data.readyPictures[i]
                 })
-                index = parseInt(i / 10)
+                index = i / 10
                 console.log(index, this.data.rowscount[index])
             }
         }
@@ -353,7 +379,8 @@ Page({
         this.setData({
             chooseornot: a
         })
-    },
+    }
+    ,
 
     /**
      * 显示删除按钮
@@ -361,7 +388,8 @@ Page({
     showDeleteButton: function (e) {
         let productIndex = e.currentTarget.dataset.productindex
         this.setXmove(productIndex, -130)
-    },
+    }
+    ,
 
     /**
      * 隐藏删除按钮
@@ -370,7 +398,8 @@ Page({
         let productIndex = e.currentTarget.dataset.productindex
 
         this.setXmove(productIndex, 0)
-    },
+    }
+    ,
 
     /**
      * 设置movable-view位移
@@ -385,7 +414,8 @@ Page({
             datalist: productList
         })
         // console.log(this.data.datalist)
-    },
+    }
+    ,
 
     /**
      * 处理movable-view移动事件
@@ -400,14 +430,16 @@ Page({
         } else if (e.detail.source === 'out-of-bounds' && e.detail.x === 0) {
             this.hideDeleteButton(e)
         }
-    },
+    }
+    ,
 
     /**
      * 处理touchstart事件
      */
     handleTouchStart(e) {
         this.startX = e.touches[0].pageX
-    },
+    }
+    ,
 
     /**
      * 处理touchend事件
@@ -420,7 +452,8 @@ Page({
         } else {
             this.hideDeleteButton(e)
         }
-    },
+    }
+    ,
 
     /**
      * 删除产品
@@ -478,7 +511,8 @@ Page({
                 })
             })
         }
-    },
+    }
+    ,
 
     /**
      * slide-delete 删除产品
@@ -492,7 +526,8 @@ Page({
         this.setData({
             slideProductList
         })
-    },
+    }
+    ,
 
     handleRejectProduct: function ({currentTarget: {dataset: {id}}}) {
         let productList = this.data.datalist
@@ -557,13 +592,15 @@ Page({
         })
 
 
-    },
+    }
+    ,
 
     navigate_to_recent() {
         qq.navigateTo({
             url: "/pages/recently/recently"
         })
-    },
+    }
+    ,
 
     getRejectArray() {
         qq.cloud.callFunction({
@@ -577,7 +614,8 @@ Page({
                 reject_array: res.result.data[0].rejectlist
             })
         })
-    },
+    }
+    ,
 
     publishAll() {
         for (let i = 0; i < this.data.datalist.length; i++) {
@@ -588,7 +626,8 @@ Page({
             }
         }
         this.toQzone();
-    },
+    }
+    ,
 
     deleteAll() {
         for (let i = 0; i < this.data.datalist.length; i++) {
@@ -602,5 +641,6 @@ Page({
             this.handleDeleteProduct(target);
         }
         this.Refresh();
-    },
+    }
+    ,
 })
