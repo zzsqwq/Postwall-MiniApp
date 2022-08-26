@@ -76,9 +76,6 @@ Page({
                         }
                     }
                     Promise.all(tasks).then(responses => {
-                        for (let response of responses) {
-                            console.log(response)
-                        }
                         qq.hideLoading();
                         qq.showToast({
                             title: '订单加载完毕',
@@ -633,33 +630,32 @@ Page({
         let productList = this.data.datalist
         const isAdmin = this.data.is_admin
         const userOpenid = app.data.user_openid
-        // let productIndex = productList.findIndex(item => item.id === id)
         const db = qq.cloud.database()
 
         let deleteTasks = []
         for (let i = 0; i < productList.length; i++) {
             let product = productList[i]
             if (isAdmin && product.post_user_openid !== userOpenid) {
-                const task = db.collection("postwall").doc(product._id).update({
+                let task = db.collection("postwall").doc(product._id).update({
                     data: {
                         post_done: true
-                    }.then(res => {
-                        productList.splice(i, 1)
-                    }).catch(error => {
-                        console.error(error)
-                    })
+                    }
+                }).then(res => {
+                    productList.splice(i, 1)
+                }).catch(error => {
+                    console.error(error)
                 })
                 deleteTasks.push(task)
             } else {
-                const task = db.collection("postwall").doc(product._id).update({
+                let task = db.collection("postwall").doc(product._id).update({
                     data: {
                         post_done: true,
                         post_user_done: true
-                    }.then(res => {
-                        productList.splice(i, 1)
-                    }).catch(error => {
-                        console.error(error)
-                    })
+                    }
+                }).then(res => {
+                    productList.splice(i, 1)
+                }).catch(error => {
+                    console.error(error)
                 })
                 deleteTasks.push(task)
             }
