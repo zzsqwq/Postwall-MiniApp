@@ -458,7 +458,7 @@ Page({
     /**
      * 删除产品
      */
-    handleDeleteProduct: function ({currentTarget: {dataset: {id}}}) {
+    handleDeleteProduct: async function ({currentTarget: {dataset: {id}}}) {
         let productList = this.data.datalist
         // let productIndex = productList.findIndex(item => item.id === id)
         let productIndex = id;
@@ -630,6 +630,7 @@ Page({
     ,
 
     deleteAll() {
+        let deleteTasks = []
         for (let i = 0; i < this.data.datalist.length; i++) {
             let target = {
                 currentTarget: {
@@ -638,9 +639,15 @@ Page({
                     }
                 }
             }
-            this.handleDeleteProduct(target);
+            let task = this.handleDeleteProduct(target);
+            deleteTasks.push(task)
         }
-        this.Refresh();
+        Promise.all(deleteTasks).then( responses => {
+            console.log("Delete all products.")
+            this.Refresh();
+        }).catch( error => {
+            console.error("Delete product error!")
+        })
     }
     ,
 })
