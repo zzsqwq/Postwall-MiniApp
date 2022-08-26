@@ -16,6 +16,7 @@ Page({
         datalist: [],
         total_data_list: [],
         total_num: [],
+        orderObjects: [],
         base64str: " ",
         readytosend: new Array(100).fill(false),
         readyPictures: new Array(100).fill(" "),
@@ -26,11 +27,11 @@ Page({
         // return custom share data when user share.
     },
     loadDataBase: function () {
-        const db = qq.cloud.database();
-        let function_name = this.data.is_admin === true ? "adminGetdb" : "Getdb";
+        const db = qq.cloud.database()
+        let functionName = this.data.is_admin === true ? "adminGetdb" : "Getdb"
         let getDatabase = async () => {
             return await qq.cloud.callFunction({
-                name: function_name,
+                name: functionName,
                 data: {
                     user_openid: app.data.user_openid
                 }
@@ -41,36 +42,29 @@ Page({
                     datalist: res.result.data.slice(0, 9).reverse()
                 })
                 // console.log("datalist:", this.data.datalist)
-                let tmp_list = this.data.datalist
+                let tempList = this.data.datalist
                 for (let i = 0; i < this.data.datalist.length; i++) {
-                    tmp_list[i].open = false
+                    tempList[i].open = false
                 }
                 this.setData({
-                    datalist: tmp_list
+                    datalist: tempList
                 })
             }).then(res => console.log(this.data.datalist))
         }
         getDatabase()
             .then(async res => {
-                    const that = this
-                    const str = this.data.base64str
-                    // console.log("test datalist:", this.data.datalist.length)
-                    let total_length = 0;
-                    for (let i = 0; i < this.data.datalist.length; i++) {
-                        total_length += this.data.datalist[i].image_list.length - 1
-                    }
                     let tasks = []
                     qq.showLoading({
                         title: "正在加载订单",
                         mask: true
                     })
                     for (let i = 0; i < this.data.datalist.length; i++) {
-                        let imageList = that.data.datalist[i].image_list
+                        let imageList = this.data.datalist[i].image_list
                         for (let j = 0; j < imageList.length; j++) {
                             let task = qq.cloud.downloadFile({
-                                fileID: that.data.datalist[i].image_list[j]
+                                fileID: this.data.datalist[i].image_list[j]
                             }).then(res => {
-                                that.data.readyPictures[i * 10 + j] = res.tempFilePath;
+                                this.data.readyPictures[i * 10 + j] = res.tempFilePath;
                             })
                             tasks.push(task)
                         }
@@ -158,7 +152,7 @@ Page({
         getDatabase().then(res => {
                 console.log("if_delta is :", if_delta)
                 if (if_delta) {
-                    this.loadDataBase();
+                    this.Refresh()
                 }
             }
         )
@@ -330,13 +324,13 @@ Page({
         let next_index = 0
         let post_detail = ""
         for (let i = 0; i < 100; i++) {
+            let orderIndex = parseInt(i/10)
             if (this.data.readytosend[i] === true) {
                 medias.push({
                     type: 'photo',
                     path: this.data.readyPictures[i]
                 })
-                index = i / 10
-                console.log(index, this.data.rowscount[index])
+                console.log(orderIndex, this.data.rowscount[orderIndex])
             }
         }
         for (let i = 0; i < 10; i++) {
@@ -366,9 +360,9 @@ Page({
         })
 
         a = this.data.chooseornot
-        for (var i = 0; i < 10; i++) {
-            var b = []
-            for (var j = 0; j < 10; j++) {
+        for (let i = 0; i < 10; i++) {
+            let b = []
+            for (let j = 0; j < 10; j++) {
                 b[j] = false
             }
             a[i] = b
@@ -472,16 +466,6 @@ Page({
                     icon: 'success',
                     duration: 500
                 })
-                productList.splice(productIndex, 1)
-                this.setData({
-                    datalist: productList
-                })
-                if (productList[productIndex]) {
-                    this.setXmove(productIndex, 0)
-                }
-                this.setData({
-                    total_num: this.data.total_num - 1
-                })
             })
         } else {
             db.collection("postwall").doc(productList[productIndex]._id).update({
@@ -499,15 +483,28 @@ Page({
                     icon: 'success',
                     duration: 500
                 })
-                productList.splice(productIndex, 1)
-                this.setData({
-                    datalist: productList
-                })
-                this.setData({
-                    total_num: this.data.total_num - 1
-                })
             })
         }
+        productList.splice(productIndex, 1)
+        for(let i=productIndex*10;i<productIndex*10+10;i++) {
+            this.data.readytosend[i] = false;
+        }
+        for(let index=productIndex;index<productList.length-1;index++) {
+            this.data.rowscount[index] = this.data.rowscount[index+1]
+        }
+        this.data.rowscount[productList.length-1] = 0;
+        this.setData({
+            datalist: productList,
+            rowscount: this.data.rowscount,
+            readytosend: this.data.readytosend
+        })
+        if (productList[productIndex]) {
+            this.setXmove(productIndex, 0)
+        }
+        this.setData({
+            total_num: this.data.total_num - 1
+        })
+
     }
     ,
 
@@ -549,16 +546,6 @@ Page({
                             icon: 'success',
                             duration: 500
                         })
-                        productList.splice(productIndex, 1)
-                        this.setData({
-                            datalist: productList
-                        })
-                        if (productList[productIndex]) {
-                            this.setXmove(productIndex, 0)
-                        }
-                        this.setData({
-                            total_num: this.data.total_num - 1
-                        })
                     })
                 } else {
                     db.collection("postwall").doc(productList[productIndex]._id).update({
@@ -576,15 +563,27 @@ Page({
                             icon: 'success',
                             duration: 500
                         })
-                        productList.splice(productIndex, 1)
-                        this.setData({
-                            datalist: productList
-                        })
-                        this.setData({
-                            total_num: this.data.total_num - 1
-                        })
                     })
                 }
+                productList.splice(productIndex, 1)
+                for(let i=productIndex*10;i<productIndex*10+10;i++) {
+                    this.data.readytosend[i] = false;
+                }
+                for(let index=productIndex;index<productList.length-1;index++) {
+                    this.data.rowscount[index] = this.data.rowscount[index+1]
+                }
+                this.data.rowscount[productList.length-1] = 0;
+                this.setData({
+                    datalist: productList,
+                    rowscount: this.data.rowscount,
+                    readytosend: this.data.readytosend
+                })
+                if (productList[productIndex]) {
+                    this.setXmove(productIndex, 0)
+                }
+                this.setData({
+                    total_num: this.data.total_num - 1
+                })
             }
         })
 
@@ -677,7 +676,6 @@ Page({
         })
         this.setData({
             datalist: productList,
-            total_num: productList.length
         })
         this.Refresh();
     }
