@@ -25,7 +25,7 @@
 
             </block>
             <block qq:if="{{datalist.length == 0}}">
-                <view> 还没有任何订单已投递！</view>
+                <view>还没有任何订单已投递！</view>
             </block>
             <block qq:else qq:for="{{datalist}}" qq:for-index="idx" qq:key="{{item._id}}">
                 <view class="list-wrap__group {{item.open ? 'list-wrap__group_expand' : 'list-wrap__group_collapse'}}">
@@ -38,10 +38,14 @@
                                       bindchange="handleMovableChange"
                                       class="move-view-class">
                             <view id="{{item._id}}" class="list-wrap__group-hd" bindtap="kindToggle">
-                                <text class="list-wrap__group-title">{{"[" + item.post_type + "]" + item.post_title }}</text>
-                                <text qq:if="{{is_admin == true}}" class="choose-notify">{{ "已选择" + "[" + rowscount[idx] + "/" + item.image_list.length + "]" }}</text>
+                                <text class="list-wrap__group-title">{{"[" + item.post_type + "]" + item.post_title
+                                    }}</text>
+                                <text qq:if="{{is_admin == true}}"
+                                      class="choose-notify">{{ "已选择" + "[" + rowscount[idx] + "/" + item.image_list.length + "]"
+                                    }}</text>
 
-                                <text qq:if="{{is_admin == false && item.post_done == true}}" class="done-notify">订单已发布</text>
+                                <text qq:if="{{is_admin == false && item.post_done == true}}"
+                                      class="done-notify">订单已发布</text>
                                 <text qq:if="{{is_admin == false && item.post_done == false}}" class="donenot-notify">订单未发布</text>
                                 <!--                        <image class="list-wrap__group-icon"-->
                                 <!--                               src="{{'https://q1.qlogo.cn/g?b=qq&nk='+item.post_contact_qq+'&s=640'}}"-->
@@ -55,18 +59,23 @@
                         <!--                            <image class="result-photo-class" src="{{image}}" mode="aspectFill"></image>-->
                         <!--                        </block>-->
                         <view class="imgList">
-                            <swiper indicator-dots='true'  duration='1000'
+                            <swiper indicator-dots='true' duration='1000'
                                     circular='true' style="height: 650rpx">
                                 <!--                                <swiper-item>-->
                                 <!--                                    <canvas data-index="0" class="result-photo-class" canvas-id="{{item._id}}"></canvas>-->
                                 <!--                                    <image data-item="{{idx}}" id="0" bind:tap="selectImg" qq:if="{{chooseornot[idx][0]}}" class="test-class" src="../../images/pages/index/selected.png"></image>-->
                                 <!--                                    <image data-item="{{idx}}" id="0" bind:tap="selectImg" qq:if="{{!chooseornot[idx][0]}}" class="test-class" src="../../images/pages/index/Unselected.png"></image>-->
                                 <!--                                </swiper-item>-->
-                                <block qq:for="{{item.image_list}}" qq:for-item="image" qq:for-index="index" >
+                                <block qq:for="{{item.image_list}}" qq:for-item="image" qq:for-index="index">
                                     <swiper-item>
-                                        <image src='{{image}}'  bindtap="previewImg" data-index='{{index}}' data-id="{{idx}}" class="img" mode="aspectFit"></image>
-                                        <image data-item="{{idx}}" id="{{index}}" bindtap="selectImg" qq:if="{{is_admin == true && chooseornot[idx][index]}}" class="test-class" src="../../images/pages/index/selected.png"></image>
-                                        <image data-item="{{idx}}" id="{{index}}" bindtap="selectImg" qq:if="{{is_admin == true && !chooseornot[idx][index] }}" class="test-class" src="../../images/pages/index/Unselected.png"></image>
+                                        <image src='{{image}}' bindtap="previewImg" data-index='{{index}}'
+                                               data-id="{{idx}}" class="img" mode="aspectFit"></image>
+                                        <image data-item="{{idx}}" id="{{index}}" bindtap="selectImg"
+                                               qq:if="{{is_admin == true && chooseornot[idx][index]}}"
+                                               class="test-class" src="../../images/pages/index/selected.png"></image>
+                                        <image data-item="{{idx}}" id="{{index}}" bindtap="selectImg"
+                                               qq:if="{{is_admin == true && !chooseornot[idx][index] }}"
+                                               class="test-class" src="../../images/pages/index/Unselected.png"></image>
                                     </swiper-item>
                                 </block>
                             </swiper>
@@ -104,5 +113,5 @@
 <view class="privacy-container">
     <view class="privacy-1">使用此小程序即代表您同意以下</view>
 
-    <navigator url="/pages/privacy/privacy" class="privacy-navigator"> 《隐私说明》</navigator>
+    <navigator url="/pages/privacy/privacy" class="privacy-navigator">《隐私说明》</navigator>
 </view>

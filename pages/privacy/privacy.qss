@@ -3,10 +3,12 @@
     margin-top: 20rpx;
     margin-bottom: 40rpx;
 }
+
 .privacy-content {
     display: block;
     padding: 10rpx 30rpx;
 }
+
 .privacy-container {
     height: 100%;
     display: flex;

@@ -67,11 +67,12 @@ page {
     width: 100%;
 }
 
-.imgList{
-    width:100%;
+.imgList {
+    width: 100%;
     height: 650rpx;
 }
-.imgList  .img{
+
+.imgList .img {
     /*max-width: 700rpx;*/
     max-width: 600rpx;
     height: 650rpx;
@@ -79,16 +80,17 @@ page {
 
 .test-img {
     height: 650rpx;
-    width:650rpx;
-    display:block;
+    width: 650rpx;
+    display: block;
 }
 
 .move-view-class {
     height: 90rpx;
     width: 100vw;
-    z-index : 999;
+    z-index: 999;
     background-color: #FFFFFF;
 }
+
 .move-area-class {
     height: 90rpx;
     width: calc(100vw - 240rpx);
@@ -109,6 +111,7 @@ page {
     background: #E66671;
     text-align: center;
 }
+
 .delete-btn {
     position: absolute;
     top: 0;
@@ -126,41 +129,41 @@ page {
 }
 
 .choose-notify {
-    position : absolute;
+    position: absolute;
     z-index: 1;
     line-height: 1;
-    right : 20rpx;
-    top : 20rpx;
+    right: 20rpx;
+    top: 20rpx;
     font-size: 34rpx;
     color: #808080;
 }
 
 .done-notify {
-    position : absolute;
+    position: absolute;
     z-index: 1;
     line-height: 1;
-    right : 20rpx;
-    top : 20rpx;
+    right: 20rpx;
+    top: 20rpx;
     font-size: 34rpx;
     color: green;
 }
 
 .reject-notify {
-    position : absolute;
+    position: absolute;
     z-index: 1;
     line-height: 1;
-    right : 20rpx;
-    top : 20rpx;
+    right: 20rpx;
+    top: 20rpx;
     font-size: 34rpx;
     color: crimson;
 }
 
 .donenot-notify {
-    position : absolute;
+    position: absolute;
     z-index: 1;
     line-height: 1;
-    right : 20rpx;
-    top : 20rpx;
+    right: 20rpx;
+    top: 20rpx;
     font-size: 34rpx;
     color: cornflowerblue;
 }

@@ -4,7 +4,9 @@
     <view class="feedback-notify">实高自助贴贴墙</view>
     <view class="copyright-class">Developed by 墙机组</view>
 
-    <button class="button-class" open-type="share" share-mode="['qq','qzone','wechatFriends','wechatMoment','recentContacts']" >分享此程序</button>
+    <button class="button-class" open-type="share"
+            share-mode="['qq','qzone','wechatFriends','wechatMoment','recentContacts']">分享此程序
+    </button>
 
     <button class="button-class" open-type="openGroupProfile" group-id="421976351">点击加群反馈问题</button>
 
@@ -18,5 +20,5 @@
     <view class="privacy-1" style="margin: 30rpx auto 20rpx auto;">当前版本 v1.1.0</view>
     <view class="privacy-1">使用此小程序即代表您同意以下</view>
 
-    <navigator url="/pages/privacy/privacy" class="privacy-navigator"> 《隐私说明》</navigator>
+    <navigator url="/pages/privacy/privacy" class="privacy-navigator">《隐私说明》</navigator>
 </view>

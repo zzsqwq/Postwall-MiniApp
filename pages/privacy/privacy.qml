@@ -1,5 +1,5 @@
 <view class="privacy-container">
-    <view class="privacy-title"> 隐私说明 </view>
+    <view class="privacy-title">隐私说明</view>
     <view class="privacy-content">本说明是实高自助贴贴墙小程序开发者（以下简称“开发者”）为处理您的个人信息而制定。
     </view>
 </view>
@@ -25,5 +25,5 @@
     - 开发者联系方式：2459958352@qq.com
 </text>
 <text class="privacy-content">更新日期：2021年12月30日
-生效日期：2021年12月30日
+    生效日期：2021年12月30日
 </text>

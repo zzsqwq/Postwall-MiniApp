@@ -20,7 +20,7 @@ Page({
     },
     onPullDownRefresh() {
         qq.stopPullDownRefresh({
-            success : res => {
+            success: res => {
                 qq.showToast({
                     title: '页面已刷新',
                     icon: 'success',

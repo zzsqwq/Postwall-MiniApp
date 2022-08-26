@@ -6,25 +6,25 @@ const app = getApp()
 Page({
     data: {
         imageList: [],
-        is_admin : "",
-        type_array : ["提问","吐槽","表白","寻物","寻人"],
-        type_index : 0,
-        submit_delay : 0,
+        is_admin: "",
+        type_array: ["提问", "吐槽", "表白", "寻物", "寻人"],
+        type_index: 0,
+        submit_delay: 0,
         submitList: [],
-        post_type_value : "提问",
-        post_type_blur_value : "提问",
-        post_title_value : "",
-        post_title_blur_value : "",
-        post_text_value : "",
-        post_text_blur_value : "",
-        contact_qq_value : "",
-        contact_qq_blur_value : "",
-        contact_wechat_value : "",
-        contact_wechat_blur_value : "",
-        contact_tel_value : "",
-        contact_tel_blur_value : "",
-        adminer_list : [],
-        admin_barlist : [
+        post_type_value: "提问",
+        post_type_blur_value: "提问",
+        post_title_value: "",
+        post_title_blur_value: "",
+        post_text_value: "",
+        post_text_blur_value: "",
+        contact_qq_value: "",
+        contact_qq_blur_value: "",
+        contact_wechat_value: "",
+        contact_wechat_blur_value: "",
+        contact_tel_value: "",
+        contact_tel_blur_value: "",
+        adminer_list: [],
+        admin_barlist: [
             {
                 "pagePath": "/pages/index/index",
                 "iconPath": "/images/tabbar/icon-home.png",
@@ -35,7 +35,7 @@ Page({
                 "pagePath": "/pages/admin/admin",
                 "iconPath": "/images/tabbar/icon-admin.png",
                 "selectedIconPath": "/images/tabbar/icon-admin-selected.png",
-                "text":"审核与发布"
+                "text": "审核与发布"
             },
             {
                 "pagePath": "/pages/logs/logs",
@@ -50,7 +50,7 @@ Page({
         if (typeof this.getTabBar === 'function' && this.getTabBar()) {
             console.log("function!")
             this.getTabBar().setData({
-                list : this.data.admin_barlist,
+                list: this.data.admin_barlist,
             })
             console.log(this.getTabBar().data)
         }
@@ -58,35 +58,33 @@ Page({
     checkAdmin() {
         const db = qq.cloud.database();
         const that = this
-        db.collection("adminList").get().then( res => {
+        db.collection("adminList").get().then(res => {
             let adminList = res.data;
-            console.log("adminList",adminList)
+            console.log("adminList", adminList)
         })
     },
     getTypeArray() {
-      qq.cloud.callFunction( {
-          name : "getTypeArray",
-          data : {
-
-          }
-      }).then( res => {
-          console.log(res)
-          this.setData( {
-              type_array : res.result.data[0].typelist
-          })
-      })
+        qq.cloud.callFunction({
+            name: "getTypeArray",
+            data: {}
+        }).then(res => {
+            console.log(res)
+            this.setData({
+                type_array: res.result.data[0].typelist
+            })
+        })
     },
     bindPickerChange(e) {
         console.log('picker发送选择改变，携带值为', e.detail.value)
         this.setData({
             type_index: e.detail.value,
-            post_type_value : this.data.type_array[e.detail.value],
-            post_type_blur_value : this.data.type_array[e.detail.value]
+            post_type_value: this.data.type_array[e.detail.value],
+            post_type_blur_value: this.data.type_array[e.detail.value]
         })
     },
     onLoad(options) {
         qq.showShareMenu({
-        showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
+            showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
         })
         qq.cloud.init({
             env: 'postwall-4gy7eykl559a475a',
@@ -94,25 +92,25 @@ Page({
         });
         this.getTypeArray();
         this.setData({
-            is_admin : app.data.is_admin
+            is_admin: app.data.is_admin
         })
 
         let fs = qq.getFileSystemManager();
 
         fs.readdir({
-            dirPath : `${qq.env.USER_DATA_PATH}`,
-            success : (res) => {
+            dirPath: `${qq.env.USER_DATA_PATH}`,
+            success: (res) => {
                 console.log(res)
                 res.files.forEach((val) => {
                     // console.log(val)
-                    if(val.substr(val.length-3) === 'png') {
+                    if (val.substr(val.length - 3) === 'png') {
                         console.log(val)
                         fs.unlink({
-                            filePath : qq.env.USER_DATA_PATH + '/' + val,
-                            success : (res) => {
+                            filePath: qq.env.USER_DATA_PATH + '/' + val,
+                            success: (res) => {
                                 console.log("removed ", val)
                             },
-                            fail : (res) => {
+                            fail: (res) => {
                                 console.error(res)
                             }
 
@@ -146,31 +144,31 @@ Page({
 
         const ImageList = this.data.imageList
         const submitList = this.data.submitList
-        
-        ImageList.splice(0,ImageList.length)
-        submitList.splice(0,submitList.length)
+
+        ImageList.splice(0, ImageList.length)
+        submitList.splice(0, submitList.length)
 
         this.getTypeArray();
 
         this.setData({
-            post_type_value : "提问",
-            post_type_blur_value : "提问",
-            post_title_value : "",
-            post_title_blur_value : "",
-            post_text_value : "",
-            post_text_blur_value : "",
-            contact_qq_value : "",
-            contact_qq_blur_value : "",
-            contact_wechat_value : "",
-            contact_wechat_blur_value : "",
-            contact_tel_value : "",
-            contact_tel_blur_value : "",
-            imageList : ImageList,
-            submitList : submitList
+            post_type_value: "提问",
+            post_type_blur_value: "提问",
+            post_title_value: "",
+            post_title_blur_value: "",
+            post_text_value: "",
+            post_text_blur_value: "",
+            contact_qq_value: "",
+            contact_qq_blur_value: "",
+            contact_wechat_value: "",
+            contact_wechat_blur_value: "",
+            contact_tel_value: "",
+            contact_tel_blur_value: "",
+            imageList: ImageList,
+            submitList: submitList
         })
-        
+
         qq.stopPullDownRefresh({
-            success : res => {
+            success: res => {
                 qq.showToast({
                     title: '页面已刷新',
                     icon: 'success',
@@ -218,11 +216,11 @@ Page({
         // 小于 20s
         let duar = Math.abs(this.data.submit_delay - submit_begin);
         let time_content = "请等待 " + (20 - duar) + "s 后才可继续提交"
-        if(this.data.submit_delay !== 0 && duar < 20) {
+        if (this.data.submit_delay !== 0 && duar < 20) {
             qq.showModal({
                 title: '您的提交频率过快',
                 content: time_content,
-                showCancel : false,
+                showCancel: false,
                 success(res) {
                     if (res.confirm) {
                         console.log('用户点击确定')
@@ -231,44 +229,44 @@ Page({
                     }
                 }
             })
-            return ;
+            return;
         }
 
         console.log(this.data.post_type_value)
         console.log('form发生了submit事件，携带数据为：', e.detail.value)
 
         qq.showModal({
-            title : "投稿确认提示",
-            content : "请确认投稿内容中不包含暴力、谩骂、引战、色情、政治等信息。\n\n如内容涉及他/她人个人信息、肖像等请征得对方同意。\n\n可在查看订单页面删除已发订单。",
-            confirmText : "是",
-            confirmColor : "#00CAFC",
-            cancelText : "否",
-            cancelColor : "#FF0000",
-            success : (res) => {
-                if(res.confirm) {
+            title: "投稿确认提示",
+            content: "请确认投稿内容中不包含暴力、谩骂、引战、色情、政治等信息。\n\n如内容涉及他/她人个人信息、肖像等请征得对方同意。\n\n可在查看订单页面删除已发订单。",
+            confirmText: "是",
+            confirmColor: "#00CAFC",
+            cancelText: "否",
+            cancelColor: "#FF0000",
+            success: (res) => {
+                if (res.confirm) {
                     let submit_data = e.detail.value
                     let submit_type = this.data.type_array[submit_data.post_type]
                     let submitList = this.data.submitList
                     let imageList = this.data.imageList
-                    if(!submit_type || !submit_data.post_title || !submit_data.post_text) {
+                    if (!submit_type || !submit_data.post_title || !submit_data.post_text) {
                         let content = "您的"
-                        console.log("type:",submit_type)
-                        console.log("title:",submit_data.post_title)
-                        console.log("text:",submit_data.post_text)
-                        if(!submit_type) {
+                        console.log("type:", submit_type)
+                        console.log("title:", submit_data.post_title)
+                        console.log("text:", submit_data.post_text)
+                        if (!submit_type) {
                             content = content + "投稿类型" + "、"
                         }
-                        if(!submit_data.post_title) {
+                        if (!submit_data.post_title) {
                             content = content + "投稿标题" + "、"
                         }
-                        if(!submit_data.post_text) {
+                        if (!submit_data.post_text) {
                             content = content + "投稿内容" + "、"
                         }
-                        content = content.slice(0,-1) + "未填写"
+                        content = content.slice(0, -1) + "未填写"
                         qq.showModal({
                             title: '投稿内容不全!',
                             content: content,
-                            showCancel : false,
+                            showCancel: false,
                             success(res) {
                                 if (res.confirm) {
                                     console.log('用户点击确定')
@@ -277,7 +275,7 @@ Page({
                                 }
                             }
                         })
-                        return ;
+                        return;
                     }
                     let timestamp = Date.parse(new Date())
                     timestamp = timestamp / 1000
@@ -285,8 +283,8 @@ Page({
                     async function uploadfiles() {
 
                         qq.showLoading({
-                            title : "订单投递中，请稍作等待",
-                            mask : true
+                            title: "订单投递中，请稍作等待",
+                            mask: true
                         })
 
                         for (let i = 0; i < imageList.length; i++) {
@@ -324,8 +322,8 @@ Page({
                                     post_contact_qq: submit_data.post_contact_qq,
                                     post_contact_wechat: submit_data.post_contact_wechat,
                                     post_contact_tel: submit_data.post_contact_tel,
-                                    post_user_openid : app.data.user_openid,
-                                    post_user_done : false,
+                                    post_user_openid: app.data.user_openid,
+                                    post_user_done: false,
                                     post_done: false,
                                     post_date: new Date(),
                                     image_list: submitList
@@ -346,20 +344,19 @@ Page({
                                 icon: 'success',
                                 duration: 1000
                             })
-                            qq.showTabBarRedDot( {
-                                index : 1,
+                            qq.showTabBarRedDot({
+                                index: 1,
                             })
                         })
                         .catch(res => console.error(res))
                     let submit_end = Date.parse(new Date())
                     this.setData({
-                        submit_delay : submit_end / 1000
+                        submit_delay: submit_end / 1000
                     })
                 }
 
             }
         })
-
 
 
     },
@@ -372,11 +369,11 @@ Page({
         // 小于 20s
         let duar = Math.abs(this.data.submit_delay - submit_begin);
         let time_content = "请等待 " + (20 - duar) + "s 后才可继续提交"
-        if(this.data.submit_delay !== 0 && duar < 20) {
+        if (this.data.submit_delay !== 0 && duar < 20) {
             qq.showModal({
                 title: '您的提交频率过快',
                 content: time_content,
-                showCancel : false,
+                showCancel: false,
                 success(res) {
                     if (res.confirm) {
                         console.log('用户点击确定')
@@ -385,7 +382,7 @@ Page({
                     }
                 }
             })
-            return ;
+            return;
         }
 
         console.log('form发生了submit事件，携带数据为：', e.detail)
@@ -393,25 +390,25 @@ Page({
         let submit_type = this.data.post_type_blur_value
         let submitList = this.data.submitList
         let imageList = this.data.imageList
-        if(!submit_type || !this.data.post_title_blur_value || !this.data.post_text_blur_value) {
+        if (!submit_type || !this.data.post_title_blur_value || !this.data.post_text_blur_value) {
             let content = "您的"
-            console.log("type:",submit_type)
-            console.log("title:",this.data.post_title_blur_value)
-            console.log("text:",this.data.post_text_blur_value)
-            if(!submit_type) {
+            console.log("type:", submit_type)
+            console.log("title:", this.data.post_title_blur_value)
+            console.log("text:", this.data.post_text_blur_value)
+            if (!submit_type) {
                 content = content + "投稿类型" + "、"
             }
-            if(!this.data.post_title_blur_value) {
+            if (!this.data.post_title_blur_value) {
                 content = content + "投稿标题" + "、"
             }
-            if(!this.data.post_text_blur_value) {
+            if (!this.data.post_text_blur_value) {
                 content = content + "投稿内容" + "、"
             }
-            content = content.slice(0,-1) + "未填写"
+            content = content.slice(0, -1) + "未填写"
             qq.showModal({
                 title: '投稿内容不全!',
                 content: content,
-                showCancel : false,
+                showCancel: false,
                 success(res) {
                     if (res.confirm) {
                         console.log('用户点击确定')
@@ -420,26 +417,26 @@ Page({
                     }
                 }
             })
-            return ;
+            return;
         }
 
         qq.showModal({
-            title : "投稿确认提示",
-            content : "请确认投稿内容中不包含暴力、谩骂、引战、色情、政治等信息。\n\n如内容涉及他/她人个人信息、肖像等请征得对方同意。\n\n可在查看订单页面删除已发订单。",
-            confirmText : "是",
-            confirmColor : "#00CAFC",
-            cancelText : "否",
-            cancelColor : "#FF0000",
-            success : (res) => {
-                if(res.confirm) {
+            title: "投稿确认提示",
+            content: "请确认投稿内容中不包含暴力、谩骂、引战、色情、政治等信息。\n\n如内容涉及他/她人个人信息、肖像等请征得对方同意。\n\n可在查看订单页面删除已发订单。",
+            confirmText: "是",
+            confirmColor: "#00CAFC",
+            cancelText: "否",
+            cancelColor: "#FF0000",
+            success: (res) => {
+                if (res.confirm) {
                     let timestamp = Date.parse(new Date())
                     timestamp = timestamp / 1000
 
                     async function uploadfiles() {
 
                         qq.showLoading({
-                            title : "订单投递中，请稍作等待",
-                            mask : true
+                            title: "订单投递中，请稍作等待",
+                            mask: true
                         })
 
                         for (let i = 0; i < imageList.length; i++) {
@@ -477,8 +474,8 @@ Page({
                                     post_contact_qq: this.data.contact_qq_blur_value,
                                     post_contact_wechat: this.data.contact_wechat_blur_value,
                                     post_contact_tel: this.data.contact_tel_blur_value,
-                                    post_user_openid : app.data.user_openid,
-                                    post_user_done : false,
+                                    post_user_openid: app.data.user_openid,
+                                    post_user_done: false,
                                     post_done: false,
                                     post_date: new Date(),
                                     image_list: submitList
@@ -499,20 +496,19 @@ Page({
                                 icon: 'success',
                                 duration: 1000
                             })
-                            qq.showTabBarRedDot( {
-                                index : 1,
+                            qq.showTabBarRedDot({
+                                index: 1,
                             })
                         })
                         .catch(res => console.error(res))
                     let submit_end = Date.parse(new Date())
                     this.setData({
-                        submit_delay : submit_end / 1000
+                        submit_delay: submit_end / 1000
                     })
                 }
 
             }
         })
-
 
 
     },
@@ -521,12 +517,12 @@ Page({
         const ImageList = this.data.imageList
         const submitList = this.data.submitList
 
-        ImageList.splice(0,ImageList.length)
-        submitList.splice(0,submitList.length)
+        ImageList.splice(0, ImageList.length)
+        submitList.splice(0, submitList.length)
 
         this.setData({
-            imageList : ImageList,
-            submitList : submitList
+            imageList: ImageList,
+            submitList: submitList
         })
         // qq.showToast(
         //   {
@@ -541,24 +537,24 @@ Page({
         const ImageList = this.data.imageList
         const submitList = this.data.submitList
 
-        ImageList.splice(0,ImageList.length)
-        submitList.splice(0,submitList.length)
+        ImageList.splice(0, ImageList.length)
+        submitList.splice(0, submitList.length)
 
         this.setData({
-            post_type_value : "提问",
-            post_type_blur_value : "提问",
-            post_title_value : "",
-            post_title_blur_value : "",
-            post_text_value : "",
-            post_text_blur_value : "",
-            contact_qq_value : "",
-            contact_qq_blur_value : "",
-            contact_wechat_value : "",
-            contact_wechat_blur_value : "",
-            contact_tel_value : "",
-            contact_tel_blur_value : "",
-            imageList : ImageList,
-            submitList : submitList
+            post_type_value: "提问",
+            post_type_blur_value: "提问",
+            post_title_value: "",
+            post_title_blur_value: "",
+            post_text_value: "",
+            post_text_blur_value: "",
+            contact_qq_value: "",
+            contact_qq_blur_value: "",
+            contact_wechat_value: "",
+            contact_wechat_blur_value: "",
+            contact_tel_value: "",
+            contact_tel_blur_value: "",
+            imageList: ImageList,
+            submitList: submitList
         })
 
         qq.showToast({
@@ -607,14 +603,14 @@ Page({
     input_title_blur(e) {
         // console.log(e)
         this.setData({
-            post_title_blur_value : e.detail.value
+            post_title_blur_value: e.detail.value
         })
     },
 
     input_text_blur(e) {
         // console.log(e)
         this.setData({
-            post_text_blur_value : e.detail.value
+            post_text_blur_value: e.detail.value
         })
     },
 
@@ -628,14 +624,14 @@ Page({
     contact_wechat_blur(e) {
         // console.log(e)
         this.setData({
-            contact_wechat_blur_value : e.detail.value
+            contact_wechat_blur_value: e.detail.value
         })
     },
 
     contact_tel_blur(e) {
         // console.log(e)
         this.setData({
-            contact_tel_blur_value : e.detail.value
+            contact_tel_blur_value: e.detail.value
         })
     }
 })

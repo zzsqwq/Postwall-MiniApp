@@ -6,38 +6,38 @@ Page({
     data: {
         motto: 'Hello World',
         userInfo: {},
-        is_admin : "",
-        user_openid : "",
+        is_admin: "",
+        user_openid: "",
         hasUserInfo: false,
         canIUse: qq.canIUse('button.open-type.getUserInfo'),
         tmp_img: "",
-        convert_img : [],
-        reject_array : ["政治", "色情", "侮辱他人", "暴力、辱骂他人", "未经允许使用他人照片", "重复"],
+        convert_img: [],
+        reject_array: ["政治", "色情", "侮辱他人", "暴力、辱骂他人", "未经允许使用他人照片", "重复"],
         datalist: [],
-        total_data_list : [],
-        total_num : [],
-        base64str : " ",
-        readytosend : new Array(100).fill(false),
-        readyPictures : new Array(100).fill(" "),
-        rowscount : new Array(10).fill(0),
-        chooseornot : []
+        total_data_list: [],
+        total_num: [],
+        base64str: " ",
+        readytosend: new Array(100).fill(false),
+        readyPictures: new Array(100).fill(" "),
+        rowscount: new Array(10).fill(0),
+        chooseornot: []
     },
     onShareAppMessage() {
         // return custom share data when user share.
     },
-    loadDataBase : function () {
+    loadDataBase: function () {
         const db = qq.cloud.database();
         let function_name = this.data.is_admin === true ? "adminGetdb" : "Getdb";
         let getDatabase = async () => {
-            return await qq.cloud.callFunction( {
-                name : function_name,
-                data : {
-                    user_openid : app.data.user_openid
+            return await qq.cloud.callFunction({
+                name: function_name,
+                data: {
+                    user_openid: app.data.user_openid
                 }
             }).then(res => {
                 this.setData({
-                    total_data_list : res.result.data,
-                    total_num : res.result.data.length,
+                    total_data_list: res.result.data,
+                    total_num: res.result.data.length,
                     datalist: res.result.data.slice(0, 9).reverse()
                 })
                 // console.log("datalist:", this.data.datalist)
@@ -73,27 +73,27 @@ Page({
                             console.error("download file error!", res)
                         })
                     }
-                    }
-                            })
+                }
+            })
     },
     onLoad: function () {
         qq.showShareMenu({
-        showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
+            showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
         })
 
         this.getRejectArray();
 
         // init chooseornot
         let a = this.data.chooseornot
-        for(let i=0;i<10;i++) {
+        for (let i = 0; i < 10; i++) {
             let b = [];
-            for(let j=0;j<10;j++) {
+            for (let j = 0; j < 10; j++) {
                 b[j] = false
             }
             a[i] = b;
         }
         this.setData({
-            chooseornot : a
+            chooseornot: a
         })
 
         qq.cloud.init({
@@ -102,62 +102,47 @@ Page({
         })
 
         this.setData({
-            is_admin : app.data.is_admin
+            is_admin: app.data.is_admin
         })
 
         app.userAdminReadyCallback = () => {
-            this.setData( {
-                is_admin : app.data.is_admin
+            this.setData({
+                is_admin: app.data.is_admin
             })
         }
 
         app.userOpenidReadyCallback = () => {
             this.setData({
-                user_openid : app.data.user_openid
+                user_openid: app.data.user_openid
             })
         }
 
-        //     .then( res => {
-        //     for(let i = 0; i < this.data.datalist.length; i++) {
-        //         for(let j=1;j<this.data.datalist[i].image_list.length;j++) {
-        //             qq.cloud.downloadFile({
-        //                 fileID: this.data.datalist[i].image_list[j]
-        //             }).then(res => {
-        //                 console.log("test tempfile", res.tempFilePath)
-        //                 this.data.readyPictures[i*10+j] = res.tempFilePath;
-        //             }).catch(res => {
-        //                 console.error("download file error!")
-        //             })
-        //         }
-        //     }
-        // })
-
     },
-    onShow: function() {
+    onShow: function () {
         const db = qq.cloud.database();
         qq.hideTabBarRedDot({
-            index : 1
+                index: 1
             }
         )
         let function_name = this.data.is_admin === true ? "adminGetdb" : "Getdb";
         let if_delta = false;
         let getDatabase = async () => {
-            return await qq.cloud.callFunction( {
-                name : function_name,
-                data : {
-                    user_openid : app.data.user_openid
+            return await qq.cloud.callFunction({
+                name: function_name,
+                data: {
+                    user_openid: app.data.user_openid
                 }
             }).then(res => {
                 // console.log("total_data_list is :",this.data.total_data_list)
                 // console.log("res result length",res.result.data.length)
-                if(!this.data.total_data_list || res.result.data.length !== this.data.total_data_list.length) {
+                if (!this.data.total_data_list || res.result.data.length !== this.data.total_data_list.length) {
                     if_delta = true;
                 }
             })
         }
 
-        getDatabase().then( res => {
-            console.log("if_delta is :",if_delta)
+        getDatabase().then(res => {
+                console.log("if_delta is :", if_delta)
                 if (if_delta) {
                     this.loadDataBase();
                 }
@@ -168,7 +153,7 @@ Page({
         app.getUserOpenid()
 
         this.setData({
-            is_admin : app.data.is_admin
+            is_admin: app.data.is_admin
         })
 
         this.getRejectArray();
@@ -176,20 +161,20 @@ Page({
         console.log("test refresh")
         this.loadDataBase()
         this.setData({
-            readytosend : new Array(100).fill(false),
-            rowscount : new Array(10).fill(0),
+            readytosend: new Array(100).fill(false),
+            rowscount: new Array(10).fill(0),
         })
 
         a = this.data.chooseornot
-        for(var i=0;i<10;i++) {
+        for (var i = 0; i < 10; i++) {
             var b = []
-            for(var j=0;j<10;j++) {
+            for (var j = 0; j < 10; j++) {
                 b[j] = false
             }
             a[i] = b
         }
         this.setData({
-            chooseornot : a
+            chooseornot: a
         })
 
         qq.stopPullDownRefresh({
@@ -229,7 +214,7 @@ Page({
         const img_index = e.target.dataset.index;
         console.log(e);
         qq.previewImage({
-            urls : [this.data.datalist[img_id].image_list[img_index]]
+            urls: [this.data.datalist[img_id].image_list[img_index]]
         })
     },
     kindToggle(e) {
@@ -239,24 +224,24 @@ Page({
         const list = this.data.datalist
 
         console.log(e)
-        if(list[e.target.dataset.id].post_reject && !list[e.target.dataset.id].notify_count ) {
+        if (list[e.target.dataset.id].post_reject && !list[e.target.dataset.id].notify_count) {
             list[e.target.dataset.id].notify_count = true
             console.log("list !")
-            let reject_content = "您的订单由于涉及 " +  list[e.target.dataset.id].post_reject + " 等原因被拒绝发送，请修改后重新提交。\n\n您是否需要删除该订单？您也可以通过左滑删除订单。"
+            let reject_content = "您的订单由于涉及 " + list[e.target.dataset.id].post_reject + " 等原因被拒绝发送，请修改后重新提交。\n\n您是否需要删除该订单？您也可以通过左滑删除订单。"
             qq.showModal({
                 title: "订单已被拒发",
                 content: reject_content,
                 cancelText: "否",
                 confirmText: "是",
                 success: res => {
-                    if(res.confirm) {
+                    if (res.confirm) {
                         const db = qq.cloud.database();
                         let productList = this.data.datalist
                         // let productIndex = productList.findIndex(item => item.id === id)
                         let productIndex = e.target.dataset.id;
                         db.collection("postwall").doc(productList[productIndex]._id).update({
-                            data : {
-                                post_done : true,
+                            data: {
+                                post_done: true,
                                 post_user_done: true
                             }
                         }).then(res => {
@@ -271,17 +256,16 @@ Page({
                             })
                             productList.splice(productIndex, 1)
                             this.setData({
-                                datalist : productList
+                                datalist: productList
                             })
                             this.setData({
-                                total_num : this.data.total_num - 1
+                                total_num: this.data.total_num - 1
                             })
                         })
                     }
                 }
             })
-        }
-        else {
+        } else {
             for (let i = 0, len = list.length; i < len; ++i) {
                 if (list[i]._id === id) {
                     list[i].open = !list[i].open
@@ -302,19 +286,19 @@ Page({
         let row_counter = this.data.rowscount
         console.log("index", index)
         console.log("id", id)
-        console.log("index+id", index*10+id)
+        console.log("index+id", index * 10 + id)
         this_data[index][id] = !this_data[index][id]
-        if(this_data[index][id] === true) {
-            this.data.readytosend[index*10+id] = true;
+        if (this_data[index][id] === true) {
+            this.data.readytosend[index * 10 + id] = true;
             row_counter[index]++;
-        }else {
-            this.data.readytosend[index*10+id] = false;
+        } else {
+            this.data.readytosend[index * 10 + id] = false;
             row_counter[index]--;
         }
         //console.log(this.data.readytosend)
         this.setData({
-            chooseornot : this_data,
-            rowscount : row_counter
+            chooseornot: this_data,
+            rowscount: row_counter
         })
     },
     toQzone() {
@@ -322,27 +306,25 @@ Page({
         let now_index = 1
         let next_index = 0
         let post_detail = ""
-        for(let i=0;i<100;i++) {
-            if(this.data.readytosend[i] === true) {
+        for (let i = 0; i < 100; i++) {
+            if (this.data.readytosend[i] === true) {
                 medias.push({
-                    type : 'photo',
-                    path : this.data.readyPictures[i]
+                    type: 'photo',
+                    path: this.data.readyPictures[i]
                 })
-                index = parseInt(i/10)
-                console.log(index,this.data.rowscount[index])
+                index = parseInt(i / 10)
+                console.log(index, this.data.rowscount[index])
             }
         }
-        for(let i=0;i<10;i++) {
+        for (let i = 0; i < 10; i++) {
             console.log(this.data.rowscount[i])
-            if(this.data.rowscount[i] !== 0) {
+            if (this.data.rowscount[i] !== 0) {
                 next_index = now_index + this.data.rowscount[i] - 1;
-                if(this.data.rowscount[i] !== 1) {
+                if (this.data.rowscount[i] !== 1) {
                     post_detail += "P" + now_index + "-" + next_index + ":[" + this.data.datalist[i].post_type + "]" + this.data.datalist[i].post_title + "\n";
                     now_index = next_index + 1;
-                }
-                else
-                {
-                    post_detail += "P" + now_index +  ":[" + this.data.datalist[i].post_type + "]" + this.data.datalist[i].post_title + "\n";
+                } else {
+                    post_detail += "P" + now_index + ":[" + this.data.datalist[i].post_type + "]" + this.data.datalist[i].post_title + "\n";
                     now_index = next_index + 1;
                 }
             }
@@ -356,20 +338,20 @@ Page({
         })
 
         this.setData({
-            readytosend : new Array(100).fill(false),
-            rowscount : new Array(10).fill(0),
+            readytosend: new Array(100).fill(false),
+            rowscount: new Array(10).fill(0),
         })
 
         a = this.data.chooseornot
-        for(var i=0;i<10;i++) {
+        for (var i = 0; i < 10; i++) {
             var b = []
-            for(var j=0;j<10;j++) {
+            for (var j = 0; j < 10; j++) {
                 b[j] = false
             }
             a[i] = b
         }
         this.setData({
-            chooseornot : a
+            chooseornot: a
         })
     },
 
@@ -431,9 +413,9 @@ Page({
      * 处理touchend事件
      */
     handleTouchEnd(e) {
-        if(e.changedTouches[0].pageX < this.startX && e.changedTouches[0].pageX - this.startX <= -60) {
+        if (e.changedTouches[0].pageX < this.startX && e.changedTouches[0].pageX - this.startX <= -60) {
             this.showDeleteButton(e)
-        } else if(e.changedTouches[0].pageX > this.startX && e.changedTouches[0].pageX - this.startX < 60) {
+        } else if (e.changedTouches[0].pageX > this.startX && e.changedTouches[0].pageX - this.startX < 60) {
             this.showDeleteButton(e)
         } else {
             this.hideDeleteButton(e)
@@ -443,15 +425,15 @@ Page({
     /**
      * 删除产品
      */
-    handleDeleteProduct: function ({ currentTarget: { dataset: { id } } }) {
+    handleDeleteProduct: function ({currentTarget: {dataset: {id}}}) {
         let productList = this.data.datalist
         // let productIndex = productList.findIndex(item => item.id === id)
         let productIndex = id;
         const db = qq.cloud.database();
-        if((this.data.is_admin === true) && (productList[productIndex].post_user_openid !== app.data.user_openid)) {
+        if ((this.data.is_admin === true) && (productList[productIndex].post_user_openid !== app.data.user_openid)) {
             db.collection("postwall").doc(productList[productIndex]._id).update({
-                data : {
-                    post_done : true
+                data: {
+                    post_done: true
                 }
             }).then(res => {
                 console.log(res);
@@ -462,20 +444,19 @@ Page({
                 })
                 productList.splice(productIndex, 1)
                 this.setData({
-                    datalist : productList
+                    datalist: productList
                 })
                 if (productList[productIndex]) {
                     this.setXmove(productIndex, 0)
                 }
                 this.setData({
-                    total_num : this.data.total_num - 1
+                    total_num: this.data.total_num - 1
                 })
             })
-        }
-        else {
+        } else {
             db.collection("postwall").doc(productList[productIndex]._id).update({
-                data : {
-                    post_done : true,
+                data: {
+                    post_done: true,
                     post_user_done: true
                 }
             }).then(res => {
@@ -490,10 +471,10 @@ Page({
                 })
                 productList.splice(productIndex, 1)
                 this.setData({
-                    datalist : productList
+                    datalist: productList
                 })
                 this.setData({
-                    total_num : this.data.total_num - 1
+                    total_num: this.data.total_num - 1
                 })
             })
         }
@@ -502,7 +483,7 @@ Page({
     /**
      * slide-delete 删除产品
      */
-    handleSlideDelete({ detail: { id } }) {
+    handleSlideDelete({detail: {id}}) {
         let slideProductList = this.data.slideProductList
         let productIndex = slideProductList.findIndex(item => item.id === id)
 
@@ -513,21 +494,21 @@ Page({
         })
     },
 
-    handleRejectProduct : function ({ currentTarget: { dataset: { id } } }) {
+    handleRejectProduct: function ({currentTarget: {dataset: {id}}}) {
         let productList = this.data.datalist
         // let productIndex = productList.findIndex(item => item.id === id)
         let productIndex = id;
 
         qq.showActionSheet({
-            itemList : this.data.reject_array,
-            success : res => {
+            itemList: this.data.reject_array,
+            success: res => {
                 console.log(res)
                 const db = qq.cloud.database();
-                if((this.data.is_admin === true) && (productList[productIndex].post_user_openid !== app.data.user_openid)) {
+                if ((this.data.is_admin === true) && (productList[productIndex].post_user_openid !== app.data.user_openid)) {
                     db.collection("postwall").doc(productList[productIndex]._id).update({
-                        data : {
-                            post_done : true,
-                            post_reject : this.data.reject_array[res.tapIndex]
+                        data: {
+                            post_done: true,
+                            post_reject: this.data.reject_array[res.tapIndex]
                         }
                     }).then(res => {
                         console.log(res);
@@ -538,20 +519,19 @@ Page({
                         })
                         productList.splice(productIndex, 1)
                         this.setData({
-                            datalist : productList
+                            datalist: productList
                         })
                         if (productList[productIndex]) {
                             this.setXmove(productIndex, 0)
                         }
                         this.setData({
-                            total_num : this.data.total_num - 1
+                            total_num: this.data.total_num - 1
                         })
                     })
-                }
-                else {
+                } else {
                     db.collection("postwall").doc(productList[productIndex]._id).update({
-                        data : {
-                            post_done : true,
+                        data: {
+                            post_done: true,
                             post_user_done: true
                         }
                     }).then(res => {
@@ -566,10 +546,10 @@ Page({
                         })
                         productList.splice(productIndex, 1)
                         this.setData({
-                            datalist : productList
+                            datalist: productList
                         })
                         this.setData({
-                            total_num : this.data.total_num - 1
+                            total_num: this.data.total_num - 1
                         })
                     })
                 }
@@ -581,41 +561,41 @@ Page({
 
     navigate_to_recent() {
         qq.navigateTo({
-            url : "/pages/recently/recently"
+            url: "/pages/recently/recently"
         })
     },
 
     getRejectArray() {
-        qq.cloud.callFunction( {
-            name : "getTypeArray",
-            data : {
+        qq.cloud.callFunction({
+            name: "getTypeArray",
+            data: {
                 reject: true
             }
-        }).then( res => {
+        }).then(res => {
             console.log(res)
-            this.setData( {
-                reject_array : res.result.data[0].rejectlist
+            this.setData({
+                reject_array: res.result.data[0].rejectlist
             })
         })
     },
 
     publishAll() {
-      for(let i=0;i<this.data.datalist.length;i++) {
-          let data_ = this.data.datalist[i];
-          for(let j=0;j<data_.image_list.length;j++) {
-              this.data.readytosend[i*10+j] = true;
-              this.data.rowscount[i]++;
-          }
-      }
-      this.toQzone();
+        for (let i = 0; i < this.data.datalist.length; i++) {
+            let data_ = this.data.datalist[i];
+            for (let j = 0; j < data_.image_list.length; j++) {
+                this.data.readytosend[i * 10 + j] = true;
+                this.data.rowscount[i]++;
+            }
+        }
+        this.toQzone();
     },
 
     deleteAll() {
-        for(let i=0;i<this.data.datalist.length;i++) {
+        for (let i = 0; i < this.data.datalist.length; i++) {
             let target = {
-                currentTarget : {
-                    dataset : {
-                        id : i
+                currentTarget: {
+                    dataset: {
+                        id: i
                     }
                 }
             }
