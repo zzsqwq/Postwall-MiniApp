@@ -60,47 +60,19 @@ Page({
                     total_length += this.data.datalist[i].image_list.length - 1;
                 }
                 for (let i = 0; i < this.data.datalist.length; i++) {
-                        // await qq.cloud.callFunction({
-                        qq.cloud.callFunction({
-                            name: "drawPostwall",
-                            data: this.data.datalist[i]
+                    let imageList = that.data.datalist[i].image_list
+                    for (let j = 0; j < imageList.length; j++) {
+                        qq.cloud.downloadFile({
+                            fileID: that.data.datalist[i].image_list[j]
                         }).then(res => {
-
-                            //console.log("python function return res",res.result)
-                            let userImageBase64 = 'data:image/png;base64,' + res.result.replace(/[\"]/g,'')
-                            // console.log("base64", userImageBase64)
-                            userImageBase64 = userImageBase64.replace(/[\r\n\"]/g, '')
-                            let imageList = that.data.datalist[i].image_list
-                            let imgPath = qq.env.USER_DATA_PATH  + '/' + that.data.datalist[i]._id + '.png';
-                            let fs = qq.getFileSystemManager();
-                            let j_counter = 1;
-                            fs.writeFileSync(imgPath, res.result, "base64");
-                            imageList.unshift(imgPath)
-                            that.setData({
-                                base64str: userImageBase64
-                            })
-                            that.data.readyPictures[i * 10] = imgPath;
-                            for (let j = 1; j < that.data.datalist[i].image_list.length; j++) {
-                                qq.cloud.downloadFile({
-                                    fileID: that.data.datalist[i].image_list[j]
-                                }).then(res => {
-                                    // console.log("test tempfile", res.tempFilePath)
-                                    that.data.readyPictures[i * 10 + j] = res.tempFilePath;
-                                    // console.log("i:",i,"and",that.data.datalist.length-1)
-                                    // console.log("j:",j,"and",that.data.datalist[i].image_list.length-1)
-                                    j_counter = j_counter + 1;
-                                    if (j_counter === total_length) {
-                                        qq.showToast({
-                                            title: '加载结束',
-                                            icon: 'success',
-                                            duration: 300
-                                        })
-                                    }
-                                }).catch(res => {
-                                    console.error("download file error!", res)
-                                })
-                            }
+                            // console.log("test tempfile", res.tempFilePath)
+                            that.data.readyPictures[i * 10 + j] = res.tempFilePath;
+                            // console.log("i:",i,"and",that.data.datalist.length-1)
+                            // console.log("j:",j,"and",that.data.datalist[i].image_list.length-1)
+                        }).catch(res => {
+                            console.error("download file error!", res)
                         })
+                    }
                     }
                             })
     },
