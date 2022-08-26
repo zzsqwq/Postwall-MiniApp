@@ -69,8 +69,8 @@ Page({
                         for (let j = 0; j < imageList.length; j++) {
                             let task = qq.cloud.downloadFile({
                                 fileID: that.data.datalist[i].image_list[j]
-                            }).then( res => {
-                                that.data.readyPictures[i*10+j] = res.tempFilePath;
+                            }).then(res => {
+                                that.data.readyPictures[i * 10 + j] = res.tempFilePath;
                             })
                             tasks.push(task)
                         }
@@ -86,7 +86,7 @@ Page({
                             duration: 1000
                         })
                     }).catch(error => {
-                        console.log("download error!")
+                        console.log("Load orders error, maybe download files error, error msg: ", error)
                     })
                 }
             )
@@ -630,24 +630,60 @@ Page({
     ,
 
     deleteAll() {
+        let productList = this.data.datalist
+        const isAdmin = this.data.is_admin
+        const userOpenid = app.data.user_openid
+        // let productIndex = productList.findIndex(item => item.id === id)
+        const db = qq.cloud.database()
+
         let deleteTasks = []
-        for (let i = 0; i < this.data.datalist.length; i++) {
-            let target = {
-                currentTarget: {
-                    dataset: {
-                        id: i
-                    }
-                }
+        for (let i = 0; i < productList.length; i++) {
+            let product = productList[i]
+            if (isAdmin && product.post_user_openid !== userOpenid) {
+                const task = db.collection("postwall").doc(product._id).update({
+                    data: {
+                        post_done: true
+                    }.then(res => {
+                        productList.splice(i, 1)
+                    }).catch(error => {
+                        console.error(error)
+                    })
+                })
+                deleteTasks.push(task)
+            } else {
+                const task = db.collection("postwall").doc(product._id).update({
+                    data: {
+                        post_done: true,
+                        post_user_done: true
+                    }.then(res => {
+                        productList.splice(i, 1)
+                    }).catch(error => {
+                        console.error(error)
+                    })
+                })
+                deleteTasks.push(task)
             }
-            let task = this.handleDeleteProduct(target);
-            deleteTasks.push(task)
         }
-        Promise.all(deleteTasks).then( responses => {
-            console.log("Delete all products.")
-            this.Refresh();
-        }).catch( error => {
+        Promise.all(deleteTasks).then(responses => {
+            console.log("Delete all products.", responses)
+            qq.showToast({
+                title: '删除成功',
+                icon: 'success',
+                duration: 500
+            })
+        }).catch(error => {
             console.error("Delete product error!")
+            qq.showToast({
+                title: '删除失败',
+                icon: 'none',
+                duration: 500
+            })
         })
+        this.setData({
+            datalist: productList,
+            total_num: productList.length
+        })
+        this.Refresh();
     }
     ,
 })
