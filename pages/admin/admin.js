@@ -78,14 +78,12 @@ Page({
                         })
                     }).catch(error => {
                         console.log("Load orders error, maybe download files error, error msg: ", error)
+                        this.Refresh()
                     })
                 }
             )
     },
     onLoad: function () {
-        qq.showShareMenu({
-            showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
-        })
 
         this.getRejectArray();
 
@@ -167,7 +165,6 @@ Page({
 
         this.getRejectArray();
 
-        console.log("test refresh")
         this.loadDataBase()
         this.setData({
             readytosend: new Array(100).fill(false),
@@ -323,7 +320,7 @@ Page({
         let now_index = 1
         let next_index = 0
         let post_detail = ""
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < this.data.readytosend.length; i++) {
             let orderIndex = parseInt(i/10)
             if (this.data.readytosend[i] === true) {
                 medias.push({
@@ -333,7 +330,7 @@ Page({
                 console.log(orderIndex, this.data.rowscount[orderIndex])
             }
         }
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < this.data.rowscount.length; i++) {
             console.log(this.data.rowscount[i])
             if (this.data.rowscount[i] !== 0) {
                 next_index = now_index + this.data.rowscount[i] - 1;
@@ -476,17 +473,16 @@ Page({
             })
         }
         productList.splice(productIndex, 1)
-        for(let i=productIndex*10;i<productIndex*10+10;i++) {
-            this.data.readytosend[i] = false;
-        }
-        for(let index=productIndex;index<productList.length-1;index++) {
-            this.data.rowscount[index] = this.data.rowscount[index+1]
-        }
-        this.data.rowscount[productList.length-1] = 0;
+        this.data.readytosend.splice(productIndex*10, 10)
+        this.data.readyPictures.splice(productIndex*10, 10)
+        this.data.rowscount.splice(productIndex, 1);
+        this.data.chooseornot.splice(productIndex, 1)
         this.setData({
             datalist: productList,
             rowscount: this.data.rowscount,
-            readytosend: this.data.readytosend
+            readytosend: this.data.readytosend,
+            readyPicutures: this.data.readyPictures,
+            chooseornot: this.data.chooseornot
         })
         if (productList[productIndex]) {
             this.setXmove(productIndex, 0)
@@ -555,18 +551,16 @@ Page({
                         })
                     })
                 }
-                productList.splice(productIndex, 1)
-                for(let i=productIndex*10;i<productIndex*10+10;i++) {
-                    this.data.readytosend[i] = false;
-                }
-                for(let index=productIndex;index<productList.length-1;index++) {
-                    this.data.rowscount[index] = this.data.rowscount[index+1]
-                }
-                this.data.rowscount[productList.length-1] = 0;
+                this.data.readytosend.splice(productIndex*10, 10)
+                this.data.readyPictures.splice(productIndex*10, 10)
+                this.data.rowscount.splice(productIndex, 1);
+                this.data.chooseornot.splice(productIndex, 1)
                 this.setData({
                     datalist: productList,
                     rowscount: this.data.rowscount,
-                    readytosend: this.data.readytosend
+                    readytosend: this.data.readytosend,
+                    readyPicutures: this.data.readyPictures,
+                    chooseornot: this.data.chooseornot
                 })
                 if (productList[productIndex]) {
                     this.setXmove(productIndex, 0)
@@ -576,7 +570,6 @@ Page({
                 })
             }
         })
-
 
     }
     ,
@@ -607,8 +600,10 @@ Page({
         for (let i = 0; i < this.data.datalist.length; i++) {
             let data_ = this.data.datalist[i];
             for (let j = 0; j < data_.image_list.length; j++) {
-                this.data.readytosend[i * 10 + j] = true;
-                this.data.rowscount[i]++;
+                if(!this.data.readytosend[i*10+j]) {
+                    this.data.readytosend[i * 10 + j] = true;
+                    this.data.rowscount[i]++;
+                }
             }
         }
         this.toQzone();

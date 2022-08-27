@@ -79,8 +79,6 @@ Page({
     },
 
     onLoad: function () {
-
-
         qq.showShareMenu({
             showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
         })
