@@ -344,7 +344,7 @@ Page({
             }
         }
         qq.openQzonePublish({
-            footnote: '自助贴贴墙',
+            footnote: '胶州实高自助贴贴墙',
             path: 'pages/index/index',
             text: post_detail,
             media: medias
@@ -551,6 +551,7 @@ Page({
                         })
                     })
                 }
+                productList.splice(productIndex, 1)
                 this.data.readytosend.splice(productIndex*10, 10)
                 this.data.readyPictures.splice(productIndex*10, 10)
                 this.data.rowscount.splice(productIndex, 1);

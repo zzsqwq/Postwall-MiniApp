@@ -84,34 +84,40 @@ Page({
     },
     onLoad(options) {
 
-        // const updateManager = qq.getUpdateManager()
-        //
-        // updateManager.onCheckForUpdate(function (res) {
-        //     // 请求完新版本信息的回调
-        //     console.log("Has update ", res.hasUpdate)
-        // })
-        //
-        // updateManager.onUpdateReady(function () {
-        //     qq.showModal({
-        //         title: '新版本更新提示',
-        //         content: '新版本已经准备好，是否重启应用加载？',
-        //         success(res) {
-        //             if (res.confirm) {
-        //                 // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
-        //                 updateManager.applyUpdate()
-        //             }
-        //         }
-        //     })
-        // })
-        //
-        // updateManager.onUpdateFailed(function () {
-        //     console.error("New version update failed.");
-        //     qq.showToast({
-        //         title: '新版本更新失败',
-        //         icon: 'none',
-        //         duration: 500
-        //     })
-        // })
+        const updateManager = qq.getUpdateManager()
+        const logger = qq.getRealtimeLogManager()
+        logger.info({str: 'hello world'}, 'info log', 100, [1, 2, 3])
+        logger.info("zs test realtime logger")
+        logger.warn("warn test")
+        logger.error("error test")
+
+        updateManager.onCheckForUpdate(function (res) {
+            // 请求完新版本信息的回调
+            logger.info("zs has update")
+            console.log("Has update ", res.hasUpdate)
+        })
+
+        updateManager.onUpdateReady(function () {
+            qq.showModal({
+                title: '更新提示',
+                content: '新版本已经准备好，是否重启应用加载？',
+                success(res) {
+                    if (res.confirm) {
+                        // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+                        updateManager.applyUpdate()
+                    }
+                }
+            })
+        })
+
+        updateManager.onUpdateFailed(function () {
+            console.error("New version update failed.");
+            qq.showToast({
+                title: '新版本更新失败',
+                icon: 'none',
+                duration: 500
+            })
+        })
 
         qq.showShareMenu({
             showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
@@ -138,7 +144,8 @@ Page({
                         fs.unlink({
                             filePath: qq.env.USER_DATA_PATH + '/' + val,
                             success: (res) => {
-                                console.log("removed ", val)
+                                const logger = qq.getRealtimeLogManager()
+                                logger.info("removed ", val)
                             },
                             fail: (res) => {
                                 console.error(res)
