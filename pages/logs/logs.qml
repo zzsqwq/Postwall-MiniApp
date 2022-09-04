@@ -17,7 +17,7 @@
 </view>
 
 <view class="privacy-container">
-    <view class="privacy-1" style="margin: 30rpx auto 20rpx auto;">当前版本 v1.1.1</view>
+    <view class="privacy-1" style="margin: 30rpx auto 20rpx auto;">当前版本 v1.2.0</view>
     <view class="privacy-1">使用此小程序即代表您同意以下</view>
 
     <navigator url="/pages/privacy/privacy" class="privacy-navigator">《隐私说明》</navigator>
