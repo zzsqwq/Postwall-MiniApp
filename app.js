@@ -7,14 +7,11 @@ App({
             console.log("get userid")
             await qq.cloud.callFunction({
                 name : 'getOpenid',
-                data: {
-                    a : 1 // 此处填入了某种方式获取得到的 Buffer 数据，可以是 request 下来的，可以是读文件读出来的等等
-                },
             }).then( res => {
                 console.log(res)
                 // this.setData({
                 //     user_openid : res.result.openid
-                // })
+                // })s
                 this.data.user_openid = res.result.openid
                 console.log(this.data.user_openid)
 
@@ -60,11 +57,21 @@ App({
 
             version = qq.getEnvVersion()
 
-            if(version !== 'release') {
-                qq.setEnableDebug({
-                    enableDebug: true
-                })
-            }
+            // if(version !== 'release') {
+            //     qq.setEnableDebug({
+            //         enableDebug: true
+            //     })
+            // }
+            
+            qq.setEnableDebug({
+                enableDebug: true,
+                success: () => {
+                    console.log("enable debug!")
+                },
+                fail: (e) => {
+                    console.log("enable debug error.", e)
+                }
+            })
 
             this.getUserOpenid();
 

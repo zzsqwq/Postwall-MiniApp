@@ -30,6 +30,7 @@
 		"beforePreview": "",
 		"beforeUpload": ""
 	},
+	"qqLibVersion": "1.55.2",
 	"condition": {
 		"search": {
 			"current": -1,

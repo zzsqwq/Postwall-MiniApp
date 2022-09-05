@@ -87,26 +87,14 @@ Page({
 
         this.getRejectArray();
 
-        // init chooseornot
-        let a = this.data.chooseornot
-        for (let i = 0; i < 10; i++) {
-            let b = [];
-            for (let j = 0; j < 10; j++) {
-                b[j] = false
-            }
-            a[i] = b;
-        }
-        this.setData({
-            chooseornot: a
-        })
-
         qq.cloud.init({
             env: 'postwall-4gy7eykl559a475a',
             traceUser: true
         })
 
         this.setData({
-            is_admin: app.data.is_admin
+            is_admin: app.data.is_admin,
+            chooseornot: new Array(10).fill(false).map( () => new Array(10).fill(false))
         })
 
         app.userAdminReadyCallback = () => {
@@ -130,7 +118,9 @@ Page({
                 index: 1
             }
         )
+
         let function_name = this.data.is_admin === true ? "adminGetdb" : "Getdb";
+        console.log(function_name)
         let if_delta = false;
         let getDatabase = async () => {
             return await qq.cloud.callFunction({
@@ -169,18 +159,7 @@ Page({
         this.setData({
             readytosend: new Array(100).fill(false),
             rowscount: new Array(10).fill(0),
-        })
-
-        a = this.data.chooseornot
-        for (var i = 0; i < 10; i++) {
-            var b = []
-            for (var j = 0; j < 10; j++) {
-                b[j] = false
-            }
-            a[i] = b
-        }
-        this.setData({
-            chooseornot: a
+            chooseornot: new Array(10).fill(false).map( () => new Array(10).fill(false))
         })
 
         qq.stopPullDownRefresh({
@@ -350,11 +329,10 @@ Page({
             media: medias
         })
 
-        a = new Array(10).fill(false).map( () => new Array(10).fill(false))
         this.setData({
             readytosend: new Array(100).fill(false),
             rowscount: new Array(10).fill(0),
-            chooseornot: a
+            chooseornot: new Array(10).fill(false).map( () => new Array(10).fill(false))
         })
         console.log(this.data.chooseornot)
     }
