@@ -35,14 +35,13 @@ Page({
             })
         })
     },
-    loadPostList() {
-        this.loadDatabase().then(() => {
+    async loadPostList() {
+        return await this.loadDatabase().then(() => {
             // Set postList
             let tempList = this.data.allPostList.slice(0, 9).reverse()
             for (let i = 0; i < tempList.length; i++) {
                 tempList[i].open = false
                 if(!tempList[i].post_reject) {
-                    console.log("add post_reject!!!")
                     tempList[i].post_reject = false
                 }
             }
@@ -67,12 +66,12 @@ Page({
                     tasks.push(task)
                 }
             }
-            Promise.all(tasks).then(responses => {
+            return Promise.all(tasks).then(responses => {
                 qq.hideLoading();
                 qq.showToast({
                     title: '订单加载完毕',
                     icon: 'success',
-                    duration: 1000
+                    duration: 500
                 })
             }).catch(error => {
                 console.log("Load orders error, maybe download files error, error msg: ", error)
@@ -113,6 +112,7 @@ Page({
     },
     async isPostListChanged() {
         let isDelta = false
+        // await to make sure update isDelta
         await this.updateUserStatus().then(res => {
             let functionName = this.data.isAdmin === true ? "adminGetdb" : "Getdb";
             return qq.cloud.callFunction({
@@ -129,7 +129,7 @@ Page({
                 for(let i=0;i<this.data.allPostList.length;i++) {
                     oldLength += this.data.allPostList[i].image_list.length
                 }
-                if (!this.data.allPostList || newLength !== oldLength) {
+                if (!this.data.allPostList || newLength !== oldLength || res.result.data.length !== this.data.allPostList.length) {
                     isDelta = true
                 }
             }).catch(error => {
@@ -149,7 +149,7 @@ Page({
         )
         // If allPostList has changed, refresh
         this.isPostListChanged().then(res => {
-            console.log("post list changed", res)
+            console.log("Post list changed res", res)
             if (res) {
                 this.refresh()
             }
@@ -157,23 +157,24 @@ Page({
             console.error("onShow function check refresh error,", error)
         })
     },
-    refresh() {
+    async refresh() {
         this.getRejectArray()
         this.setData({
             readyToSend: new Array(100).fill(false),
             selectCounter: new Array(10).fill(0),
             selectTag: new Array(10).fill(false).map(() => new Array(10).fill(false))
         })
-        this.isPostListChanged().then( res => {
+        await this.isPostListChanged().then( res => {
             if(res) {
-                this.loadPostList()
+                return this.loadPostList()
             }
+        }).then( () => {
             qq.stopPullDownRefresh({
                 success: res => {
                     qq.showToast({
                         title: '刷新成功',
                         icon: 'success',
-                        duration: 1000
+                        duration: 500
                     })
                 }
             })
@@ -184,7 +185,7 @@ Page({
                     qq.showToast({
                         title: '刷新异常',
                         icon: 'none',
-                        duration: 1000
+                        duration: 500
                     })
                 }
             })
@@ -212,17 +213,16 @@ Page({
         userinfo = app.globalData.userInfo
         console.log(e)
         qq.previewImage({
-            current: userinfo.avatarUrl,
             urls: [userinfo.avatarUrl]
         })
     }
     ,
     previewImg(e) {
-        const img_id = e.target.dataset.id;
-        const img_index = e.target.dataset.index;
-        console.log(e);
+        const id = e.target.dataset.id;
+        const index = e.target.dataset.index;
         qq.previewImage({
-            urls: [this.data.postList[img_id].image_list[img_index]]
+            current: this.data.postList[id].image_list[index],
+            urls: this.data.postList[id].image_list
         })
     }
     ,
