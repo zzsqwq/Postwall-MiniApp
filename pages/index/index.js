@@ -82,18 +82,35 @@ Page({
             post_type_blur_value: this.data.type_array[e.detail.value]
         })
     },
+    async getUserOpenid() {
+        await qq.cloud.callFunction({
+            name : 'getOpenid',
+        }).then( res => {
+            this.data.user_openid = res.result.openid
+            const db = qq.cloud.database()
+            db.collection("adminList").get().then( res => {
+                    let adminList = res.data
+                    let i = 0
+                    console.log(adminList)
+                    this.data.is_admin = false
+                    for (i = 0; i < adminList.length; i++) {
+                        if (adminList[i].open_id === this.data.user_openid) {
+                            this.data.is_admin = true
+                            break;
+                        }
+                    }
+                }
+            )
+        })
+    },
     onLoad(options) {
 
         const updateManager = qq.getUpdateManager()
+
         const logger = qq.getRealtimeLogManager()
-        logger.info({str: 'hello world'}, 'info log', 100, [1, 2, 3])
-        logger.info("zs test realtime logger")
-        logger.warn("warn test")
-        logger.error("error test")
 
         updateManager.onCheckForUpdate(function (res) {
             // 请求完新版本信息的回调
-            logger.info("zs has update")
             console.log("Has update ", res.hasUpdate)
         })
 
@@ -122,11 +139,9 @@ Page({
         qq.showShareMenu({
             showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
         })
-        qq.cloud.init({
-            env: 'postwall-4gy7eykl559a475a',
-            traceUser: true
-        });
-        this.getTypeArray();
+
+        this.getTypeArray()
+        this.getUserOpenid()
         this.setData({
             is_admin: app.data.is_admin
         })
