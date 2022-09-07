@@ -72,18 +72,18 @@
                                     circular='true' style="height: 650rpx">
                                 <!--                                <swiper-item>-->
                                 <!--                                    <canvas data-index="0" class="result-photo-class" canvas-id="{{item._id}}"></canvas>-->
-                                <!--                                    <image data-item="{{idx}}" id="0" bind:tap="selectImg" qq:if="{{selectTag[idx][0]}}" class="test-class" src="../../images/pages/index/selected.png"></image>-->
-                                <!--                                    <image data-item="{{idx}}" id="0" bind:tap="selectImg" qq:if="{{!selectTag[idx][0]}}" class="test-class" src="../../images/pages/index/Unselected.png"></image>-->
+                                <!--                                    <image data-item="{{idx}}" id="0" bind:tap="selectImg" qq:if="{{isSelected[idx][0]}}" class="test-class" src="../../images/pages/index/selected.png"></image>-->
+                                <!--                                    <image data-item="{{idx}}" id="0" bind:tap="selectImg" qq:if="{{!isSelected[idx][0]}}" class="test-class" src="../../images/pages/index/Unselected.png"></image>-->
                                 <!--                                </swiper-item>-->
                                 <block qq:for="{{item.image_list}}" qq:for-item="image" qq:for-index="index">
                                     <swiper-item>
                                         <image src='{{image}}' bindtap="previewImg" data-index='{{index}}'
                                                data-id="{{idx}}" class="img" mode="aspectFit"></image>
                                         <image data-item="{{idx}}" id="{{index}}" bindtap="selectImg"
-                                               qq:if="{{isAdmin == true && selectTag[idx][index]}}"
+                                               qq:if="{{isAdmin == true && isSelected[idx][index]}}"
                                                class="test-class" src="../../images/pages/index/selected.png"></image>
                                         <image data-item="{{idx}}" id="{{index}}" bindtap="selectImg"
-                                               qq:if="{{isAdmin == true && !selectTag[idx][index] }}"
+                                               qq:if="{{isAdmin == true && !isSelected[idx][index] }}"
                                                class="test-class" src="../../images/pages/index/Unselected.png"></image>
                                     </swiper-item>
                                 </block>

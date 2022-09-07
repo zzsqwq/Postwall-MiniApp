@@ -11,23 +11,19 @@ App({
 
             console.log("cloud env init finished!")
 
-            version = qq.getEnvVersion()
+            let version = qq.getEnvVersion()
 
             if(version !== 'release') {
                 qq.setEnableDebug({
-                    enableDebug: true
+                    enableDebug: true,
+                    success: () => {
+                        console.log("enable debug successful!")
+                    },
+                    fail: (e) => {
+                        console.error("enable debug error.", e)
+                    }
                 })
             }
-            
-            qq.setEnableDebug({
-                enableDebug: true,
-                success: () => {
-                    console.log("enable debug successful!")
-                },
-                fail: (e) => {
-                    console.error("enable debug error.", e)
-                }
-            })
         },
         onShow() {
             const updateManager = qq.getUpdateManager()

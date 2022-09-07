@@ -12,8 +12,8 @@
         <!--            <input value="{{post_type_value}}" class="input_text" name="post_type" maxlength="4" placeholder="不超过 4 个字（如表白、提问等）"/>-->
         <!--        </view>-->
         <view class="input-section">
-            <picker bindchange="bindPickerChange" value="{{type_index}}" range="{{type_array}}" name="post_type">
-                <view class="picker-class">当前类型：{{type_array[type_index]}}</view>
+            <picker bindchange="bindPickerChange" value="{{chosenTypeIndex}}" range="{{postTypeArray}}" name="post_type">
+                <view class="picker-class">当前类型：{{postTypeArray[chosenTypeIndex]}}</view>
             </picker>
         </view>
     </view>
@@ -80,8 +80,8 @@
 
 
     <view class="btn-area">
-        <button type="primary" bindtap="bind_submit" style="margin: 0rpx auto 20rpx auto; width:90%">提交</button>
-        <button bindtap="bind_reset" style="margin: 0rpx auto 20rpx auto; width:90%">清空已填内容</button>
+        <button type="primary" bindtap="bindSubmit" style="margin: 0rpx auto 20rpx auto; width:90%">提交</button>
+        <button bindtap="bindReset" style="margin: 0rpx auto 20rpx auto; width:90%">清空已填内容</button>
         <button type="default" open-type="openGroupProfile" group-id="421976351" style="width:90%; background:gary;">
             点击加群反馈问题
         </button>

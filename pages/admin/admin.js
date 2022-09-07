@@ -12,21 +12,21 @@ Page({
         rejectReasons: ["政治", "色情", "侮辱他人", "暴力、辱骂他人", "未经允许使用他人照片", "重复"],
         postList: [],
         allPostList: [],
-        allPostNum: [],
-        readyToSend: new Array(100).fill(false),
-        readyPictures: new Array(100).fill(""),
+        allPostNum: 0,
+        photoArray: new Array(10).fill("").map(() => new Array(10).fill("")),
         selectCounter: new Array(10).fill(0),
-        selectTag: new Array(10).fill(false).map(() => new Array(10).fill(false)) // true is selected
+        isSelected: new Array(10).fill(false).map(() => new Array(10).fill(false)) // true is selected
     },
     onShareAppMessage() {
         // return custom share data when user share.
     },
     async loadDatabase() {
         let functionName = this.data.isAdmin === true ? "adminGetdb" : "Getdb"
+        console.log("loadDatabase functionName is ", functionName)
         return await qq.cloud.callFunction({
             name: functionName,
             data: {
-                userOpenid: this.data.userOpenid
+                user_openid: this.data.userOpenid
             }
         }).then(res => {
             this.setData({
@@ -41,7 +41,7 @@ Page({
             let tempList = this.data.allPostList.slice(0, 9).reverse()
             for (let i = 0; i < tempList.length; i++) {
                 tempList[i].open = false
-                if(!tempList[i].post_reject) {
+                if (!tempList[i].post_reject) {
                     tempList[i].post_reject = false
                 }
             }
@@ -51,30 +51,22 @@ Page({
 
             // Download image files in cloud
             let tasks = []
-            qq.showLoading({
-                title: "正在加载订单",
-                mask: true
-            })
             for (let i = 0; i < this.data.postList.length; i++) {
                 let imageList = this.data.postList[i].image_list
                 for (let j = 0; j < imageList.length; j++) {
                     let task = qq.cloud.downloadFile({
                         fileID: this.data.postList[i].image_list[j]
                     }).then(res => {
-                        this.data.readyPictures[i * 10 + j] = res.tempFilePath;
+                        this.data.photoArray[i][j] = res.tempFilePath;
                     })
                     tasks.push(task)
                 }
             }
             return Promise.all(tasks).then(responses => {
                 qq.hideLoading();
-                qq.showToast({
-                    title: '订单加载完毕',
-                    icon: 'success',
-                    duration: 500
-                })
             }).catch(error => {
                 console.log("Load orders error, maybe download files error, error msg: ", error)
+                qq.hideLoading();
                 this.refresh()
             })
 
@@ -86,7 +78,7 @@ Page({
         return await qq.cloud.callFunction({
             name: 'getOpenid',
         }).then(res => {
-            console.log("get openid res", res)
+            console.log("Get openid res", res)
             this.data.userOpenid = res.result.openid
             const db = qq.cloud.database()
             // return important!!!!
@@ -100,6 +92,8 @@ Page({
                             break;
                         }
                     }
+                    console.log("The user isAdmin is ", this.data.isAdmin)
+                    console.log("The user openid is ", this.data.userOpenid)
                     this.setData({
                         isAdmin: this.data.isAdmin,
                         userOpenid: this.data.userOpenid
@@ -118,15 +112,15 @@ Page({
             return qq.cloud.callFunction({
                 name: functionName,
                 data: {
-                    userOpenid: this.data.userOpenid
+                    user_openid: this.data.userOpenid
                 }
             }).then(res => {
                 let newLength = 0
                 let oldLength = 0
-                for(let i=0;i<res.result.data.length;i++) {
+                for (let i = 0; i < res.result.data.length; i++) {
                     newLength += res.result.data[i].image_list.length
                 }
-                for(let i=0;i<this.data.allPostList.length;i++) {
+                for (let i = 0; i < this.data.allPostList.length; i++) {
                     oldLength += this.data.allPostList[i].image_list.length
                 }
                 if (!this.data.allPostList || newLength !== oldLength || res.result.data.length !== this.data.allPostList.length) {
@@ -136,6 +130,7 @@ Page({
                 console.error("isPostList function error, ", error)
             })
         })
+        console.log("isDelta is ", isDelta)
         return isDelta
     },
     onLoad() {
@@ -157,18 +152,17 @@ Page({
             console.error("onShow function check refresh error,", error)
         })
     },
-    async refresh() {
+    refresh() {
         this.getRejectArray()
         this.setData({
-            readyToSend: new Array(100).fill(false),
             selectCounter: new Array(10).fill(0),
-            selectTag: new Array(10).fill(false).map(() => new Array(10).fill(false))
+            isSelected: new Array(10).fill(false).map(() => new Array(10).fill(false))
         })
-        await this.isPostListChanged().then( res => {
-            if(res) {
-                return this.loadPostList()
-            }
-        }).then( () => {
+        qq.showLoading({
+            title: "正在加载订单",
+            mask: true
+        })
+        this.loadPostList().then(() => {
             qq.stopPullDownRefresh({
                 success: res => {
                     qq.showToast({
@@ -260,42 +254,39 @@ Page({
     }
     ,
     selectImg(e) {
-        const index = parseInt(e.currentTarget.dataset.item)
-        const id = parseInt(e.currentTarget.id)
-        let this_data = this.data.selectTag
-        let row_counter = this.data.selectCounter
-        this_data[index][id] = !this_data[index][id]
-        if (this_data[index][id] === true) {
-            this.data.readyToSend[index * 10 + id] = true;
-            row_counter[index]++;
+        const index = e.currentTarget.dataset.item
+        const id = e.currentTarget.id
+        let isSelected = this.data.isSelected
+        let selectCounter = this.data.selectCounter
+        isSelected[index][id] = !isSelected[index][id]
+        if (isSelected[index][id] === true) {
+            selectCounter[index]++;
         } else {
-            this.data.readyToSend[index * 10 + id] = false;
-            row_counter[index]--;
+            selectCounter[index]--;
         }
-        //console.log(this.data.readyToSend)
         this.setData({
-            selectTag: this_data,
-            selectCounter: row_counter
+            isSelected: isSelected,
+            selectCounter: selectCounter
         })
     }
     ,
     toQzone() {
         let medias = []
+        const isSelected = this.data.isSelected
         let now_index = 1
         let next_index = 0
         let post_detail = ""
-        for (let i = 0; i < this.data.readyToSend.length; i++) {
-            let orderIndex = parseInt(i / 10)
-            if (this.data.readyToSend[i] === true) {
-                medias.push({
-                    type: 'photo',
-                    path: this.data.readyPictures[i]
-                })
-                console.log(orderIndex, this.data.selectCounter[orderIndex])
+        for (let i = 0; i < isSelected.length; i++) {
+            for (let j = 0; j < isSelected[i].length; j++) {
+                if (isSelected[i][j]) {
+                    medias.push({
+                        type: 'photo',
+                        path: this.data.photoArray[i][j]
+                    })
+                }
             }
         }
         for (let i = 0; i < this.data.selectCounter.length; i++) {
-            console.log(this.data.selectCounter[i])
             if (this.data.selectCounter[i] !== 0) {
                 next_index = now_index + this.data.selectCounter[i] - 1;
                 if (this.data.selectCounter[i] !== 1) {
@@ -315,11 +306,9 @@ Page({
         })
 
         this.setData({
-            readyToSend: new Array(100).fill(false),
             selectCounter: new Array(10).fill(0),
-            selectTag: new Array(10).fill(false).map(() => new Array(10).fill(false))
+            isSelected: new Array(10).fill(false).map(() => new Array(10).fill(false))
         })
-        console.log(this.data.selectTag)
     }
     ,
 
@@ -467,16 +456,14 @@ Page({
     deleteAndUpdatePage(id) {
         let postList = this.data.postList
         postList.splice(id, 1)
-        this.data.readyToSend.splice(id* 10, 10)
-        this.data.readyPictures.splice(id* 10, 10)
+        this.data.photoArray.splice(id, 1)
         this.data.selectCounter.splice(id, 1);
-        this.data.selectTag.splice(id, 1)
+        this.data.isSelected.splice(id, 1)
         this.setData({
             postList: postList,
             selectCounter: this.data.selectCounter,
-            readyToSend: this.data.readyToSend,
-            readyPictures: this.data.readyPictures,
-            selectTag: this.data.selectTag
+            photoArray: this.data.photoArray,
+            isSelected: this.data.isSelected
         })
         this.setData({
             allPostNum: this.data.allPostNum - 1
@@ -508,8 +495,8 @@ Page({
         for (let i = 0; i < this.data.postList.length; i++) {
             let data_ = this.data.postList[i];
             for (let j = 0; j < data_.image_list.length; j++) {
-                if (!this.data.readyToSend[i * 10 + j]) {
-                    this.data.readyToSend[i * 10 + j] = true;
+                if (!this.data.isSelected[i][j]) {
+                    this.data.isSelected[i][j] = true;
                     this.data.selectCounter[i]++;
                 }
             }
@@ -574,3 +561,8 @@ Page({
     }
     ,
 })
+
+module.exports = {
+
+
+}
