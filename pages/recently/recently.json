@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "近期发布",
-  "usingComponents": {
-    "slide-delete": "../../components/slide-delete/index"
-  }
-}
