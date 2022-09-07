@@ -22,7 +22,8 @@
     <view class="index-hd" style="padding: 64rpx 0rpx;">
         <view class="list-wrap">
             <block qq:if="{{postList.length !== 0 && isAdmin === true}}">
-                <view style="margin: 0rpx 0rpx 40rpx 0rpx; color: red; ">目前有 {{allPostNum}} 个订单尚未发布</view>
+                <view qq:if="{{!isRecently}}" style="margin: 0rpx 0rpx 40rpx 0rpx; color: red; ">目前有 {{allPostNum}} 个订单尚未发布</view>
+                <view qq:if="{{isRecently}}" style="margin: 0rpx 0rpx 40rpx 0rpx; color: gray; ">目前有 {{allPostNum}} 个订单可恢复</view>
             </block>
             <block qq:if="{{postList.length === 0}}">
                 <view>还没有任何订单已投递！</view>
@@ -30,7 +31,7 @@
             <block qq:else qq:for="{{postList}}" qq:for-index="idx" qq:key="{{item._id}}">
                 <view class="list-wrap__group {{item.open ? 'list-wrap__group_expand' : 'list-wrap__group_collapse'}}">
                     <movable-area class="move-area-class"
-                                  style="{{isAdmin == true ? 'width: calc(100vw - 240rpx)' : 'width: calc(100vw - 120rpx)'}}">
+                                  style="{{isAdmin === true ? 'width: calc(100vw - 240rpx)' : 'width: calc(100vw - 120rpx)'}}">
                         <movable-view out-of-bounds="true" direction="horizontal" x="{{item.xmove}}"
                                       inertia="true"
                                       data-productIndex="{{idx}}"
@@ -57,11 +58,14 @@
                             </view>
                         </movable-view>
                     </movable-area>
-                    <view class="delete-btn " style="background: #00CAFC;" data-id="{{idx}}"
-                          bindtap="handleDeleteProduct">清除
+                    <view qq:if="{{isRecently}}" class="delete-btn " style="background: #00CAFC;" data-id="{{idx}}"
+                          bindtap="handleRecoverPost">恢复
                     </view>
-                    <view qq:if="{{isAdmin == true}}" class="delete-btn" style="right: 120rpx;" data-id="{{idx}}"
-                          bindtap="handleRejectProduct">拒绝
+                    <view qq:if="{{!isRecently}}" class="delete-btn " style="background: #00CAFC;" data-id="{{idx}}"
+                          bindtap="handleDeletePost">清除
+                    </view>
+                    <view qq:if="{{isAdmin && !isRecently}}" class="delete-btn" style="right: 120rpx;" data-id="{{idx}}"
+                          bindtap="handleRejectPost">拒绝
                     </view>
                     <view class="list-wrap__group-bd">
                         <!--                        <block class="image-block" qq:for="{{item.image_list}}" qq:for-item="image">-->
@@ -108,22 +112,31 @@
         </view>
     </view>
 </view>
-<view class="btn-area" qq:if="{{isAdmin == true}}">
+<view  class="btn-area" qq:if="{{isAdmin && !isRecently}}">
     <button type="warn" bindtap="deleteAll" style="margin: 0rpx auto 20rpx 5%; width:43%; display: inline-block;">清除当页
     </button>
     <button type="primary" bindtap="publishAll" style="margin: 0rpx auto 20rpx 4%; width:43%; display: inline-block;">
         发布当页
     </button>
 </view>
-<view class="btn-area" qq:if="{{isAdmin == true}}">
+<view  class="btn-area" qq:if="{{isAdmin && isRecently}}">
+    <button type="warn" bindtap="prePage" style="margin: 0rpx auto 20rpx 5%; width:43%; display: inline-block;">上一页
+    </button>
+    <button type="primary" bindtap="nextPage" style="margin: 0rpx auto 20rpx 4%; width:43%; display: inline-block;">
+        下一页
+    </button>
+</view>
+
+<view class="btn-area" qq:if="{{isAdmin}}">
     <button type="primary" bindtap="toQzone" style="margin: 0rpx auto 20rpx auto; width:90%">发布！</button>
 </view>
-<view class="btn-area" qq:if="{{isAdmin == true}}">
-    <button type="default" bindtap="navigate_to_recent" style="margin: 0rpx auto 20rpx auto; width:90%">近期发布</button>
+<view class="btn-area" qq:if="{{isAdmin}}">
+    <button qq:if="{{!isRecently}}" type="default" bindtap="switchToRecently" style="margin: 0rpx auto 20rpx auto; width:90%">查看近期发布</button>
+    <button qq:if="{{isRecently}}" type="default" bindtap="switchToRecently" style="margin: 0rpx auto 20rpx auto; width:90%">查看等待发布</button>
 </view>
 
 <view class="privacy-container">
-    <view class="privacy-1" style="margin: 0rpx auto 20rpx auto;">当前版本 v1.2.0</view>
+    <view class="privacy-1" style="margin: 0rpx auto 20rpx auto;">当前版本 {{appInstance.version}}</view>
     <view class="privacy-1">使用此小程序即代表您同意以下</view>
 
     <navigator url="/pages/privacy/privacy" class="privacy-navigator">《隐私说明》</navigator>

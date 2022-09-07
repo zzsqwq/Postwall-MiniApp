@@ -1,9 +1,12 @@
 //logs.js
 const util = require('../../utils/util.js')
 
+const app = getApp()
+
 Page({
     data: {
-        logs: []
+        logs: [],
+        appInstance: app
     },
     onLoad: function () {
         qq.showShareMenu({

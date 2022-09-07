@@ -3,11 +3,13 @@ const sourceType = [['camera'], ['album'], ['camera', 'album']]
 const sizeType = [['compressed'], ['original'], ['compressed', 'original']]
 
 const app = getApp()
+
 Page({
     data: {
         imageList: [],
         isAdmin: "",
         userOpenid: "",
+        appInstance: app,
         postTypeArray: ["提问", "吐槽", "表白", "寻物", "寻人"],
         chosenTypeIndex: 0,
         lastSubmitTime: 0,
@@ -102,7 +104,6 @@ Page({
             })
         })
 
-
         qq.showShareMenu({
             showShareItems: ['qq', 'qzone', 'wechatFriends', 'wechatMoment']
         })
@@ -116,13 +117,12 @@ Page({
             dirPath: `${qq.env.USER_DATA_PATH}`,
             success: (res) => {
                 res.files.forEach((file) => {
-                    // console.log(val)
-                    if (file.substr(file.length - 3) === 'png') {
+                    if (file.slice(-3) === 'png') {
                         fs.unlink({
                             filePath: qq.env.USER_DATA_PATH + '/' + file,
                             success: (res) => {
                                 const logger = qq.getRealtimeLogManager()
-                                logger.info("removed ", file)
+                                logger.info("removed ", file, " result ", res)
                             },
                             fail: (res) => {
                                 console.error(res)

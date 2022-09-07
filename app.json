@@ -3,8 +3,7 @@
     "pages/index/index",
     "pages/logs/logs",
     "pages/admin/admin",
-    "pages/privacy/privacy",
-    "pages/recently/recently"
+    "pages/privacy/privacy"
   ],
   "window": {
     "navigationBarTextStyle": "black",
