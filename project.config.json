@@ -10,8 +10,8 @@
 		"nodeModules": true,
 		"uploadWithSourceMap": true,
 		"uglifyFileName": true,
-		"remoteDebugLogEnable": false,
-		"prefetch": false
+		"remoteDebugLogEnable": true,
+		"prefetch": true
 	},
 	"compileType": "miniprogram",
 	"createTime": 1629109829020,

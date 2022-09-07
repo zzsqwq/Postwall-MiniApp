@@ -20,6 +20,9 @@ yarn-error.lock
 # ssl
 /ssl
 
+# secrets 
+**/.env
+
 # cache
 __pycache__/
 

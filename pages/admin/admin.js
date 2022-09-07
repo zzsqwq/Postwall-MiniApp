@@ -4,177 +4,190 @@ const app = getApp()
 
 Page({
     data: {
-        motto: 'Hello World',
         userInfo: {},
-        is_admin: "",
-        user_openid: "",
+        isAdmin: "",
+        userOpenid: "",
         hasUserInfo: false,
         canIUse: qq.canIUse('button.open-type.getUserInfo'),
-        tmp_img: "",
-        convert_img: [],
-        reject_array: ["政治", "色情", "侮辱他人", "暴力、辱骂他人", "未经允许使用他人照片", "重复"],
-        datalist: [],
-        total_data_list: [],
-        total_num: [],
-        orderObjects: [],
-        base64str: " ",
-        readytosend: new Array(100).fill(false),
-        readyPictures: new Array(100).fill(" "),
-        rowscount: new Array(10).fill(0),
-        chooseornot: []
+        rejectReasons: ["政治", "色情", "侮辱他人", "暴力、辱骂他人", "未经允许使用他人照片", "重复"],
+        postList: [],
+        allPostList: [],
+        allPostNum: 0,
+        photoArray: new Array(10).fill("").map(() => new Array(10).fill("")),
+        selectCounter: new Array(10).fill(0),
+        isSelected: new Array(10).fill(false).map(() => new Array(10).fill(false)) // true is selected
     },
     onShareAppMessage() {
         // return custom share data when user share.
     },
-    loadDataBase: function () {
-        const db = qq.cloud.database()
-        let functionName = this.data.is_admin === true ? "adminGetdb" : "Getdb"
-        let getDatabase = async () => {
-            return await qq.cloud.callFunction({
-                name: functionName,
-                data: {
-                    user_openid: app.data.user_openid
+    async loadDatabase() {
+        let functionName = this.data.isAdmin === true ? "adminGetdb" : "Getdb"
+        console.log("loadDatabase functionName is ", functionName)
+        return await qq.cloud.callFunction({
+            name: functionName,
+            data: {
+                user_openid: this.data.userOpenid
+            }
+        }).then(res => {
+            this.setData({
+                allPostList: res.result.data,
+                allPostNum: res.result.data.length,
+            })
+        })
+    },
+    async loadPostList() {
+        return await this.loadDatabase().then(() => {
+            // Set postList
+            let tempList = this.data.allPostList.slice(0, 9).reverse()
+            for (let i = 0; i < tempList.length; i++) {
+                tempList[i].open = false
+                if (!tempList[i].post_reject) {
+                    tempList[i].post_reject = false
                 }
-            }).then(res => {
-                this.setData({
-                    total_data_list: res.result.data,
-                    total_num: res.result.data.length,
-                    datalist: res.result.data.slice(0, 9).reverse()
-                })
-                // console.log("datalist:", this.data.datalist)
-                let tempList = this.data.datalist
-                for (let i = 0; i < this.data.datalist.length; i++) {
-                    tempList[i].open = false
-                }
-                this.setData({
-                    datalist: tempList
-                })
-            }).then(res => console.log(this.data.datalist))
-        }
-        getDatabase()
-            .then(async res => {
-                    let tasks = []
-                    qq.showLoading({
-                        title: "正在加载订单",
-                        mask: true
+            }
+            this.setData({
+                postList: tempList
+            })
+
+            // Download image files in cloud
+            let tasks = []
+            for (let i = 0; i < this.data.postList.length; i++) {
+                let imageList = this.data.postList[i].image_list
+                for (let j = 0; j < imageList.length; j++) {
+                    let task = qq.cloud.downloadFile({
+                        fileID: this.data.postList[i].image_list[j]
+                    }).then(res => {
+                        this.data.photoArray[i][j] = res.tempFilePath;
                     })
-                    for (let i = 0; i < this.data.datalist.length; i++) {
-                        let imageList = this.data.datalist[i].image_list
-                        for (let j = 0; j < imageList.length; j++) {
-                            let task = qq.cloud.downloadFile({
-                                fileID: this.data.datalist[i].image_list[j]
-                            }).then(res => {
-                                this.data.readyPictures[i * 10 + j] = res.tempFilePath;
-                            })
-                            tasks.push(task)
+                    tasks.push(task)
+                }
+            }
+            return Promise.all(tasks).then(responses => {
+                qq.hideLoading();
+            }).catch(error => {
+                console.log("Load orders error, maybe download files error, error msg: ", error)
+                qq.hideLoading();
+                this.refresh()
+            })
+
+        })
+    },
+    // Async to update userOpenid and isAdmin info
+    async updateUserStatus() {
+        // 多层 Promise 最终只 await 最外层的 Promise 即可
+        return await qq.cloud.callFunction({
+            name: 'getOpenid',
+        }).then(res => {
+            console.log("Get openid res", res)
+            this.data.userOpenid = res.result.openid
+            const db = qq.cloud.database()
+            // return important!!!!
+            return db.collection("adminList").get().then(res => {
+                    let adminList = res.data
+                    console.log("adminList is ", adminList)
+                    this.data.isAdmin = false
+                    for (let i = 0; i < adminList.length; i++) {
+                        if (adminList[i].open_id === this.data.userOpenid) {
+                            this.data.isAdmin = true
+                            break;
                         }
                     }
-                    Promise.all(tasks).then(responses => {
-                        qq.hideLoading();
-                        qq.showToast({
-                            title: '订单加载完毕',
-                            icon: 'success',
-                            duration: 1000
-                        })
-                    }).catch(error => {
-                        console.log("Load orders error, maybe download files error, error msg: ", error)
-                        this.Refresh()
+                    console.log("The user isAdmin is ", this.data.isAdmin)
+                    console.log("The user openid is ", this.data.userOpenid)
+                    this.setData({
+                        isAdmin: this.data.isAdmin,
+                        userOpenid: this.data.userOpenid
                     })
                 }
             )
+        }).catch(error => {
+            console.error("updateUserStatus error, ", error)
+        })
     },
-    onLoad: function () {
-
-        this.getRejectArray();
-
-        qq.cloud.init({
-            env: 'postwall-4gy7eykl559a475a',
-            traceUser: true
-        })
-
-        this.setData({
-            is_admin: app.data.is_admin,
-            chooseornot: new Array(10).fill(false).map( () => new Array(10).fill(false))
-        })
-
-        app.userAdminReadyCallback = () => {
-            this.setData({
-                is_admin: app.data.is_admin
+    async isPostListChanged() {
+        let isDelta = false
+        // await to make sure update isDelta
+        await this.updateUserStatus().then(res => {
+            let functionName = this.data.isAdmin === true ? "adminGetdb" : "Getdb";
+            return qq.cloud.callFunction({
+                name: functionName,
+                data: {
+                    user_openid: this.data.userOpenid
+                }
+            }).then(res => {
+                let newLength = 0
+                let oldLength = 0
+                for (let i = 0; i < res.result.data.length; i++) {
+                    newLength += res.result.data[i].image_list.length
+                }
+                for (let i = 0; i < this.data.allPostList.length; i++) {
+                    oldLength += this.data.allPostList[i].image_list.length
+                }
+                if (!this.data.allPostList || newLength !== oldLength || res.result.data.length !== this.data.allPostList.length) {
+                    isDelta = true
+                }
+            }).catch(error => {
+                console.error("isPostList function error, ", error)
             })
-        }
-
-        app.userOpenidReadyCallback = () => {
-            this.setData({
-                user_openid: app.data.user_openid
-            })
-        }
-
-    }
-
-    ,
-    onShow: function () {
-        const db = qq.cloud.database();
+        })
+        console.log("isDelta is ", isDelta)
+        return isDelta
+    },
+    onLoad() {
+        this.getRejectArray()
+    },
+    onShow() {
+        // Hide red dot on admin page
         qq.hideTabBarRedDot({
                 index: 1
             }
         )
-
-        let function_name = this.data.is_admin === true ? "adminGetdb" : "Getdb";
-        console.log(function_name)
-        let if_delta = false;
-        let getDatabase = async () => {
-            return await qq.cloud.callFunction({
-                name: function_name,
-                data: {
-                    user_openid: app.data.user_openid
-                }
-            }).then(res => {
-                // console.log("total_data_list is :",this.data.total_data_list)
-                // console.log("res result length",res.result.data.length)
-                if (!this.data.total_data_list || res.result.data.length !== this.data.total_data_list.length) {
-                    if_delta = true;
+        // If allPostList has changed, refresh
+        this.isPostListChanged().then(res => {
+            console.log("Post list changed res", res)
+            if (res) {
+                this.refresh()
+            }
+        }).catch(error => {
+            console.error("onShow function check refresh error,", error)
+        })
+    },
+    refresh() {
+        this.getRejectArray()
+        this.setData({
+            selectCounter: new Array(10).fill(0),
+            isSelected: new Array(10).fill(false).map(() => new Array(10).fill(false))
+        })
+        qq.showLoading({
+            title: "正在加载订单",
+            mask: true
+        })
+        this.loadPostList().then(() => {
+            qq.stopPullDownRefresh({
+                success: res => {
+                    qq.showToast({
+                        title: '刷新成功',
+                        icon: 'success',
+                        duration: 500
+                    })
                 }
             })
-        }
-
-        getDatabase().then(res => {
-                console.log("if_delta is :", if_delta)
-                if (if_delta) {
-                    this.Refresh()
+        }).catch(error => {
+            console.log("Refresh error, ", error)
+            qq.stopPullDownRefresh({
+                success: res => {
+                    qq.showToast({
+                        title: '刷新异常',
+                        icon: 'none',
+                        duration: 500
+                    })
                 }
-            }
-        )
-    }
-    ,
-    Refresh() {
-        app.getUserOpenid()
-
-        this.setData({
-            is_admin: app.data.is_admin
-        })
-
-        this.getRejectArray();
-
-        this.loadDataBase()
-        this.setData({
-            readytosend: new Array(100).fill(false),
-            rowscount: new Array(10).fill(0),
-            chooseornot: new Array(10).fill(false).map( () => new Array(10).fill(false))
-        })
-
-        qq.stopPullDownRefresh({
-            success: res => {
-                qq.showToast({
-                    title: '刷新成功',
-                    icon: 'success',
-                    duration: 1000
-                })
-            }
+            })
         })
     }
     ,
     onPullDownRefresh(options) {
-        this.Refresh();
+        this.refresh();
     }
     ,
     onReady(options) {
@@ -194,130 +207,93 @@ Page({
         userinfo = app.globalData.userInfo
         console.log(e)
         qq.previewImage({
-            current: userinfo.avatarUrl,
             urls: [userinfo.avatarUrl]
         })
     }
     ,
     previewImg(e) {
-        const img_id = e.target.dataset.id;
-        const img_index = e.target.dataset.index;
-        console.log(e);
+        const id = e.target.dataset.id;
+        const index = e.target.dataset.index;
         qq.previewImage({
-            urls: [this.data.datalist[img_id].image_list[img_index]]
+            current: this.data.postList[id].image_list[index],
+            urls: this.data.postList[id].image_list
         })
     }
     ,
     kindToggle(e) {
-        //console.log(e.currentTarget)
-        //this.convertAllCanvas()
-        const id = e.currentTarget.id
-        const list = this.data.datalist
-
-        console.log(e)
-        if (list[e.target.dataset.id].post_reject && !list[e.target.dataset.id].notify_count) {
-            list[e.target.dataset.id].notify_count = true
-            console.log("list !")
-            let reject_content = "您的订单由于涉及 " + list[e.target.dataset.id].post_reject + " 等原因被拒绝发送，请修改后重新提交。\n\n您是否需要删除该订单？您也可以通过左滑删除订单。"
+        const postId = e.currentTarget.id;
+        const id = e.target.dataset.id
+        const postList = this.data.postList
+        const post = postList[id]
+        if (post.post_reject && !post.notify_count) {
+            post.notify_count = true
+            let rejectContent = "您的订单由于涉及 " + post.post_reject + " 等原因被拒绝发送，请修改后重新提交。\n\n您是否需要删除该订单？您也可以通过左滑删除订单。"
             qq.showModal({
                 title: "订单已被拒发",
-                content: reject_content,
+                content: rejectContent,
                 cancelText: "否",
                 confirmText: "是",
                 success: res => {
                     if (res.confirm) {
-                        const db = qq.cloud.database();
-                        let productList = this.data.datalist
-                        // let productIndex = productList.findIndex(item => item.id === id)
-                        let productIndex = e.target.dataset.id;
-                        db.collection("postwall").doc(productList[productIndex]._id).update({
-                            data: {
-                                post_done: true,
-                                post_user_done: true
-                            }
-                        }).then(res => {
-                            if (productList[productIndex]) {
-                                this.setXmove(productIndex, 0)
-                            }
-                            console.log(res);
-                            qq.showToast({
-                                title: '删除成功',
-                                icon: 'success',
-                                duration: 500
-                            })
-                            productList.splice(productIndex, 1)
-                            this.setData({
-                                datalist: productList
-                            })
-                            this.setData({
-                                total_num: this.data.total_num - 1
-                            })
-                        })
+                        this.deleteOnePost(id)
                     }
                 }
             })
         } else {
-            for (let i = 0, len = list.length; i < len; ++i) {
-                if (list[i]._id === id) {
-                    list[i].open = !list[i].open
+            for (let i = 0, len = postList.length; i < len; ++i) {
+                if (postList[i]._id === postId) {
+                    postList[i].open = !postList[i].open
                 } else {
-                    list[i].open = false
+                    postList[i].open = false
                 }
             }
         }
         this.setData({
-            datalist: list
+            postList: postList
         })
-        // qq.reportAnalytics('click_view_programmatically', {})
     }
     ,
     selectImg(e) {
-        const index = parseInt(e.currentTarget.dataset.item)
-        const id = parseInt(e.currentTarget.id)
-        let this_data = this.data.chooseornot
-        let row_counter = this.data.rowscount
-        console.log("index", index)
-        console.log("id", id)
-        console.log("index+id", index * 10 + id)
-        this_data[index][id] = !this_data[index][id]
-        if (this_data[index][id] === true) {
-            this.data.readytosend[index * 10 + id] = true;
-            row_counter[index]++;
+        const index = e.currentTarget.dataset.item
+        const id = e.currentTarget.id
+        let isSelected = this.data.isSelected
+        let selectCounter = this.data.selectCounter
+        isSelected[index][id] = !isSelected[index][id]
+        if (isSelected[index][id] === true) {
+            selectCounter[index]++;
         } else {
-            this.data.readytosend[index * 10 + id] = false;
-            row_counter[index]--;
+            selectCounter[index]--;
         }
-        //console.log(this.data.readytosend)
         this.setData({
-            chooseornot: this_data,
-            rowscount: row_counter
+            isSelected: isSelected,
+            selectCounter: selectCounter
         })
     }
     ,
     toQzone() {
         let medias = []
+        const isSelected = this.data.isSelected
         let now_index = 1
         let next_index = 0
         let post_detail = ""
-        for (let i = 0; i < this.data.readytosend.length; i++) {
-            let orderIndex = parseInt(i/10)
-            if (this.data.readytosend[i] === true) {
-                medias.push({
-                    type: 'photo',
-                    path: this.data.readyPictures[i]
-                })
-                console.log(orderIndex, this.data.rowscount[orderIndex])
+        for (let i = 0; i < isSelected.length; i++) {
+            for (let j = 0; j < isSelected[i].length; j++) {
+                if (isSelected[i][j]) {
+                    medias.push({
+                        type: 'photo',
+                        path: this.data.photoArray[i][j]
+                    })
+                }
             }
         }
-        for (let i = 0; i < this.data.rowscount.length; i++) {
-            console.log(this.data.rowscount[i])
-            if (this.data.rowscount[i] !== 0) {
-                next_index = now_index + this.data.rowscount[i] - 1;
-                if (this.data.rowscount[i] !== 1) {
-                    post_detail += "P" + now_index + "-" + next_index + ":[" + this.data.datalist[i].post_type + "]" + this.data.datalist[i].post_title + "\n";
+        for (let i = 0; i < this.data.selectCounter.length; i++) {
+            if (this.data.selectCounter[i] !== 0) {
+                next_index = now_index + this.data.selectCounter[i] - 1;
+                if (this.data.selectCounter[i] !== 1) {
+                    post_detail += "P" + now_index + "-" + next_index + ":[" + this.data.postList[i].post_type + "]" + this.data.postList[i].post_title + "\n";
                     now_index = next_index + 1;
                 } else {
-                    post_detail += "P" + now_index + ":[" + this.data.datalist[i].post_type + "]" + this.data.datalist[i].post_title + "\n";
+                    post_detail += "P" + now_index + ":[" + this.data.postList[i].post_type + "]" + this.data.postList[i].post_title + "\n";
                     now_index = next_index + 1;
                 }
             }
@@ -330,11 +306,9 @@ Page({
         })
 
         this.setData({
-            readytosend: new Array(100).fill(false),
-            rowscount: new Array(10).fill(0),
-            chooseornot: new Array(10).fill(false).map( () => new Array(10).fill(false))
+            selectCounter: new Array(10).fill(0),
+            isSelected: new Array(10).fill(false).map(() => new Array(10).fill(false))
         })
-        console.log(this.data.chooseornot)
     }
     ,
 
@@ -361,15 +335,11 @@ Page({
      * 设置movable-view位移
      */
     setXmove: function (productIndex, xmove) {
-        let productList = this.data.datalist
-        // console.log(typeof productList)
-        // console.log(productList)
-        // console.log(xmove, "and ",productIndex)
-        productList[productIndex].xmove = xmove
+        let postList = this.data.postList
+        postList[productIndex].xmove = xmove
         this.setData({
-            datalist: productList
+            postList: postList
         })
-        // console.log(this.data.datalist)
     }
     ,
 
@@ -415,17 +385,26 @@ Page({
      * 删除产品
      */
     handleDeleteProduct: async function ({currentTarget: {dataset: {id}}}) {
-        let productList = this.data.datalist
-        // let productIndex = productList.findIndex(item => item.id === id)
-        let productIndex = id;
-        const db = qq.cloud.database();
-        if ((this.data.is_admin === true) && (productList[productIndex].post_user_openid !== app.data.user_openid)) {
-            db.collection("postwall").doc(productList[productIndex]._id).update({
+        this.deleteOnePost(id)
+    }
+    ,
+    handleRejectProduct: function ({currentTarget: {dataset: {id}}}) {
+        this.rejectOnePost(id)
+    }
+    ,
+    // Update database when delete a post
+    deleteOnePost(id) {
+        const db = qq.cloud.database()
+        const isAdmin = this.data.isAdmin
+        const userOpenid = this.data.userOpenid
+        let post = this.data.postList[id]
+        // Admin delete is different
+        if (isAdmin === true && post.post_user_openid !== userOpenid) {
+            db.collection("postwall").doc(post._id).update({
                 data: {
                     post_done: true
                 }
             }).then(res => {
-                console.log(res);
                 qq.showToast({
                     title: '删除成功',
                     icon: 'success',
@@ -433,16 +412,12 @@ Page({
                 })
             })
         } else {
-            db.collection("postwall").doc(productList[productIndex]._id).update({
+            db.collection("postwall").doc(post._id).update({
                 data: {
                     post_done: true,
                     post_user_done: true
                 }
             }).then(res => {
-                if (productList[productIndex]) {
-                    this.setXmove(productIndex, 0)
-                }
-                console.log(res);
                 qq.showToast({
                     title: '删除成功',
                     icon: 'success',
@@ -450,78 +425,22 @@ Page({
                 })
             })
         }
-        productList.splice(productIndex, 1)
-        this.data.readytosend.splice(productIndex*10, 10)
-        this.data.readyPictures.splice(productIndex*10, 10)
-        this.data.rowscount.splice(productIndex, 1);
-        this.data.chooseornot.splice(productIndex, 1)
-        this.setData({
-            datalist: productList,
-            rowscount: this.data.rowscount,
-            readytosend: this.data.readytosend,
-            readyPicutures: this.data.readyPictures,
-            chooseornot: this.data.chooseornot
-        })
-        if (productList[productIndex]) {
-            this.setXmove(productIndex, 0)
-        }
-        this.setData({
-            total_num: this.data.total_num - 1
-        })
-
-    }
-    ,
-
-    /**
-     * slide-delete 删除产品
-     */
-    handleSlideDelete({detail: {id}}) {
-        let slideProductList = this.data.slideProductList
-        let productIndex = slideProductList.findIndex(item => item.id === id)
-
-        slideProductList.splice(productIndex, 1)
-
-        this.setData({
-            slideProductList
-        })
-    }
-    ,
-
-    handleRejectProduct: function ({currentTarget: {dataset: {id}}}) {
-        let productList = this.data.datalist
-        // let productIndex = productList.findIndex(item => item.id === id)
-        let productIndex = id;
-
+        this.deleteAndUpdatePage(id)
+    },
+    rejectOnePost(id) {
+        const isAdmin = this.data.isAdmin
+        let post = this.data.postList[id]
         qq.showActionSheet({
-            itemList: this.data.reject_array,
+            itemList: this.data.rejectReasons,
             success: res => {
-                console.log(res)
                 const db = qq.cloud.database();
-                if ((this.data.is_admin === true) && (productList[productIndex].post_user_openid !== app.data.user_openid)) {
-                    db.collection("postwall").doc(productList[productIndex]._id).update({
+                if (isAdmin === true) {
+                    db.collection("postwall").doc(post._id).update({
                         data: {
                             post_done: true,
-                            post_reject: this.data.reject_array[res.tapIndex]
+                            post_reject: this.data.rejectReasons[res.tapIndex]
                         }
                     }).then(res => {
-                        console.log(res);
-                        qq.showToast({
-                            title: '拒发成功',
-                            icon: 'success',
-                            duration: 500
-                        })
-                    })
-                } else {
-                    db.collection("postwall").doc(productList[productIndex]._id).update({
-                        data: {
-                            post_done: true,
-                            post_user_done: true
-                        }
-                    }).then(res => {
-                        if (productList[productIndex]) {
-                            this.setXmove(productIndex, 0)
-                        }
-                        console.log(res);
                         qq.showToast({
                             title: '拒发成功',
                             icon: 'success',
@@ -529,27 +448,26 @@ Page({
                         })
                     })
                 }
-                productList.splice(productIndex, 1)
-                this.data.readytosend.splice(productIndex*10, 10)
-                this.data.readyPictures.splice(productIndex*10, 10)
-                this.data.rowscount.splice(productIndex, 1);
-                this.data.chooseornot.splice(productIndex, 1)
-                this.setData({
-                    datalist: productList,
-                    rowscount: this.data.rowscount,
-                    readytosend: this.data.readytosend,
-                    readyPicutures: this.data.readyPictures,
-                    chooseornot: this.data.chooseornot
-                })
-                if (productList[productIndex]) {
-                    this.setXmove(productIndex, 0)
-                }
-                this.setData({
-                    total_num: this.data.total_num - 1
-                })
+                this.deleteAndUpdatePage(id)
             }
         })
 
+    },
+    deleteAndUpdatePage(id) {
+        let postList = this.data.postList
+        postList.splice(id, 1)
+        this.data.photoArray.splice(id, 1)
+        this.data.selectCounter.splice(id, 1);
+        this.data.isSelected.splice(id, 1)
+        this.setData({
+            postList: postList,
+            selectCounter: this.data.selectCounter,
+            photoArray: this.data.photoArray,
+            isSelected: this.data.isSelected
+        })
+        this.setData({
+            allPostNum: this.data.allPostNum - 1
+        })
     }
     ,
 
@@ -567,21 +485,19 @@ Page({
                 reject: true
             }
         }).then(res => {
-            console.log(res)
             this.setData({
-                reject_array: res.result.data[0].rejectlist
+                rejectReasons: res.result.data[0].rejectlist
             })
         })
     }
     ,
-
     publishAll() {
-        for (let i = 0; i < this.data.datalist.length; i++) {
-            let data_ = this.data.datalist[i];
+        for (let i = 0; i < this.data.postList.length; i++) {
+            let data_ = this.data.postList[i];
             for (let j = 0; j < data_.image_list.length; j++) {
-                if(!this.data.readytosend[i*10+j]) {
-                    this.data.readytosend[i * 10 + j] = true;
-                    this.data.rowscount[i]++;
+                if (!this.data.isSelected[i][j]) {
+                    this.data.isSelected[i][j] = true;
+                    this.data.selectCounter[i]++;
                 }
             }
         }
@@ -590,33 +506,33 @@ Page({
     ,
 
     deleteAll() {
-        let productList = this.data.datalist
-        const isAdmin = this.data.is_admin
-        const userOpenid = app.data.user_openid
+        let postList = this.data.postList
+        const isAdmin = this.data.isAdmin
+        const userOpenid = this.data.userOpenid
         const db = qq.cloud.database()
 
         let deleteTasks = []
-        for (let i = 0; i < productList.length; i++) {
-            let product = productList[i]
-            if (isAdmin && product.post_user_openid !== userOpenid) {
-                let task = db.collection("postwall").doc(product._id).update({
+        for (let i = 0; i < postList.length; i++) {
+            let post = postList[i]
+            if (isAdmin && post.post_user_openid !== userOpenid) {
+                let task = db.collection("postwall").doc(post._id).update({
                     data: {
                         post_done: true
                     }
                 }).then(res => {
-                    productList.splice(i, 1)
+                    postList.splice(i, 1)
                 }).catch(error => {
                     console.error(error)
                 })
                 deleteTasks.push(task)
             } else {
-                let task = db.collection("postwall").doc(product._id).update({
+                let task = db.collection("postwall").doc(post._id).update({
                     data: {
                         post_done: true,
                         post_user_done: true
                     }
                 }).then(res => {
-                    productList.splice(i, 1)
+                    postList.splice(i, 1)
                 }).catch(error => {
                     console.error(error)
                 })
@@ -631,7 +547,7 @@ Page({
                 duration: 500
             })
         }).catch(error => {
-            console.error("Delete product error!")
+            console.error("Delete product error!", error)
             qq.showToast({
                 title: '删除失败',
                 icon: 'none',
@@ -639,9 +555,14 @@ Page({
             })
         })
         this.setData({
-            datalist: productList,
+            postList: postList,
         })
-        this.Refresh();
+        this.refresh();
     }
     ,
 })
+
+module.exports = {
+
+
+}

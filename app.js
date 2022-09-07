@@ -3,78 +3,27 @@ App({
             is_admin : false,
             user_openid : ""
         },
-        async getUserOpenid() {
-            console.log("get userid")
-            await qq.cloud.callFunction({
-                name : 'getOpenid',
-            }).then( res => {
-                console.log(res)
-                // this.setData({
-                //     user_openid : res.result.openid
-                // })s
-                this.data.user_openid = res.result.openid
-                console.log(this.data.user_openid)
-
-                const db = qq.cloud.database();
-                db.collection("adminList").get().then( res => {
-                        let adminList = res.data
-                        let i = 0
-                        console.log(adminList)
-                        this.data.is_admin = false
-                        for (i = 0; i < adminList.length; i++) {
-                            if (adminList[i].open_id === this.data.user_openid) {
-                                this.data.is_admin = true
-                                break;
-                            }
-                        }
-                    }
-                ).then( res => {
-                    console.log("is_admin is : ",this.data.is_admin)
-
-                    // 由于 db query 是网络请求，可能会在 Page.onLoad 之后才返回
-                    // 所以此处加入 callback 以防止这种情况
-                    if(this.userAdminReadyCallback) {
-                        this.userAdminReadyCallback()
-                    }
-
-                    if(this.userOpenidReadyCallback) {
-                        this.userOpenidReadyCallback()
-                    }
-                })
-                // for(var i=0;i<adminList.length;i++) {
-                //     if(now_openid == adminList[i].open_id) {
-                //         that.setAdminBar();
-                //         break;
-                //     }
-                // }
-            })
-        },
         onLaunch() {
             qq.cloud.init({
                 env: 'postwall-4gy7eykl559a475a',
                 traceUser: true
             });
 
-            version = qq.getEnvVersion()
+            console.log("cloud env init finished!")
 
-            // if(version !== 'release') {
-            //     qq.setEnableDebug({
-            //         enableDebug: true
-            //     })
-            // }
-            
-            qq.setEnableDebug({
-                enableDebug: true,
-                success: () => {
-                    console.log("enable debug!")
-                },
-                fail: (e) => {
-                    console.log("enable debug error.", e)
-                }
-            })
+            let version = qq.getEnvVersion()
 
-            this.getUserOpenid();
-
+            if(version !== 'release') {
+                qq.setEnableDebug({
+                    enableDebug: true,
+                    success: () => {
+                        console.log("enable debug successful!")
+                    },
+                    fail: (e) => {
+                        console.error("enable debug error.", e)
+                    }
+                })
+            }
         },
         onShow() {
             const updateManager = qq.getUpdateManager()
