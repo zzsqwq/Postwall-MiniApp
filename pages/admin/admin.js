@@ -7,12 +7,15 @@ Page({
         userInfo: {},
         isAdmin: "",
         userOpenid: "",
+        appInstance: app,
+        isRecently: false,
         hasUserInfo: false,
         canIUse: qq.canIUse('button.open-type.getUserInfo'),
         rejectReasons: ["政治", "色情", "侮辱他人", "暴力、辱骂他人", "未经允许使用他人照片", "重复"],
         postList: [],
         allPostList: [],
         allPostNum: 0,
+        nowPagesNum: 0,
         photoArray: new Array(10).fill("").map(() => new Array(10).fill("")),
         selectCounter: new Array(10).fill(0),
         isSelected: new Array(10).fill(false).map(() => new Array(10).fill(false)) // true is selected
@@ -21,13 +24,26 @@ Page({
         // return custom share data when user share.
     },
     async loadDatabase() {
+        qq.showLoading({
+            title: "正在加载订单",
+            mask: true
+        })
         let functionName = this.data.isAdmin === true ? "adminGetdb" : "Getdb"
-        console.log("loadDatabase functionName is ", functionName)
-        return await qq.cloud.callFunction({
-            name: functionName,
-            data: {
+        let isRecently = this.data.isRecently
+        let queryCondition = ''
+        if (isRecently) {
+            queryCondition = {
+                user_openid: this.data.userOpenid,
+                reverse: true,
+            }
+        } else {
+            queryCondition = {
                 user_openid: this.data.userOpenid
             }
+        }
+        return await qq.cloud.callFunction({
+            name: functionName,
+            data: queryCondition
         }).then(res => {
             this.setData({
                 allPostList: res.result.data,
@@ -35,41 +51,41 @@ Page({
             })
         })
     },
-    async loadPostList() {
-        return await this.loadDatabase().then(() => {
-            // Set postList
-            let tempList = this.data.allPostList.slice(0, 9).reverse()
-            for (let i = 0; i < tempList.length; i++) {
-                tempList[i].open = false
-                if (!tempList[i].post_reject) {
-                    tempList[i].post_reject = false
-                }
+    async loadPostList(isReload) {
+        if(isReload) {
+            await this.loadDatabase()
+        }
+        // Set postList
+        const nowPostNum = this.data.nowPagesNum * 9
+        let tempList = this.data.allPostList.slice(nowPostNum, Math.min(nowPostNum + 9, this.data.allPostList.length))
+        for (let i = 0; i < tempList.length; i++) {
+            tempList[i].open = false
+            if (!tempList[i].post_reject) {
+                tempList[i].post_reject = false
             }
-            this.setData({
-                postList: tempList
-            })
+        }
+        this.setData({
+            postList: tempList
+        })
 
-            // Download image files in cloud
-            let tasks = []
-            for (let i = 0; i < this.data.postList.length; i++) {
-                let imageList = this.data.postList[i].image_list
-                for (let j = 0; j < imageList.length; j++) {
-                    let task = qq.cloud.downloadFile({
-                        fileID: this.data.postList[i].image_list[j]
-                    }).then(res => {
-                        this.data.photoArray[i][j] = res.tempFilePath;
-                    })
-                    tasks.push(task)
-                }
+        // Download image files in cloud
+        let tasks = []
+        for (let i = 0; i < this.data.postList.length; i++) {
+            let imageList = this.data.postList[i].image_list
+            for (let j = 0; j < imageList.length; j++) {
+                let task = qq.cloud.downloadFile({
+                    fileID: this.data.postList[i].image_list[j]
+                }).then(res => {
+                    this.data.photoArray[i][j] = res.tempFilePath;
+                })
+                tasks.push(task)
             }
-            return Promise.all(tasks).then(responses => {
-                qq.hideLoading();
-            }).catch(error => {
-                console.log("Load orders error, maybe download files error, error msg: ", error)
-                qq.hideLoading();
-                this.refresh()
-            })
-
+        }
+        return await Promise.all(tasks).then(responses => {
+            qq.hideLoading();
+        }).catch(error => {
+            console.log("Load orders error, maybe download files error, error msg: ", error)
+            qq.hideLoading();
         })
     },
     // Async to update userOpenid and isAdmin info
@@ -108,12 +124,22 @@ Page({
         let isDelta = false
         // await to make sure update isDelta
         await this.updateUserStatus().then(res => {
-            let functionName = this.data.isAdmin === true ? "adminGetdb" : "Getdb";
-            return qq.cloud.callFunction({
-                name: functionName,
-                data: {
+            let functionName = this.data.isAdmin === true ? "adminGetdb" : "Getdb"
+            let isRecently = this.data.isRecently
+            let queryCondition = ''
+            if (isRecently) {
+                queryCondition = {
+                    user_openid: this.data.userOpenid,
+                    reverse: true,
+                }
+            } else {
+                queryCondition = {
                     user_openid: this.data.userOpenid
                 }
+            }
+            return qq.cloud.callFunction({
+                name: functionName,
+                data: queryCondition
             }).then(res => {
                 let newLength = 0
                 let oldLength = 0
@@ -146,51 +172,52 @@ Page({
         this.isPostListChanged().then(res => {
             console.log("Post list changed res", res)
             if (res) {
-                this.refresh()
+                this.refresh(true)
             }
         }).catch(error => {
             console.error("onShow function check refresh error,", error)
         })
     },
-    refresh() {
+    refresh(isReload) {
+        if(isReload) {
+            this.data.nowPagesNum = 0
+        }
         this.getRejectArray()
         this.setData({
+            photoArray: new Array(10).fill("").map(() => new Array(10).fill("")),
             selectCounter: new Array(10).fill(0),
             isSelected: new Array(10).fill(false).map(() => new Array(10).fill(false))
         })
-        qq.showLoading({
-            title: "正在加载订单",
-            mask: true
-        })
-        this.loadPostList().then(() => {
+        this.loadPostList(isReload).then(() => {
             qq.stopPullDownRefresh({
                 success: res => {
-                    qq.showToast({
-                        title: '刷新成功',
-                        icon: 'success',
-                        duration: 500
-                    })
+                    if(isReload) {
+                        qq.showToast({
+                            title: '刷新成功',
+                            icon: 'success',
+                            duration: 500
+                        })
+                    }
                 }
             })
         }).catch(error => {
             console.log("Refresh error, ", error)
             qq.stopPullDownRefresh({
                 success: res => {
-                    qq.showToast({
-                        title: '刷新异常',
-                        icon: 'none',
-                        duration: 500
-                    })
+                    if(isReload) {
+                        qq.showToast({
+                            title: '刷新异常',
+                            icon: 'none',
+                            duration: 500
+                        })
+                    }
                 }
             })
         })
     }
     ,
     onPullDownRefresh(options) {
-        this.refresh();
-    }
-    ,
-    onReady(options) {
+        this.refresh(true);
     }
     ,
     getUserInfo: function (e) {
@@ -225,7 +252,7 @@ Page({
         const id = e.target.dataset.id
         const postList = this.data.postList
         const post = postList[id]
-        if (post.post_reject && !post.notify_count) {
+        if (post.post_reject && !post.notify_count && !this.data.isRecently) {
             post.notify_count = true
             let rejectContent = "您的订单由于涉及 " + post.post_reject + " 等原因被拒绝发送，请修改后重新提交。\n\n您是否需要删除该订单？您也可以通过左滑删除订单。"
             qq.showModal({
@@ -317,7 +344,16 @@ Page({
      */
     showDeleteButton: function (e) {
         let productIndex = e.currentTarget.dataset.productindex
-        this.setXmove(productIndex, -130)
+        for(let i=0;i<this.data.postList.length;i++) {
+            if(i !== parseInt(productIndex)) {
+                this.setXmove(i, 0)
+            }
+        }
+        if (this.data.isRecently) {
+            this.setXmove(productIndex, -65)
+        } else {
+            this.setXmove(productIndex, -130)
+        }
     }
     ,
 
@@ -326,7 +362,6 @@ Page({
      */
     hideDeleteButton: function (e) {
         let productIndex = e.currentTarget.dataset.productindex
-
         this.setXmove(productIndex, 0)
     }
     ,
@@ -346,17 +381,25 @@ Page({
     /**
      * 处理movable-view移动事件
      */
-    handleMovableChange: function (e) {
-        if (e.detail.source === 'friction') {
-            if (e.detail.x < -60) {
-                this.showDeleteButton(e)
-            } else {
-                this.hideDeleteButton(e)
-            }
-        } else if (e.detail.source === 'out-of-bounds' && e.detail.x === 0) {
-            this.hideDeleteButton(e)
-        }
-    }
+     handleMovableChange: function (e) {
+        //  if (e.detail.source === 'friction') {
+        //      if (this.data.isRecently) {
+        //          if (e.detail.x < -50) {
+        //              this.showDeleteButton(e)
+        //          } else {
+        //              this.hideDeleteButton(e)
+        //          }
+        //      } else {
+        //          if (e.detail.x < -100) {
+        //              this.showDeleteButton(e)
+        //          } else {
+        //              this.hideDeleteButton(e)
+        //          }
+        //      }
+        //  } else if (e.detail.source === 'out-of-bounds' && e.detail.x === 0) {
+        //      this.hideDeleteButton(e)
+        //  }
+     }
     ,
 
     /**
@@ -371,9 +414,13 @@ Page({
      * 处理touchend事件
      */
     handleTouchEnd(e) {
-        if (e.changedTouches[0].pageX < this.startX && e.changedTouches[0].pageX - this.startX <= -60) {
-            this.showDeleteButton(e)
-        } else if (e.changedTouches[0].pageX > this.startX && e.changedTouches[0].pageX - this.startX < 60) {
+        let threshold = 0
+        if(this.data.isRecently) {
+            threshold = -30
+        } else {
+            threshold = -60
+        }
+        if (e.changedTouches[0].pageX < this.startX && e.changedTouches[0].pageX - this.startX <= threshold) {
             this.showDeleteButton(e)
         } else {
             this.hideDeleteButton(e)
@@ -384,12 +431,16 @@ Page({
     /**
      * 删除产品
      */
-    handleDeleteProduct: async function ({currentTarget: {dataset: {id}}}) {
+    handleDeletePost: function ({currentTarget: {dataset: {id}}}) {
         this.deleteOnePost(id)
     }
     ,
-    handleRejectProduct: function ({currentTarget: {dataset: {id}}}) {
+    handleRejectPost: function ({currentTarget: {dataset: {id}}}) {
         this.rejectOnePost(id)
+    }
+    ,
+    handleRecoverPost: function ({currentTarget: {dataset: {id}}}) {
+        this.recoverOnePost(id)
     }
     ,
     // Update database when delete a post
@@ -402,7 +453,8 @@ Page({
         if (isAdmin === true && post.post_user_openid !== userOpenid) {
             db.collection("postwall").doc(post._id).update({
                 data: {
-                    post_done: true
+                    post_done: true,
+                    post_reject: false
                 }
             }).then(res => {
                 qq.showToast({
@@ -447,12 +499,44 @@ Page({
                             duration: 500
                         })
                     })
+                } else {
+                    qq.showModal({
+                        title: "权限错误",
+                        content: "你没有权限进行此操作",
+                        showCancel: false,
+                    })
                 }
                 this.deleteAndUpdatePage(id)
             }
         })
-
     },
+    recoverOnePost(id) {
+        const db = qq.cloud.database()
+        const isAdmin = this.data.isAdmin
+        const userOpenid = this.data.userOpenid
+        let post = this.data.postList[id]
+        if (isAdmin === true) {
+            db.collection("postwall").doc(post._id).update({
+                data: {
+                    post_done: false
+                }
+            }).then(res => {
+                qq.showToast({
+                    title: '恢复成功',
+                    icon: 'success',
+                    duration: 500
+                })
+            })
+        } else {
+            qq.showModal({
+                title: "权限错误",
+                content: "你没有权限进行此操作",
+                showCancel: false,
+            })
+        }
+        this.deleteAndUpdatePage(id)
+    }
+    ,
     deleteAndUpdatePage(id) {
         let postList = this.data.postList
         postList.splice(id, 1)
@@ -467,13 +551,6 @@ Page({
         })
         this.setData({
             allPostNum: this.data.allPostNum - 1
-        })
-    }
-    ,
-
-    navigate_to_recent() {
-        qq.navigateTo({
-            url: "/pages/recently/recently"
         })
     }
     ,
@@ -544,7 +621,7 @@ Page({
             qq.showToast({
                 title: '删除成功',
                 icon: 'success',
-                duration: 500
+                duration:500
             })
         }).catch(error => {
             console.error("Delete product error!", error)
@@ -557,12 +634,42 @@ Page({
         this.setData({
             postList: postList,
         })
-        this.refresh();
+        // TODO: not refresh
+        this.refresh(true);
     }
     ,
+    switchToRecently() {
+        this.setData({
+            isRecently: !this.data.isRecently,
+        })
+        console.log("Switch to recently is", this.data.isRecently)
+        this.refresh(true)
+    }
+    ,
+    prePage() {
+        if (this.data.nowPagesNum > 0) {
+            this.data.nowPagesNum = this.data.nowPagesNum - 1
+            this.refresh(false)
+        } else {
+            qq.showToast({
+                title: '已经是第一页了',
+                icon: 'none',
+                duration: 500
+            })
+        }
+    },
+    nextPage() {
+        const nowPostNum = this.data.nowPagesNum * 9
+
+        if (nowPostNum + 9 >= this.data.allPostNum) {
+            qq.showToast({
+                title: '没有更多订单了',
+                icon: 'none',
+                duration: 500
+            })
+        } else {
+            this.data.nowPagesNum = this.data.nowPagesNum + 1
+            this.refresh(false)
+        }
+    }
 })
-
-module.exports = {
-
-
-}
