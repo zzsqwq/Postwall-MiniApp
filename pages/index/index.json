@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "提交订单"
+  "navigationBarTitleText": "提交订单",
+  "usingComponents": {
+    "tui-footer": "/components/footer/footer"
+  }
 }

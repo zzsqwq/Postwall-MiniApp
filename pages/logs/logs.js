@@ -6,7 +6,20 @@ const app = getApp()
 Page({
     data: {
         logs: [],
-        appInstance: app
+        appInstance: app,
+        navigate: [{
+            url: "/pages/privacy/privacy",
+            type: "navigate",
+            text: "隐私说明",
+            color: "#5677fc"
+        },
+            {
+                url: "/pages/changelog/changelog",
+                type: "navigate",
+                text: "更新日志",
+                color: "#5677fc"
+            }
+        ]
     },
     onLoad: function () {
         qq.showShareMenu({

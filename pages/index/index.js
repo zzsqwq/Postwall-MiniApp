@@ -26,6 +26,19 @@ Page({
         contact_wechat_blur_value: "",
         contact_tel_value: "",
         contact_tel_blur_value: "",
+        navigate: [{
+            url: "/pages/privacy/privacy",
+            type: "navigate",
+            text: "隐私说明",
+            color: "#5677fc"
+        },
+            {
+                url: "/pages/changelog/changelog",
+                type: "navigate",
+                text: "更新日志",
+                color: "#5677fc"
+            }
+        ]
     },
     getTypeArray() {
         qq.cloud.callFunction({

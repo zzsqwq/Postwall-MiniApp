@@ -18,7 +18,21 @@ Page({
         nowPagesNum: 0,
         photoArray: new Array(10).fill("").map(() => new Array(10).fill("")),
         selectCounter: new Array(10).fill(0),
-        isSelected: new Array(10).fill(false).map(() => new Array(10).fill(false)) // true is selected
+        isSelected: new Array(10).fill(false).map(() => new Array(10).fill(false)), // true is selected,
+        showActionSheet: true,
+        navigate: [{
+            url: "/pages/privacy/privacy",
+            type: "navigate",
+            text: "隐私说明",
+            color: "#5677fc"
+        },
+            {
+                url: "/pages/changelog/changelog",
+                type: "navigate",
+                text: "更新日志",
+                color: "#5677fc"
+            }
+        ]
     },
     onShareAppMessage() {
         // return custom share data when user share.
@@ -52,7 +66,7 @@ Page({
         })
     },
     async loadPostList(isReload) {
-        if(isReload) {
+        if (isReload) {
             await this.loadDatabase()
         }
         // Set postList
@@ -179,7 +193,7 @@ Page({
         })
     },
     refresh(isReload) {
-        if(isReload) {
+        if (isReload) {
             this.data.nowPagesNum = 0
         }
         this.getRejectArray()
@@ -191,7 +205,7 @@ Page({
         this.loadPostList(isReload).then(() => {
             qq.stopPullDownRefresh({
                 success: res => {
-                    if(isReload) {
+                    if (isReload) {
                         qq.showToast({
                             title: '刷新成功',
                             icon: 'success',
@@ -204,7 +218,7 @@ Page({
             console.log("Refresh error, ", error)
             qq.stopPullDownRefresh({
                 success: res => {
-                    if(isReload) {
+                    if (isReload) {
                         qq.showToast({
                             title: '刷新异常',
                             icon: 'none',
@@ -344,8 +358,8 @@ Page({
      */
     showDeleteButton: function (e) {
         let productIndex = e.currentTarget.dataset.productindex
-        for(let i=0;i<this.data.postList.length;i++) {
-            if(i !== parseInt(productIndex)) {
+        for (let i = 0; i < this.data.postList.length; i++) {
+            if (i !== parseInt(productIndex)) {
                 this.setXmove(i, 0)
             }
         }
@@ -381,7 +395,7 @@ Page({
     /**
      * 处理movable-view移动事件
      */
-     handleMovableChange: function (e) {
+    handleMovableChange: function (e) {
         //  if (e.detail.source === 'friction') {
         //      if (this.data.isRecently) {
         //          if (e.detail.x < -50) {
@@ -399,7 +413,7 @@ Page({
         //  } else if (e.detail.source === 'out-of-bounds' && e.detail.x === 0) {
         //      this.hideDeleteButton(e)
         //  }
-     }
+    }
     ,
 
     /**
@@ -415,7 +429,7 @@ Page({
      */
     handleTouchEnd(e) {
         let threshold = 0
-        if(this.data.isRecently) {
+        if (this.data.isRecently) {
             threshold = -30
         } else {
             threshold = -60
@@ -621,7 +635,7 @@ Page({
             qq.showToast({
                 title: '删除成功',
                 icon: 'success',
-                duration:500
+                duration: 500
             })
         }).catch(error => {
             console.error("Delete product error!", error)

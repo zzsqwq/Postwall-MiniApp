@@ -135,9 +135,4 @@
     <button qq:if="{{isRecently}}" type="default" bindtap="switchToRecently" style="margin: 0rpx auto 20rpx auto; width:90%">查看等待发布</button>
 </view>
 
-<view class="privacy-container">
-    <view class="privacy-1" style="margin: 0rpx auto 20rpx auto;">当前版本 {{appInstance.version}}</view>
-    <view class="privacy-1">使用此小程序即代表您同意以下</view>
-
-    <navigator url="/pages/privacy/privacy" class="privacy-navigator">《隐私说明》</navigator>
-</view>
+<tui-footer copyright="Copyright © 2021-2022 胶州实高自助贴贴墙." navigate="{{navigate}}"></tui-footer>

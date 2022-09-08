@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "相关与反馈",
-  "usingComponents": {}
+  "usingComponents": {
+    "tui-footer": "/components/footer/footer"
+  }
 }
