@@ -40,7 +40,7 @@
         <view class="image-number-class">{{imageList.length}}/9</view>
     </view>
 
-    <block qq:for="{{imageList}}" qq:for-item="image">
+    <block qq:for="{{imageList}}" qq:for-item="image" qq:key="*this">
         <view class="image-combine">
             <image class="image-block" src="{{image}}" data-index="{{index}}" bindtap="previewImage" mode="aspectFill"/>
             <image class="delete-button" data-index="{{index}}" src="../../images/pages/home/icon-delete.png"

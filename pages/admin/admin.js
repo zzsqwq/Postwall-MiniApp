@@ -12,6 +12,7 @@ Page({
         hasUserInfo: false,
         canIUse: qq.canIUse('button.open-type.getUserInfo'),
         rejectReasons: ["政治", "色情", "侮辱他人", "暴力、辱骂他人", "未经允许使用他人照片", "重复"],
+        forbiddenArray: [],
         postList: [],
         allPostList: [],
         allPostNum: 0,
@@ -52,7 +53,7 @@ Page({
         })
     },
     async loadPostList(isReload) {
-        if(isReload) {
+        if (isReload) {
             await this.loadDatabase()
         }
         // Set postList
@@ -161,6 +162,7 @@ Page({
     },
     onLoad() {
         this.getRejectArray()
+        this.getForbiddenArray()
     },
     onShow() {
         // Hide red dot on admin page
@@ -179,10 +181,11 @@ Page({
         })
     },
     refresh(isReload) {
-        if(isReload) {
+        if (isReload) {
             this.data.nowPagesNum = 0
         }
         this.getRejectArray()
+        this.getForbiddenArray()
         this.setData({
             photoArray: new Array(10).fill("").map(() => new Array(10).fill("")),
             selectCounter: new Array(10).fill(0),
@@ -191,7 +194,7 @@ Page({
         this.loadPostList(isReload).then(() => {
             qq.stopPullDownRefresh({
                 success: res => {
-                    if(isReload) {
+                    if (isReload) {
                         qq.showToast({
                             title: '刷新成功',
                             icon: 'success',
@@ -204,7 +207,7 @@ Page({
             console.log("Refresh error, ", error)
             qq.stopPullDownRefresh({
                 success: res => {
-                    if(isReload) {
+                    if (isReload) {
                         qq.showToast({
                             title: '刷新异常',
                             icon: 'none',
@@ -344,8 +347,8 @@ Page({
      */
     showDeleteButton: function (e) {
         let productIndex = e.currentTarget.dataset.productindex
-        for(let i=0;i<this.data.postList.length;i++) {
-            if(i !== parseInt(productIndex)) {
+        for (let i = 0; i < this.data.postList.length; i++) {
+            if (i !== parseInt(productIndex)) {
                 this.setXmove(i, 0)
             }
         }
@@ -381,7 +384,7 @@ Page({
     /**
      * 处理movable-view移动事件
      */
-     handleMovableChange: function (e) {
+    handleMovableChange: function (e) {
         //  if (e.detail.source === 'friction') {
         //      if (this.data.isRecently) {
         //          if (e.detail.x < -50) {
@@ -399,7 +402,7 @@ Page({
         //  } else if (e.detail.source === 'out-of-bounds' && e.detail.x === 0) {
         //      this.hideDeleteButton(e)
         //  }
-     }
+    }
     ,
 
     /**
@@ -415,7 +418,7 @@ Page({
      */
     handleTouchEnd(e) {
         let threshold = 0
-        if(this.data.isRecently) {
+        if (this.data.isRecently) {
             threshold = -30
         } else {
             threshold = -60
@@ -492,7 +495,37 @@ Page({
                             post_done: true,
                             post_reject: this.data.rejectReasons[res.tapIndex]
                         }
+                    }).then(result => {
+                        let hasReject = false
+                        let updateForbidden = async () => {
+                            for (let i = 0; i < this.data.forbiddenArray.length; i++) {
+                                if (this.data.forbiddenArray[i].open_id === post.post_user_openid) {
+                                    this.data.forbiddenArray[i].count += 1
+                                    hasReject = true
+                                    return db.collection("forbiddenList").doc(this.data.forbiddenArray[i]._id).update({
+                                        data: {
+                                            count: this.data.forbiddenArray[i].count,
+                                            posts: this.data.forbiddenArray[i].posts.concat(post._id),
+                                            reasons: this.data.forbiddenArray[i].reasons.concat(this.data.rejectReasons[res.tapIndex])
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                        return updateForbidden().then(result => {
+                            if (hasReject === false) {
+                                return db.collection("forbiddenList").add({
+                                    data: {
+                                        open_id: post.post_user_openid,
+                                        count: 1,
+                                        posts: [post._id],
+                                        reasons: [this.data.rejectReasons[res.tapIndex]]
+                                    }
+                                })
+                            }
+                        })
                     }).then(res => {
+                        this.getForbiddenArray()
                         qq.showToast({
                             title: '拒发成功',
                             icon: 'success',
@@ -521,6 +554,27 @@ Page({
                     post_done: false
                 }
             }).then(res => {
+                if (post.post_reject) {
+                    for (let i = 0; i < this.data.forbiddenArray.length; i++) {
+                        if (this.data.forbiddenArray[i].open_id === post.post_user_openid) {
+                            this.data.forbiddenArray[i].count -= 1
+                            // 查找等于post._id的元素的下标
+                            let index = this.data.forbiddenArray[i].posts.indexOf(post._id)
+                            this.data.forbiddenArray[i].posts.splice(index, 1)
+                            this.data.forbiddenArray[i].reasons.splice(index, 1)
+                            return db.collection("forbiddenList").doc(this.data.forbiddenArray[i]._id).update({
+                                data: {
+                                    count: this.data.forbiddenArray[i].count,
+                                    // 去掉特定下标元素
+                                    posts: this.data.forbiddenArray[i].posts,
+                                    reasons: this.data.forbiddenArray[i].reasons
+                                }
+                            })
+                        }
+                    }
+                }
+            }).then(res => {
+                this.getForbiddenArray()
                 qq.showToast({
                     title: '恢复成功',
                     icon: 'success',
@@ -554,7 +608,6 @@ Page({
         })
     }
     ,
-
     getRejectArray() {
         qq.cloud.callFunction({
             name: "getTypeArray",
@@ -568,6 +621,15 @@ Page({
         })
     }
     ,
+    getForbiddenArray() {
+        qq.cloud.callFunction({
+            name: "getForbiddenArray",
+        }).then(res => {
+            this.setData({
+                forbiddenArray: res.result.data
+            })
+        })
+    },
     publishAll() {
         for (let i = 0; i < this.data.postList.length; i++) {
             let data_ = this.data.postList[i];
@@ -621,7 +683,7 @@ Page({
             qq.showToast({
                 title: '删除成功',
                 icon: 'success',
-                duration:500
+                duration: 500
             })
         }).catch(error => {
             console.error("Delete product error!", error)

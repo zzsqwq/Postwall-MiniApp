@@ -11,6 +11,7 @@ Page({
         userOpenid: "",
         appInstance: app,
         postTypeArray: ["提问", "吐槽", "表白", "寻物", "寻人"],
+        forbiddenArray: [],
         chosenTypeIndex: 0,
         lastSubmitTime: 0,
         submitList: [],
@@ -33,6 +34,15 @@ Page({
         }).then(res => {
             this.setData({
                 postTypeArray: res.result.data[0].typelist
+            })
+        })
+    },
+    getForbiddenArray() {
+        qq.cloud.callFunction({
+            name: "getForbiddenArray",
+        }).then(res => {
+            this.setData({
+                forbiddenArray: res.result.data
             })
         })
     },
@@ -109,6 +119,7 @@ Page({
         })
 
         this.getTypeArray()
+        this.getForbiddenArray()
 
         await this.updateUserStatus()
 
@@ -152,6 +163,7 @@ Page({
         ImageList.splice(0, ImageList.length)
         submitList.splice(0, submitList.length)
         this.getTypeArray()
+        this.getForbiddenArray()
         this.setData({
             post_type_value: "提问",
             post_type_blur_value: "提问",
@@ -209,6 +221,116 @@ Page({
      * @param action 0 is formsubmit, 1 is blur submit
      */
     submitPost(event, action) {
+
+        let postData = ""
+        if (action === 0) {
+            postData = event.detail.value
+        }
+        let postType = ""
+        let postTitle = ""
+        let postText = ""
+        let postContactQQ = ""
+        let postContactWechat = ""
+        let postContactTel = ""
+        let submitList = this.data.submitList
+        switch (action) {
+            // formsubmit
+            case 0: {
+                postType = this.data.postTypeArray[postData.post_type]
+                postTitle = postData.post_title
+                postText = postData.post_text
+                postContactQQ = postData.post_contact_qq
+                postContactWechat = postData.post_contact_wechat
+                postContactTel = postData.post_contact_tel
+                break;
+            }
+            // blur submit
+            case 1: {
+                postType = this.data.post_type_blur_value
+                postTitle = this.data.post_title_blur_value
+                postText = this.data.post_text_blur_value
+                postContactQQ = this.data.contact_qq_blur_value
+                postContactWechat = this.data.contact_wechat_blur_value
+                postContactTel = this.data.contact_tel_blur_value
+                break;
+            }
+            default: {
+                console.error("unknown action")
+                break;
+            }
+
+        }
+
+        const timestamp = new Date().getTime() / 1000
+        qq.showLoading({
+            title: "订单投递中，请稍作等待",
+            mask: true
+        })
+
+        this.uploadFilesToCloud().then(res => {
+            const db = qq.cloud.database()
+            return db.collection("postwall").add({
+                data: {
+                    post_time: timestamp,
+                    post_type: postType,
+                    post_title: postTitle,
+                    post_text: postText,
+                    post_contact_qq: postContactQQ,
+                    post_contact_wechat: postContactWechat,
+                    post_contact_tel: postContactTel,
+                    post_user_openid: this.data.userOpenid,
+                    post_user_done: false,
+                    post_done: false,
+                    post_date: new Date(),
+                    image_list: submitList
+                }
+            })
+        }).then(res => {
+            submitList.slice(0, submitList.length)
+            qq.hideLoading();
+            qq.showToast({
+                title: '提交成功',
+                icon: 'success',
+                duration: 500
+            })
+            qq.showTabBarRedDot({
+                index: 1,
+            })
+        })
+            .catch(error => console.error(error))
+
+        let submitEndTime = new Date().getTime()
+        this.setData({
+            lastSubmitTime: submitEndTime / 1000
+        })
+    },
+    submitChecker(event, action) {
+        for(let i = 0; i < this.data.forbiddenArray.length; i++) {
+            if (this.data.userOpenid === this.data.forbiddenArray[i].open_id && this.data.forbiddenArray[i].count >= 3) {
+                qq.showModal({
+                    title: '您已被禁止投稿',
+                    content: '因您多次发表违规订单，已被禁止投稿。如有疑问请联系贴贴墙',
+                    showCancel: false,
+                })
+                return;
+            }
+        }
+
+        let lastSubmitTime = this.data.lastSubmitTime
+        let submitBeginTime = new Date().getTime()/1000
+
+        // 小于 20s
+        let duration = Math.ceil(Math.abs(lastSubmitTime - submitBeginTime))
+        let timeContent = "请等待 " + (20 - duration) + "s 后才可继续提交"
+        if (lastSubmitTime !== 0 && duration < 20) {
+            qq.showModal({
+                title: '您的提交频率过快',
+                content: timeContent,
+                showCancel: false,
+            })
+            return;
+        }
+
         let postData = ""
         if (action === 0) {
             postData = event.detail.value
@@ -262,63 +384,6 @@ Page({
             qq.showModal({
                 title: '投稿内容不全!',
                 content: content,
-                showCancel: false,
-            })
-            return;
-        }
-        const timestamp = new Date().getTime() / 1000
-        qq.showLoading({
-            title: "订单投递中，请稍作等待",
-            mask: true
-        })
-        this.uploadFilesToCloud().then(res => {
-            const db = qq.cloud.database()
-            return db.collection("postwall").add({
-                data: {
-                    post_time: timestamp,
-                    post_type: postType,
-                    post_title: postTitle,
-                    post_text: postText,
-                    post_contact_qq: postContactQQ,
-                    post_contact_wechat: postContactWechat,
-                    post_contact_tel: postContactTel,
-                    post_user_openid: this.data.userOpenid,
-                    post_user_done: false,
-                    post_done: false,
-                    post_date: new Date(),
-                    image_list: submitList
-                }
-            })
-        }).then(res => {
-            submitList.slice(0, submitList.length)
-            qq.hideLoading();
-            qq.showToast({
-                title: '提交成功',
-                icon: 'success',
-                duration: 500
-            })
-            qq.showTabBarRedDot({
-                index: 1,
-            })
-        })
-            .catch(error => console.error(error))
-
-        let submitEndTime = new Date().getTime()
-        this.setData({
-            lastSubmitTime: submitEndTime / 1000
-        })
-    },
-    submitChecker(event, action) {
-        let lastSubmitTime = this.data.lastSubmitTime
-        let submitBeginTime = new Date().getTime()/1000
-
-        // 小于 20s
-        let duration = Math.ceil(Math.abs(lastSubmitTime - submitBeginTime))
-        let timeContent = "请等待 " + (20 - duration) + "s 后才可继续提交"
-        if (lastSubmitTime !== 0 && duration < 20) {
-            qq.showModal({
-                title: '您的提交频率过快',
-                content: timeContent,
                 showCancel: false,
             })
             return;

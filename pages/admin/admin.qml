@@ -79,7 +79,7 @@
                                 <!--                                    <image data-item="{{idx}}" id="0" bind:tap="selectImg" qq:if="{{isSelected[idx][0]}}" class="test-class" src="../../images/pages/index/selected.png"></image>-->
                                 <!--                                    <image data-item="{{idx}}" id="0" bind:tap="selectImg" qq:if="{{!isSelected[idx][0]}}" class="test-class" src="../../images/pages/index/Unselected.png"></image>-->
                                 <!--                                </swiper-item>-->
-                                <block qq:for="{{item.image_list}}" qq:for-item="image" qq:for-index="index">
+                                <block qq:for="{{item.image_list}}" qq:for-item="image" qq:for-index="index" qq:key="*this">
                                     <swiper-item>
                                         <image src='{{image}}' bindtap="previewImg" data-index='{{index}}'
                                                data-id="{{idx}}" class="img" mode="aspectFit"></image>
@@ -93,19 +93,6 @@
                                 </block>
                             </swiper>
                         </view>
-                        <!--                        <image class="result-photo-class" src="{{item.temp}}"></image>-->
-                        <!--                        <block qq:for-items="{{item.pages}}" qq:for-item="page" qq:key="*item">-->
-                        <!--                            <navigator url="pages/{{page.path}}/{{page.path}}" class="list-wrap__item">-->
-                        <!--                                <view class="list-wrap__item-bd">-->
-                        <!--                                    <text class="list-wrap__txt-title">{{page.name}}</text>-->
-                        <!--                                    <image class="list-wrap__group-icon-more" src="../../image/common/icon-arrow-right@2x.svg"  mode="aspectFill" />-->
-                        <!--                                </view>-->
-                        <!--                                <view class="list-wrap__item-ft"></view>-->
-                        <!--                            </navigator>-->
-                        <!--                        </block>-->
-                        <!--                        <image class="test-class"-->
-                        <!--                               src="{{'https://q1.qlogo.cn/g?b=qq&nk='+item.post_contact_qq+'&s=640'}}"-->
-                        <!--                               mode="aspectFill"/>-->
                     </view>
                 </view>
             </block>

@@ -29,7 +29,7 @@ App({
             console.log(msg)
         },
         globalData: "I am global data",
-        version: 'v1.3.0',
-        versionDesc: 'version v1.3.0'
+        version: 'v1.3.1',
+        versionDesc: 'version v1.3.1'
     }
 )
